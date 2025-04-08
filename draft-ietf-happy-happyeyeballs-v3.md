@@ -3,14 +3,14 @@ title: "Happy Eyeballs Version 3: Better Connectivity Using Concurrency"
 abbrev: "Happy Eyeballs v3"
 category: std
 
-docname: draft-pauly-happy-happyeyeballs-v3-latest
+docname: draft-ietf-happy-happyeyeballs-v3-latest
 submissiontype: IETF
 number:
 date:
 consensus: true
 v: 3
-# area: AREA
-# workgroup: WG Working Group
+area: WIT
+workgroup: HAPPY Working Group
 keyword:
  - ipv6
  - ipv4
@@ -20,12 +20,12 @@ keyword:
  - svcb
  - ech
 venue:
-#  group: WG
-#  type: Working Group
-#  mail: WG@example.com
-#  arch: https://example.com/WG
-  github: "tfpauly/draft-happy-eyeballs-v3"
-  latest: "https://tfpauly.github.io/draft-happy-eyeballs-v3/draft-pauly-v6ops-happy-eyeballs-v3.html"
+  group: HAPPY
+  type: Working Group
+  mail: happy@ietf.org
+  arch: https://mailarchive.ietf.org/arch/browse/happy/
+  github: ietf-wg-happy/draft-happy-eyeballs-v3
+  latest: "https://ietf-wg-happy/draft-happy-eyeballs-v3/draft-ietf-happy-happyeyeballs-v3.html"
 
 author:
  -
