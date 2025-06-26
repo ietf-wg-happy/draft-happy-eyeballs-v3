@@ -169,17 +169,16 @@ client sent out queries for SVCB RRs.
 
 If the client did not request SVCB RRs:
 
-- If a positive AAAA response (a response containing at least one
-  valid AAAA RR) is received first, the first IPv6 connection
+- If a positive (valid) AAAA record is received first, the first IPv6 connection
   attempt is immediately started.
-- If a positive A response is received first (which might be due
-  to reordering), the client SHOULD wait a short time for the
-  AAAA response to ensure that preference is given to IPv6, since
-  it is common for the AAAA response to follow the A response by
+- If a positive A record is received first (which might be due
+  to reordering), the client SHOULD wait a short time to receive AAAA
+  records to ensure that preference is given to IPv6, since
+  it is common to receive AAAA records following A records by
   a few milliseconds. This delay is referred to as
-  the "Resolution Delay". If a negative AAAA response (no error, no
-  data) is received within the Resolution Delay period or the AAAA
-  response has not been received by the end of the Resolution Delay
+  the "Resolution Delay". If a negative AAAA record (no error, no
+  data) is received within the Resolution Delay period or a AAAA
+  record has not been received by the end of the Resolution Delay
   period, the client SHOULD proceed to sorting addresses (see
   {{sorting}}) and staggered connection attempts (see {{connections}}) using
   any IPv4 addresses received so far.
@@ -556,8 +555,8 @@ provided by the application ({{literals}}).
 The values that may be configured as defaults on a client for use in
 Happy Eyeballs are as follows:
 
-- Resolution Delay ({{query}}): The time to wait for a AAAA response
-after receiving an A response. Recommended to be 50 milliseconds.
+- Resolution Delay ({{query}}): The time to wait for a AAAA record
+after receiving an A record. Recommended to be 50 milliseconds.
 
 - Preferred Protocol Combination Count ({{sorting}}): The number of
 addresses belonging to the preferred address family (such as IPv6) using
