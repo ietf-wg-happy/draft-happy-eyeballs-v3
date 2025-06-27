@@ -488,8 +488,8 @@ inserted into the list of addresses as if they were results from DNS
 queries; connection attempts follow the algorithm described above
 (see {{connections}}).
 
-Such translation also applies to any IPv4 address hints received
-in SVCB records.
+Such translation also applies to any IPv4 addresses received in A
+records and IPv4 address hints received in SVCB records.
 
 ## Hostnames with Broken AAAA Records {#broken}
 
