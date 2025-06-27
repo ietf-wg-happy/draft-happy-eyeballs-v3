@@ -2,17 +2,17 @@
 
 
 
-Network Working Group                                           T. Pauly
+HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
-Intended status: Informational                               D. Schinazi
-Expires: 27 July 2025                                            N. Jaju
+Intended status: Standards Track                             D. Schinazi
+Expires: 29 December 2025                                        N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                         23 January 2025
+                                                            27 June 2025
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
-               draft-pauly-v6ops-happy-eyeballs-v3-latest
+                draft-ietf-happy-happyeyeballs-v3-latest
 
 Abstract
 
@@ -31,14 +31,18 @@ About This Document
 
    This note is to be removed before publishing as an RFC.
 
-   The latest revision of this draft can be found at
-   https://tfpauly.github.io/draft-happy-eyeballs-v3/draft-pauly-v6ops-
-   happy-eyeballs-v3.html.  Status information for this document may be
-   found at https://datatracker.ietf.org/doc/draft-pauly-v6ops-happy-
-   eyeballs-v3/.
+   The latest revision of this draft can be found at https://ietf-wg-
+   happy/draft-happy-eyeballs-v3/draft-ietf-happy-happyeyeballs-v3.html.
+   Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-ietf-happy-happyeyeballs-v3/.
+
+   Discussion of this document takes place on the HAPPY Working Group
+   mailing list (mailto:happy@ietf.org), which is archived at
+   https://mailarchive.ietf.org/arch/browse/happy/.  Subscribe at
+   https://www.ietf.org/mailman/listinfo/happy/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/tfpauly/draft-happy-eyeballs-v3.
+   https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3.
 
 Status of This Memo
 
@@ -55,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 July 2025.
+   This Internet-Draft will expire on 29 December 2025.
 
 Copyright Notice
 
@@ -526,8 +530,8 @@ Table of Contents
    queries; connection attempts follow the algorithm described above
    (see Section 6).
 
-   Such translation also applies to any IPv4 address hints received in
-   SVCB RRs.
+   Such translation also applies to any IPv4 addresses received in A
+   records and IPv4 address hints received in SVCB records.
 
 8.2.  Hostnames with Broken AAAA Records
 
@@ -680,9 +684,9 @@ Table of Contents
 
    [ECH]      Rescorla, E., Oku, K., Sullivan, N., and C. A. Wood, "TLS
               Encrypted Client Hello", Work in Progress, Internet-Draft,
-              draft-ietf-tls-esni-22, 15 September 2024,
+              draft-ietf-tls-esni-25, 14 June 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
-              esni-22>.
+              esni-25>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -749,9 +753,9 @@ Table of Contents
 
    [SVCB-ECH] Schwartz, B. M., Bishop, M., and E. Nygren, "Bootstrapping
               TLS Encrypted ClientHello with DNS Service Bindings", Work
-              in Progress, Internet-Draft, draft-ietf-tls-svcb-ech-06,
-              21 October 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-tls-svcb-ech-06>.
+              in Progress, Internet-Draft, draft-ietf-tls-svcb-ech-08,
+              16 June 2025, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-tls-svcb-ech-08>.
 
 13.2.  Informative References
 
