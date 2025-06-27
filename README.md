@@ -1,17 +1,19 @@
+<!-- regenerate: on (set to off if you edit this file) -->
+
 # Happy Eyeballs Version 3: Better Connectivity Using Concurrency
 
-This is the working area for the HAPPY Working Group Internet-Draft, "Happy Eyeballs Version 3: Better Connectivity Using Concurrency".
+This is the working area for the IETF [HAPPY Working Group](https://datatracker.ietf.org/group/happy/documents/) Internet-Draft, "Happy Eyeballs Version 3: Better Connectivity Using Concurrency".
 
-* [Editor's Copy](https://ietf-wg-ohai.github.io/draft-happy-eyeballs-v3/#go.draft-pauly-happy-happyeyeballs-v3.html)
+* [Editor's Copy](https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/#go.draft-ietf-happy-happyeyeballs-v3.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-happy-happyeyeballs-v3)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-ietf-happy-happyeyeballs-v3)
-* [Compare Editor's Copy to Individual Draft](https://ietf-wg-ohai.github.io/draft-happy-eyeballs-v3/#go.draft-ietf-happy-happyeyeballs-v3.diff)
+* [Working Group Draft](https://datatracker.ietf.org/doc/html/draft-ietf-happy-happyeyeballs-v3)
+* [Compare Editor's Copy to Working Group Draft](https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/#go.draft-ietf-happy-happyeyeballs-v3.diff)
 
 
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/ietf-wg-ohai/draft-happy-eyeballs-v3/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/blob/main/CONTRIBUTING.md).
 
 Contributions can be made by creating pull requests.
 The GitHub interface supports creating pull requests using the Edit (✏) button.
