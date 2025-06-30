@@ -302,8 +302,8 @@ impaired.
 
 Note that the address selection described in this section only
 applies to destination addresses; Source Address Selection
-({{!RFC6724, Section 5}}) is performed once per destination address and
-is out of scope of this document.
+{{!RFC6724-UPDATE=I-D.ietf-6man-rfc6724-update, Section 3.2}} is performed once
+per destination address and is out of scope of this document.
 
 ## Sorting Based on Priority {#priority}
 
