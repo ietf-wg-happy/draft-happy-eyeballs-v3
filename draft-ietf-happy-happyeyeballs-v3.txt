@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 29 December 2025                                        N. Jaju
+Expires: 1 January 2026                                          N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                            27 June 2025
+                                                            30 June 2025
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 December 2025.
+   This Internet-Draft will expire on 1 January 2026.
 
 Copyright Notice
 
@@ -343,8 +343,8 @@ Table of Contents
 
    Note that the address selection described in this section only
    applies to destination addresses; Source Address Selection
-   ([RFC6724], Section 5) is performed once per destination address and
-   is out of scope of this document.
+   ([RFC6724-UPDATE], Section 3.2) is performed once per destination
+   address and is out of scope of this document.
 
 5.1.  Sorting Based on Priority
 
@@ -727,6 +727,14 @@ Table of Contents
               "Default Address Selection for Internet Protocol Version 6
               (IPv6)", RFC 6724, DOI 10.17487/RFC6724, September 2012,
               <https://www.rfc-editor.org/rfc/rfc6724>.
+
+   [RFC6724-UPDATE]
+              Buraglio, N., Chown, T., and J. Duncan, "Prioritizing
+              known-local IPv6 ULAs through address selection policy",
+              Work in Progress, Internet-Draft, draft-ietf-6man-rfc6724-
+              update-22, 24 June 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-6man-
+              rfc6724-update-22>.
 
    [RFC7050]  Savolainen, T., Korhonen, J., and D. Wing, "Discovery of
               the IPv6 Prefix Used for IPv6 Address Synthesis",
