@@ -452,7 +452,7 @@ While many IPv6 transition protocols have been standardized and
 deployed, most are transparent to client devices. Supporting IPv6-only
 networks often requires specific clide-side changes, especially when
 interacting with IPv4-only services. Two primary mechanisms for this
-are the combined use of NAT64 {{!RFC6146} with DNS64 {{!RFC6147}}}, or
+are the combined use of NAT64 {{!RFC6146}} with DNS64 {{!RFC6147}}, or
 leveraging NAT64 with a discovered PREF64 prefix {{!RFC8781}}.
 
 One possible way to handle these networks is for the client device
