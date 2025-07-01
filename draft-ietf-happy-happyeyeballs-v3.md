@@ -272,7 +272,7 @@ times (RTTs) for the routes to access each address, it SHOULD add a
 Destination Address Selection rule between rules 8 and 9 that prefers
 addresses with lower RTTs. If the client keeps track of which
 addresses it used in the past, it SHOULD add another Destination
-Address Selection rule between the RTT rule and rule 9, which prefers
+Address Selection rule between rule 9 and rule 10, which prefers
 used addresses over unused ones. This helps servers that use the
 client's IP address during authentication, as is the case for TCP
 Fast Open {{?RFC7413}} and some Hypertext Transport Protocol (HTTP)
