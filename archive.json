@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-29T02:05:47.050799+00:00",
+  "timestamp": "2025-07-01T02:06:34.962993+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -596,7 +596,7 @@
       "id": "I_kwDOKH7CuM519Q3y",
       "title": "Reference draft-ietf-6man-rfc6724-update",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/34",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -605,8 +605,8 @@
       "labels": [],
       "body": "See: https://datatracker.ietf.org/doc/draft-ietf-6man-rfc6724-update/",
       "createdAt": "2023-11-06T12:06:57Z",
-      "updatedAt": "2025-06-25T08:37:11Z",
-      "closedAt": null,
+      "updatedAt": "2025-06-30T23:51:35Z",
+      "closedAt": "2025-06-30T23:51:35Z",
       "comments": []
     },
     {
@@ -720,11 +720,13 @@
       "state": "OPEN",
       "author": "furry13",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "nidhijaju"
+      ],
       "labels": [],
       "body": "(copying from an email I sent to the authors)\r\n\r\nWith PREF64 being available, some networks might only provide PREF64 and do not use DNS64, as the latter has a number of disadvantages, such as breaking DNSSEC and not working if the host has custom DNS\r\nservers configured.\r\n\r\nSo do you think it's worth adding some text saying that some Ipv6-only\r\nor, more likely, IPv6-mostly networks might only deploy PREF64 w/o DNS64?\r\n\r\nSee https://www.ietf.org/archive/id/draft-link-v6ops-6mops-00.html#name-dns-vs-dns64",
       "createdAt": "2024-03-18T23:01:03Z",
-      "updatedAt": "2024-03-26T00:43:12Z",
+      "updatedAt": "2025-06-30T04:52:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -4830,6 +4832,48 @@
           "body": "",
           "createdAt": "2025-06-26T23:57:11Z",
           "updatedAt": "2025-06-26T23:57:11Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 80,
+      "id": "PR_kwDOKH7CuM6coJL5",
+      "title": "Update reference to RFC6724 for Source Address Selection",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/80",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/34.",
+      "createdAt": "2025-06-30T05:04:17Z",
+      "updatedAt": "2025-06-30T23:51:35Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "bb59f12ad589a890244892e2137a55eed9ccf002",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "6724-update-ref",
+      "headRefOid": "ebe938fb464e201325e404674d976df9023ef40d",
+      "closedAt": "2025-06-30T23:51:34Z",
+      "mergedAt": "2025-06-30T23:51:34Z",
+      "mergedBy": "nidhijaju",
+      "mergeCommit": {
+        "oid": "a3b71b43b0417e1b8ba45ead6295e07a43236950"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM6xMNmP",
+          "commit": {
+            "abbreviatedOid": "ebe938f"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-06-30T21:19:02Z",
+          "updatedAt": "2025-06-30T21:19:02Z",
           "comments": []
         }
       ]
