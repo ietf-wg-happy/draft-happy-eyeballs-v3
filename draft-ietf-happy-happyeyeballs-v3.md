@@ -84,26 +84,26 @@ itself obsoleted {{?RFC6555}}.
 
 The Happy Eyeballs algorithm of racing connections to resolved
 addresses has several stages to avoid delays to the user whenever
-possible, while preferring the use of IPv6. This document discusses
-how to handle DNS queries when starting a connection on a dual-stack
-client, how to create an ordered list of destination addresses to
-which to attempt connections, and how to race the connection
-attempts.
+possible, while respecting client priorities, such as preferring
+the use of IPv6 or the availability of protocols like HTTP/3 {{?HTTP3=RFC9114}} or 
+TLS Encrypted Client Hello {{!ECH=I-D.ietf-tls-esni}}. This document discusses
+how to initiate DNS queries when starting a connection, how to
+sort the list of destination addresses received from DNS answers,
+and how to race the connection attempts.
 
-As compared to {{HEV2}}, this document adds support for incorporating
-SVCB / HTTPS resource records (RRs)
-{{!SVCB=RFC9460}}. SVCB RRs provide alternative
-endpoints and associated information about protocol support, Encrypted
-ClientHello {{!ECH=I-D.ietf-tls-esni}} keys, address hints, among
-other relevant hints which may help speed up connection establishment
-and improve user privacy. Discovering protocol support during
-resolution, such as for HTTP/3 over QUIC {{?RFC9114}}, allows
+The major difference between the algorithm defined in this document
+and {{HEV2}} is the addition of support for SVCB / HTTPS resource
+records (RRs) {{!SVCB=RFC9460}}. SVCB RRs provide alternative
+endpoints and information about application protocol support, Encrypted
+ClientHello {{ECH}} keys, address hints, and other relevant details
+about the services being accessed. Discovering protocol support during
+resolution, such as for HTTP/3 over QUIC {{HTTP3}}, allows
 upgrading between protocols on the current connection attempts,
 instead of waiting for subsequent attempts to use information from
 other discovery mechanisms such as HTTP Alternative Services
 {{?AltSvc=RFC7838}}. These records can be queried along with A and
 AAAA records, and the updated algorithm defines how to handle SVCB
-responses to improve address and protocol selection.
+responses to improve connection establishment.
 
 #  Conventions and Definitions
 
