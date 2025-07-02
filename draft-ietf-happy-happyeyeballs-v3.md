@@ -91,8 +91,8 @@ which to attempt connections, and how to race the connection
 attempts.
 
 As compared to {{HEV2}}, this document adds support for incorporating
-SVCB / HTTPS resource records (RRs)
-{{!SVCB=RFC9460}}. SVCB RRs provide alternative
+SVCB / HTTPS resource records
+{{!SVCB=RFC9460}}. SVCB records provide alternative
 endpoints and associated information about protocol support, Encrypted
 ClientHello {{!ECH=I-D.ietf-tls-esni}} keys, address hints, among
 other relevant hints which may help speed up connection establishment
@@ -148,7 +148,7 @@ and asynchronously handles the answers.
 
 ## Sending DNS Queries
 
-Clients first need to determine which DNS resource records (RRs)
+Clients first need to determine which DNS resource records
 they will include in queries for a named host. When a client
 has both IPv4 and IPv6 connectivity, it needs to send out queries for
 both AAAA and A records. On a network with only IPv4 connectivity,
@@ -253,8 +253,8 @@ delayed AAAA, delayed SVCB, SVCB hints providing early answers)
 
 ## Handling New Answers {#new-answers}
 
-If new positive responses arrive while connection attempts are in progress,
-but before any connection has been established, then the newly
+If new records arrive while connection attempts are in progress,
+but before any connection has been established, then any newly
 received addresses are incorporated into the list of available candidate
 addresses (see {{changes}}) and the process of connection attempts will
 continue with the new addresses added, until one connection is
@@ -300,7 +300,7 @@ Note that the following sorting steps are an incremental sort, meaning
 that the client SHOULD sort within each sorted group for each
 incremental step.
 
-If any of the answers were from SVCB RRs, they SHOULD be sorted ahead
+If any of the answers were from SVCB records, they SHOULD be sorted ahead
 of any answers that were not associated with a SVCB record.
 
 If the client supports TLS Encrypted Client Hello (ECH) discovery through
@@ -362,19 +362,19 @@ once per destination address and is out of scope of this document.
 
 ## Sorting Based on Priority {#priority}
 
-SVCB {{SVCB}} RRs indicate a priority for each ServiceMode response.
-This priority applies to any IPv4 or IPv6 address hints in the RR
+SVCB {{SVCB}} records indicate a priority for each ServiceMode response.
+This priority applies to any IPv4 or IPv6 address hints in the record
 itself, as well as any addresses received on A or AAAA queries for the
-name in the ServiceMode RR. The priority in a ServiceMode SVCB RR is
+name in the ServiceMode record. The priority in a SVCB ServiceMode record is
 always greater than 0.
 
 SVCB answers with the lowest numerical value (such as 1) are sorted
 first, and answers with higher numerical values are sorted later.
 
-Note that a SVCB RR with the TargetName "." applies to the owner
-name in the RR, and the priority of that SVCB RR applies to
-any A or AAAA RRs for the same owner name. These answers are
-sorted according to that SVCB RR's priority.
+Note that a SVCB record with the TargetName "." applies to the owner
+name in the record, and the priority of that SVCB record applies to
+any A or AAAA records for the same owner name. These answers are
+sorted according to that SVCB record's priority.
 
 # Connection Attempts {#connections}
 
@@ -440,28 +440,28 @@ single handshake to complete.
 
 While transport layer handshakes generally do not have restrictions on
 attempts to establish a connection, some cryptographic handshakes may
-be dependent on ServiceMode SVCB RRs and could impose limitations on
+be dependent on SVCB ServiceMode records and could impose limitations on
 establishing a connection.  For instance, ECH-capable clients may
-become SVCB-reliant clients ({{Section 3 of SVCB}}) when SVCB RRs
+become SVCB-reliant clients ({{Section 3 of SVCB}}) when SVCB records
 contain the "ech" SvcParamKey {{SVCB-ECH}}. If the
 client is either an SVCB-reliant client or a SVCB-optional client that
 might switch to SVCB-reliant connection establishment during the
-process, the client MUST wait for SVCB RRs before proceeding with the
+process, the client MUST wait for SVCB records before proceeding with the
 cryptographic handshake.
 
 ## Handling Application Layer Protocol Negotiation (ALPN)
 
-The `alpn` and `no-default-alpn` SvcParamKeys in SVCB RRs indicate the
+The `alpn` and `no-default-alpn` SvcParamKeys in SVCB records indicate the
 "SVCB ALPN set," which specifies the underlying transport protocols
 supported by the associated service endpoint. When the client requests
-SVCB RRs, it SHOULD perform the procedure specified in {{Section 7.1.2
+SVCB records, it SHOULD perform the procedure specified in {{Section 7.1.2
 of SVCB}} to determine the underlying transport protocols that both
 the client and the service endpoint support. The client SHOULD NOT
 attempt to make a connection to a service endpoint whose SVCB ALPN set
 does not contain any protocols that the client supports. For example,
 suppose the client is an HTTP client that only supports TCP-based
 versions such as HTTP/1.1 and HTTP/2, and it receives the following
-HTTPS RR:
+HTTPS record:
 
 ~~~
  example.com. 60 IN HTTPS 1 svc1.example.com. (
@@ -470,11 +470,11 @@ HTTPS RR:
 
 In this case, attempting a connection to 2001:db8::2 or any other
 address resolved for `svc1.example.com` would be incorrect because the
-RR indicates that `svc1.example.com` only supports HTTP/3, based on
+record indicates that `svc1.example.com` only supports HTTP/3, based on
 the ALPN value of "h3".
 
 If the client is an HTTP client that supports both Alt-Svc
-{{?AltSvc=RFC7838}} and SVCB (HTTPS) RRs, the client SHOULD ensure
+{{?AltSvc=RFC7838}} and SVCB (HTTPS) records, the client SHOULD ensure
 that connection attempts are consistent with both the Alt-Svc
 parameters and the SVCB ALPN set, as specified in {{Section 9.3 of
 SVCB}}.
@@ -566,7 +566,7 @@ While an algorithm complying with the other sections of this document
 would correctly handle such hostnames on a dual-stack network, they
 will not necessarily function correctly on IPv6-only networks with
 NAT64 and DNS64. Since DNS64 recursive resolvers rely on the
-authoritative name servers sending negative ("no error no answer")
+authoritative name servers sending negative (no error, no data)
 responses for AAAA records in order to synthesize, they will not
 synthesize records for these particular hostnames and will instead
 pass through the broken AAAA record.
@@ -611,8 +611,8 @@ provided by the application ({{literals}}).
 The values that may be configured as defaults on a client for use in
 Happy Eyeballs are as follows:
 
-- Resolution Delay ({{resolution}}): The time to wait for a AAAA response
-after receiving an A response. Recommended to be 50 milliseconds.
+- Resolution Delay ({{resolution}}): The time to wait for a AAAA record
+after receiving an A record. Recommended to be 50 milliseconds.
 
 - Preferred Protocol Combination Count ({{sorting}}): The number of
 addresses belonging to the preferred address family (such as IPv6) using
