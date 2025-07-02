@@ -1324,8 +1324,8 @@ client, how to create an ordered list of destination addresses to
 which to attempt connections, and how to race the connection
 attempts.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">As compared to <span>[<a href="#HEV2" class="cite xref">HEV2</a>]</span>, this document adds support for incorporating
-SVCB / HTTPS resource records (RRs)
-<span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span>. SVCB RRs provide alternative
+SVCB / HTTPS resource records
+<span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span>. SVCB records provide alternative
 endpoints and associated information about protocol support, Encrypted
 ClientHello <span>[<a href="#ECH" class="cite xref">ECH</a>]</span> keys, address hints, among
 other relevant hints which may help speed up connection establishment
@@ -1400,7 +1400,7 @@ and asynchronously handles the answers.<a href="#section-4-1" class="pilcrow">¶
         <h3 id="name-sending-dns-queries">
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-sending-dns-queries" class="section-name selfRef">Sending DNS Queries</a>
         </h3>
-<p id="section-4.1-1">Clients first need to determine which DNS resource records (RRs)
+<p id="section-4.1-1">Clients first need to determine which DNS resource records
 they will include in queries for a named host. When a client
 has both IPv4 and IPv6 connectivity, it needs to send out queries for
 both AAAA and A records. On a network with only IPv4 connectivity,
@@ -1527,8 +1527,8 @@ delayed AAAA, delayed SVCB, SVCB hints providing early answers)<a href="#section
         <h3 id="name-handling-new-answers">
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-handling-new-answers" class="section-name selfRef">Handling New Answers</a>
         </h3>
-<p id="section-4.3-1">If new positive responses arrive while connection attempts are in progress,
-but before any connection has been established, then the newly
+<p id="section-4.3-1">If new records arrive while connection attempts are in progress,
+but before any connection has been established, then any newly
 received addresses are incorporated into the list of available candidate
 addresses (see <a href="#changes" class="auto internal xref">Section 7</a>) and the process of connection attempts will
 continue with the new addresses added, until one connection is
@@ -1580,7 +1580,7 @@ IPv6 addresses.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">Note that the following sorting steps are an incremental sort, meaning
 that the client <span class="bcp14">SHOULD</span> sort within each sorted group for each
 incremental step.<a href="#section-5-2" class="pilcrow">¶</a></p>
-<p id="section-5-3">If any of the answers were from SVCB RRs, they <span class="bcp14">SHOULD</span> be sorted ahead
+<p id="section-5-3">If any of the answers were from SVCB records, they <span class="bcp14">SHOULD</span> be sorted ahead
 of any answers that were not associated with a SVCB record.<a href="#section-5-3" class="pilcrow">¶</a></p>
 <p id="section-5-4">If the client supports TLS Encrypted Client Hello (ECH) discovery through
 SVCB records <span>[<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span>, depending on the
@@ -1637,17 +1637,17 @@ once per destination address and is out of scope of this document.<a href="#sect
         <h3 id="name-sorting-based-on-priority">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-sorting-based-on-priority" class="section-name selfRef">Sorting Based on Priority</a>
         </h3>
-<p id="section-5.1-1">SVCB <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span> RRs indicate a priority for each ServiceMode response.
-This priority applies to any IPv4 or IPv6 address hints in the RR
+<p id="section-5.1-1">SVCB <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span> records indicate a priority for each ServiceMode response.
+This priority applies to any IPv4 or IPv6 address hints in the record
 itself, as well as any addresses received on A or AAAA queries for the
-name in the ServiceMode RR. The priority in a ServiceMode SVCB RR is
+name in the ServiceMode record. The priority in a SVCB ServiceMode record is
 always greater than 0.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <p id="section-5.1-2">SVCB answers with the lowest numerical value (such as 1) are sorted
 first, and answers with higher numerical values are sorted later.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
-<p id="section-5.1-3">Note that a SVCB RR with the TargetName "." applies to the owner
-name in the RR, and the priority of that SVCB RR applies to
-any A or AAAA RRs for the same owner name. These answers are
-sorted according to that SVCB RR's priority.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.1-3">Note that a SVCB record with the TargetName "." applies to the owner
+name in the record, and the priority of that SVCB record applies to
+any A or AAAA records for the same owner name. These answers are
+sorted according to that SVCB record's priority.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1717,13 +1717,13 @@ handshake in their main handshakes, and thus only need to wait for a
 single handshake to complete.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
 <p id="section-6.1-3">While transport layer handshakes generally do not have restrictions on
 attempts to establish a connection, some cryptographic handshakes may
-be dependent on ServiceMode SVCB RRs and could impose limitations on
+be dependent on SVCB ServiceMode records and could impose limitations on
 establishing a connection.  For instance, ECH-capable clients may
-become SVCB-reliant clients (<span><a href="https://rfc-editor.org/rfc/rfc9460#section-3" class="relref">Section 3</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>) when SVCB RRs
+become SVCB-reliant clients (<span><a href="https://rfc-editor.org/rfc/rfc9460#section-3" class="relref">Section 3</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>) when SVCB records
 contain the "ech" SvcParamKey <span>[<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span>. If the
 client is either an SVCB-reliant client or a SVCB-optional client that
 might switch to SVCB-reliant connection establishment during the
-process, the client <span class="bcp14">MUST</span> wait for SVCB RRs before proceeding with the
+process, the client <span class="bcp14">MUST</span> wait for SVCB records before proceeding with the
 cryptographic handshake.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1732,16 +1732,16 @@ cryptographic handshake.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
         <h3 id="name-handling-application-layer-">
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-handling-application-layer-" class="section-name selfRef">Handling Application Layer Protocol Negotiation (ALPN)</a>
         </h3>
-<p id="section-6.2-1">The <code>alpn</code> and <code>no-default-alpn</code> SvcParamKeys in SVCB RRs indicate the
+<p id="section-6.2-1">The <code>alpn</code> and <code>no-default-alpn</code> SvcParamKeys in SVCB records indicate the
 "SVCB ALPN set," which specifies the underlying transport protocols
 supported by the associated service endpoint. When the client requests
-SVCB RRs, it <span class="bcp14">SHOULD</span> perform the procedure specified in <span><a href="https://rfc-editor.org/rfc/rfc9460#section-7.1.2" class="relref">Section 7.1.2</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span> to determine the underlying transport protocols that both
+SVCB records, it <span class="bcp14">SHOULD</span> perform the procedure specified in <span><a href="https://rfc-editor.org/rfc/rfc9460#section-7.1.2" class="relref">Section 7.1.2</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span> to determine the underlying transport protocols that both
 the client and the service endpoint support. The client <span class="bcp14">SHOULD NOT</span>
 attempt to make a connection to a service endpoint whose SVCB ALPN set
 does not contain any protocols that the client supports. For example,
 suppose the client is an HTTP client that only supports TCP-based
 versions such as HTTP/1.1 and HTTP/2, and it receives the following
-HTTPS RR:<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+HTTPS record:<a href="#section-6.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6.2-2">
 <pre>
  example.com. 60 IN HTTPS 1 svc1.example.com. (
@@ -1750,10 +1750,10 @@ HTTPS RR:<a href="#section-6.2-1" class="pilcrow">¶</a></p>
 </div>
 <p id="section-6.2-3">In this case, attempting a connection to 2001:db8::2 or any other
 address resolved for <code>svc1.example.com</code> would be incorrect because the
-RR indicates that <code>svc1.example.com</code> only supports HTTP/3, based on
+record indicates that <code>svc1.example.com</code> only supports HTTP/3, based on
 the ALPN value of "h3".<a href="#section-6.2-3" class="pilcrow">¶</a></p>
 <p id="section-6.2-4">If the client is an HTTP client that supports both Alt-Svc
-<span>[<a href="#AltSvc" class="cite xref">AltSvc</a>]</span> and SVCB (HTTPS) RRs, the client <span class="bcp14">SHOULD</span> ensure
+<span>[<a href="#AltSvc" class="cite xref">AltSvc</a>]</span> and SVCB (HTTPS) records, the client <span class="bcp14">SHOULD</span> ensure
 that connection attempts are consistent with both the Alt-Svc
 parameters and the SVCB ALPN set, as specified in <span><a href="https://rfc-editor.org/rfc/rfc9460#section-9.3" class="relref">Section 9.3</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>.<a href="#section-6.2-4" class="pilcrow">¶</a></p>
 </section>
@@ -1858,7 +1858,7 @@ ports. These can be, for example, caused by:<a href="#section-8.2-1" class="pilc
 would correctly handle such hostnames on a dual-stack network, they
 will not necessarily function correctly on IPv6-only networks with
 NAT64 and DNS64. Since DNS64 recursive resolvers rely on the
-authoritative name servers sending negative ("no error no answer")
+authoritative name servers sending negative (no error, no data)
 responses for AAAA records in order to synthesize, they will not
 synthesize records for these particular hostnames and will instead
 pass through the broken AAAA record.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
@@ -1913,8 +1913,8 @@ provided by the application (<a href="#literals" class="auto internal xref">Sect
 Happy Eyeballs are as follows:<a href="#section-9-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-9-2.1">
-          <p id="section-9-2.1.1">Resolution Delay (<a href="#resolution" class="auto internal xref">Section 4</a>): The time to wait for a AAAA response
-after receiving an A response. Recommended to be 50 milliseconds.<a href="#section-9-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-9-2.1.1">Resolution Delay (<a href="#resolution" class="auto internal xref">Section 4</a>): The time to wait for a AAAA record
+after receiving an A record. Recommended to be 50 milliseconds.<a href="#section-9-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-9-2.2">
           <p id="section-9-2.2.1">Preferred Protocol Combination Count (<a href="#sorting" class="auto internal xref">Section 5</a>): The number of
