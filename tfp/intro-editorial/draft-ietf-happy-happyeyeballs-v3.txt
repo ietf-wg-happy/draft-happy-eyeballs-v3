@@ -133,7 +133,7 @@ Table of Contents
 
    The major difference between the algorithm defined in this document
    and [HEV2] is the addition of support for SVCB / HTTPS resource
-   records (RRs) [SVCB].  SVCB RRs provide alternative endpoints and
+   records [SVCB].  SVCB records provide alternative endpoints and
    information about application protocol support, Encrypted ClientHello
    [ECH] keys, address hints, and other relevant details about the
    services being accessed.  Discovering protocol support during
@@ -188,13 +188,13 @@ Table of Contents
    immediately followed by the A query.
 
    Additionally, if the client also wants to receive SVCB / HTTPS
-   resource records (RRs) [SVCB], it SHOULD issue the SVCB query
-   immediately before the AAAA and A queries (prioritizing the SVCB
-   query since it can also include address hints).  If the client has
-   only one of IPv4 or IPv6 connectivity, it still issues the SVCB query
-   prior to whichever AAAA or A query is appropriate.  Note that upon
-   receiving a SVCB answer, the client might need to issue futher AAAA
-   and/or A queries to resolve the service name included in the RR.
+   resource records [SVCB], it SHOULD issue the SVCB query immediately
+   before the AAAA and A queries (prioritizing the SVCB query since it
+   can also include address hints).  If the client has only one of IPv4
+   or IPv6 connectivity, it still issues the SVCB query prior to
+   whichever AAAA or A query is appropriate.  Note that upon receiving a
+   SVCB answer, the client might need to issue futher AAAA and/or A
+   queries to resolve the service name included in the record.
 
    Implementations SHOULD NOT wait for all answers to return before
    attempting connection establishment.  If one query fails to return or
@@ -206,46 +206,45 @@ Table of Contents
    separate synchronous queries, each on a different thread.
 
    The algorithm for acting upon received answers depends on whether the
-   client sent out queries for SVCB RRs.
+   client sent out queries for SVCB records.
 
-   If the client did not request SVCB RRs:
+   If the client did not request SVCB records:
 
-   *  If a positive AAAA response (a response containing at least one
-      valid AAAA RR) is received first, the first IPv6 connection
-      attempt is immediately started.
+   *  If a valid AAAA record is received first, the first IPv6
+      connection attempt is immediately started.
 
-   *  If a positive A response is received first (which might be due to
-      reordering), the client SHOULD wait a short time for the AAAA
-      response to ensure that preference is given to IPv6, since it is
-      common for the AAAA response to follow the A response by a few
+   *  If a valid A record is received first (which might be due to
+      reordering), the client SHOULD wait a short time to receive AAAA
+      records to ensure that preference is given to IPv6, since it is
+      common to receive AAAA records following A records by a few
       milliseconds.  This delay is referred to as the "Resolution
       Delay".  If a negative AAAA response (no error, no data) is
-      received within the Resolution Delay period or the AAAA response
-      has not been received by the end of the Resolution Delay period,
-      the client SHOULD proceed to sorting addresses (see Section 5) and
+      received within the Resolution Delay period or a AAAA record has
+      not been received by the end of the Resolution Delay period, the
+      client SHOULD proceed to sorting addresses (see Section 5) and
       staggered connection attempts (see Section 6) using any IPv4
       addresses received so far.
 
-   If the client did request SVCB RRs:
+   If the client did request SVCB records:
 
-   *  If the client receives any positive response back (containing a
-      valid AAAA, A, or SVCB ServiceMode RR), it starts the Resolution
-      Delay timer, which is run until both the AAAA and SVCB ServiceMode
-      responses are received, or a SVCB response is received that also
-      includes at least one address in the ipv6hint parameter.  Once a
-      SVCB response and at least one IPv6 address have been received, or
-      the timer expires, the client proceeds with the process of sorting
-      addresses and staggered connection attempts.
+   *  If the client receives any valid AAAA, A, or SVCB ServiceMode
+      records, it starts the Resolution Delay timer, which is run until
+      both the AAAA and SVCB ServiceMode responses are received, or a
+      SVCB response is received that also includes at least one address
+      in the ipv6hint parameter.  Once a SVCB response and at least one
+      IPv6 address have been received, or the timer expires, the client
+      proceeds with the process of sorting addresses and staggered
+      connection attempts.
 
    For both variations of the algorithm, the RECOMMENDED value for the
    Resolution Delay is 50 milliseconds.
 
-   If new positive responses arrive while connection attempts are in
-   progress, but before any connection has been established, then the
-   newly received addresses are incorporated into the list of available
-   candidate addresses (see Section 7) and the process of connection
-   attempts will continue with the new addresses added, until one
-   connection is established.
+   If new records arrive while connection attempts are in progress, but
+   before any connection has been established, then any newly received
+   addresses are incorporated into the list of available candidate
+   addresses (see Section 7) and the process of connection attempts will
+   continue with the new addresses added, until one connection is
+   established.
 
 4.1.  Handling Multiple DNS Server Addresses
 
@@ -287,8 +286,8 @@ Table of Contents
    meaning that the client SHOULD sort within each sorted group for each
    incremental step.
 
-   If any of the answers were from SVCB RRs, they SHOULD be sorted ahead
-   of any answers that were not associated with a SVCB record.
+   If any of the answers were from SVCB records, they SHOULD be sorted
+   ahead of any answers that were not associated with a SVCB record.
 
    If the client supports TLS Encrypted Client Hello (ECH) discovery
    through SVCB records [SVCB-ECH], depending on the client's preference
@@ -349,19 +348,19 @@ Table of Contents
 
 5.1.  Sorting Based on Priority
 
-   SVCB [SVCB] RRs indicate a priority for each ServiceMode response.
-   This priority applies to any IPv4 or IPv6 address hints in the RR
-   itself, as well as any addresses received on A or AAAA queries for
-   the name in the ServiceMode RR.  The priority in a ServiceMode SVCB
-   RR is always greater than 0.
+   SVCB [SVCB] records indicate a priority for each ServiceMode
+   response.  This priority applies to any IPv4 or IPv6 address hints in
+   the record itself, as well as any addresses received on A or AAAA
+   queries for the name in the ServiceMode record.  The priority in a
+   SVCB ServiceMode record is always greater than 0.
 
    SVCB answers with the lowest numerical value (such as 1) are sorted
    first, and answers with higher numerical values are sorted later.
 
-   Note that a SVCB RR with the TargetName "." applies to the owner name
-   in the RR, and the priority of that SVCB RR applies to any A or AAAA
-   RRs for the same owner name.  These answers are sorted according to
-   that SVCB RR's priority.
+   Note that a SVCB record with the TargetName "." applies to the owner
+   name in the record, and the priority of that SVCB record applies to
+   any A or AAAA records for the same owner name.  These answers are
+   sorted according to that SVCB record's priority.
 
 6.  Connection Attempts
 
@@ -428,39 +427,39 @@ Table of Contents
 
    While transport layer handshakes generally do not have restrictions
    on attempts to establish a connection, some cryptographic handshakes
-   may be dependent on ServiceMode SVCB RRs and could impose limitations
-   on establishing a connection.  For instance, ECH-capable clients may
-   become SVCB-reliant clients (Section 3 of [SVCB]) when SVCB RRs
-   contain the "ech" SvcParamKey [SVCB-ECH].  If the client is either an
-   SVCB-reliant client or a SVCB-optional client that might switch to
-   SVCB-reliant connection establishment during the process, the client
-   MUST wait for SVCB RRs before proceeding with the cryptographic
-   handshake.
+   may be dependent on SVCB ServiceMode records and could impose
+   limitations on establishing a connection.  For instance, ECH-capable
+   clients may become SVCB-reliant clients (Section 3 of [SVCB]) when
+   SVCB records contain the "ech" SvcParamKey [SVCB-ECH].  If the client
+   is either an SVCB-reliant client or a SVCB-optional client that might
+   switch to SVCB-reliant connection establishment during the process,
+   the client MUST wait for SVCB records before proceeding with the
+   cryptographic handshake.
 
 6.2.  Handling Application Layer Protocol Negotiation (ALPN)
 
-   The alpn and no-default-alpn SvcParamKeys in SVCB RRs indicate the
-   "SVCB ALPN set," which specifies the underlying transport protocols
-   supported by the associated service endpoint.  When the client
-   requests SVCB RRs, it SHOULD perform the procedure specified in
-   Section 7.1.2 of [SVCB] to determine the underlying transport
-   protocols that both the client and the service endpoint support.  The
-   client SHOULD NOT attempt to make a connection to a service endpoint
-   whose SVCB ALPN set does not contain any protocols that the client
-   supports.  For example, suppose the client is an HTTP client that
-   only supports TCP-based versions such as HTTP/1.1 and HTTP/2, and it
-   receives the following HTTPS RR:
+   The alpn and no-default-alpn SvcParamKeys in SVCB records indicate
+   the "SVCB ALPN set," which specifies the underlying transport
+   protocols supported by the associated service endpoint.  When the
+   client requests SVCB records, it SHOULD perform the procedure
+   specified in Section 7.1.2 of [SVCB] to determine the underlying
+   transport protocols that both the client and the service endpoint
+   support.  The client SHOULD NOT attempt to make a connection to a
+   service endpoint whose SVCB ALPN set does not contain any protocols
+   that the client supports.  For example, suppose the client is an HTTP
+   client that only supports TCP-based versions such as HTTP/1.1 and
+   HTTP/2, and it receives the following HTTPS record:
 
     example.com. 60 IN HTTPS 1 svc1.example.com. (
         alpn="h3" no-default-alpn ipv6hint=2001:db8::2 )
 
    In this case, attempting a connection to 2001:db8::2 or any other
    address resolved for svc1.example.com would be incorrect because the
-   RR indicates that svc1.example.com only supports HTTP/3, based on the
-   ALPN value of "h3".
+   record indicates that svc1.example.com only supports HTTP/3, based on
+   the ALPN value of "h3".
 
    If the client is an HTTP client that supports both Alt-Svc [AltSvc]
-   and SVCB (HTTPS) RRs, the client SHOULD ensure that connection
+   and SVCB (HTTPS) records, the client SHOULD ensure that connection
    attempts are consistent with both the Alt-Svc parameters and the SVCB
    ALPN set, as specified in Section 9.3 of [SVCB].
 
@@ -552,7 +551,7 @@ Table of Contents
    would correctly handle such hostnames on a dual-stack network, they
    will not necessarily function correctly on IPv6-only networks with
    NAT64 and DNS64.  Since DNS64 recursive resolvers rely on the
-   authoritative name servers sending negative ("no error no answer")
+   authoritative name servers sending negative (no error, no data)
    responses for AAAA records in order to synthesize, they will not
    synthesize records for these particular hostnames and will instead
    pass through the broken AAAA record.
@@ -597,8 +596,8 @@ Table of Contents
    The values that may be configured as defaults on a client for use in
    Happy Eyeballs are as follows:
 
-   *  Resolution Delay (Section 4): The time to wait for a AAAA response
-      after receiving an A response.  Recommended to be 50 milliseconds.
+   *  Resolution Delay (Section 4): The time to wait for a AAAA record
+      after receiving an A record.  Recommended to be 50 milliseconds.
 
    *  Preferred Protocol Combination Count (Section 5): The number of
       addresses belonging to the preferred address family (such as IPv6)
