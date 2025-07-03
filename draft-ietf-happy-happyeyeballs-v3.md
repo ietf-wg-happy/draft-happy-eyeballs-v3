@@ -462,7 +462,7 @@ requires per-packet translation if the application is using IPv4
 literals and does not encourage client application software to support
 native IPv6. On platforms that do not support 464XLAT, the Happy
 Eyeballs engine SHOULD follow the recommendations in this section to
-properly support IPv6-mostly and IPv6-only networks.
+properly support IPv6-mostly ({{?V6-MOSTLY=I-D.ietf-v6ops-6mops}}) and IPv6-only networks.
 
 The features described in this section SHOULD only be enabled when the
 host detects an IPv6-mostly or IPv6-only network. A simple heuristic
@@ -490,7 +490,7 @@ Advertisements {{!RFC8781}}.
 
 With PREF64 available, networks might choose to not deploy DNS64, as
 the latter has a number of disadvantages (see
-{{?V6-MOSTLY=I-D.ietf-v6ops-6mops, Section 4.3.4}}). To ensure
+{{V6-MOSTLY, Section 4.3.4}}). To ensure
 compatibility with such networks, if PREF64 is available, clients
 SHOULD send an A query in addition to an AAAA query for a given
 hostname. This allows the client to receive any existing IPv4 A
