@@ -95,7 +95,7 @@ The major difference between the algorithm defined in this document
 and {{HEV2}} is the addition of support for SVCB / HTTPS resource
 records {{!SVCB=RFC9460}}. SVCB records provide alternative
 endpoints and information about application protocol support, Encrypted
-ClientHello {{ECH}} keys, address hints, and other relevant details
+Client Hello {{ECH}} keys, address hints, and other relevant details
 about the services being accessed. Discovering protocol support during
 resolution, such as for HTTP/3 over QUIC {{HTTP3}}, allows
 upgrading between protocols on the current connection attempts,
