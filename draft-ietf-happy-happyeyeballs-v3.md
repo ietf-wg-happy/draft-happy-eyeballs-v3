@@ -400,7 +400,7 @@ If grouping addresses by application or security requirements
 ({{application-group}}) produced multiple groups, the application
 SHOULD start with connection attempts to the most preferred option.
 The policy for attempting any addresses outside of the most preferred
-group is up to the client implementation.
+group is up to the client implementation and out of scope for this document.
 
 If grouping addresses by service ({{service-group}}) produced multiple
 groups, all of the addresses of the first group SHOULD be started
