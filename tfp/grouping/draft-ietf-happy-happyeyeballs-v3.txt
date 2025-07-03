@@ -443,7 +443,7 @@ Table of Contents
    (Section 5.1) produced multiple groups, the application SHOULD start
    with connection attempts to the most preferred option.  The policy
    for attempting any addresses outside of the most preferred group is
-   up to the client implementation.
+   up to the client implementation and out of scope for this document.
 
    If grouping addresses by service (Section 5.2) produced multiple
    groups, all of the addresses of the first group SHOULD be started
