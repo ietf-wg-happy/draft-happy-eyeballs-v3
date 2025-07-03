@@ -486,18 +486,7 @@ synthesis.
 
 When an IPv4 address is passed into the Happy Eyeballs implementation
 instead of a hostname, it SHOULD use PREF64s received from Router
-Advertisements {{!RFC8781}}. If the network does not provide PREF64s,
-the implementation SHOULD query the network for the NAT64 prefix using
-"Discovery of the IPv6 Prefix Used for IPv6 Address Synthesis"
-{{!RFC7050}}. It then synthesizes an appropriate IPv6 address (or
-several) using the encoding described in "IPv6 Addressing of IPv4/
-IPv6 Translators" {{!RFC6052}}. The synthesized addresses are then
-inserted into the list of addresses as if they were results from DNS A
-queries; connection attempts follow the algorithm described above (see
-{{connections}}).
-
-Such translation also applies to any IPv4 addresses received in A
-records and IPv4 address hints received in SVCB records.
+Advertisements {{!RFC8781}}.
 
 With PREF64 available, networks might choose to not deploy DNS64, as
 the latter has a number of disadvantages (see
@@ -508,12 +497,26 @@ hostname. This allows the client to receive any existing IPv4 A
 records and perform local NAT64 address synthesis, eliminating the
 network's need to run DNS64.
 
+If the network does not provide PREF64s, the implementation SHOULD
+query the network for the NAT64 prefix using "Discovery of the IPv6
+Prefix Used for IPv6 Address Synthesis" {{!RFC7050}}. It then
+synthesizes an appropriate IPv6 address (or several) using the
+encoding described in "IPv6 Addressing of IPv4/ IPv6 Translators"
+{{!RFC6052}}. The synthesized addresses are then inserted into the
+list of addresses as if they were results from DNS A queries;
+connection attempts follow the algorithm described above (see
+{{connections}}).
+
+Such translation also applies to any IPv4 addresses received in A
+records and IPv4 address hints received in SVCB records.
+
 ## Supporting DNS64 {#dns64}
 
-If PREF64 is not available, clients SHOULD assume the network is
-relying on DNS64 for IPv4-to-IPv6 address synthesis. In this scenario,
-clients will typically only receive AAAA records from DNS queries, as
-DNS64 servers synthese these records for IPv4-only domains.
+If PREF64 is not available and the NAT64 prefix cannot be discovered,
+clients SHOULD assume the network is relying on DNS64 for IPv4-to-IPv6
+address synthesis. In this scenario, clients will typically only
+receive AAAA records from DNS queries, as DNS64 servers synthese these
+records for IPv4-only domains.
 
 ## Hostnames with Broken AAAA Records {#broken}
 
