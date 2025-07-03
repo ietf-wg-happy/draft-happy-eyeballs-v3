@@ -84,26 +84,26 @@ itself obsoleted {{?RFC6555}}.
 
 The Happy Eyeballs algorithm of racing connections to resolved
 addresses has several stages to avoid delays to the user whenever
-possible, while preferring the use of IPv6. This document discusses
-how to handle DNS queries when starting a connection on a dual-stack
-client, how to create an ordered list of destination addresses to
-which to attempt connections, and how to race the connection
-attempts.
+possible, while respecting client priorities, such as preferring
+the use of IPv6 or the availability of protocols like HTTP/3 {{?HTTP3=RFC9114}} and
+TLS Encrypted Client Hello {{!ECH=I-D.ietf-tls-esni}}. This document discusses
+how to initiate DNS queries when starting a connection, how to
+sort the list of destination addresses received from DNS answers,
+and how to race the connection attempts.
 
-As compared to {{HEV2}}, this document adds support for incorporating
-SVCB / HTTPS resource records
-{{!SVCB=RFC9460}}. SVCB records provide alternative
-endpoints and associated information about protocol support, Encrypted
-ClientHello {{!ECH=I-D.ietf-tls-esni}} keys, address hints, among
-other relevant hints which may help speed up connection establishment
-and improve user privacy. Discovering protocol support during
-resolution, such as for HTTP/3 over QUIC {{?RFC9114}}, allows
+The major difference between the algorithm defined in this document
+and {{HEV2}} is the addition of support for SVCB / HTTPS resource
+records {{!SVCB=RFC9460}}. SVCB records provide alternative
+endpoints and information about application protocol support, Encrypted
+Client Hello {{ECH}} keys, address hints, and other relevant details
+about the services being accessed. Discovering protocol support during
+resolution, such as for HTTP/3 over QUIC {{HTTP3}}, allows
 upgrading between protocols on the current connection attempts,
 instead of waiting for subsequent attempts to use information from
 other discovery mechanisms such as HTTP Alternative Services
 {{?AltSvc=RFC7838}}. These records can be queried along with A and
 AAAA records, and the updated algorithm defines how to handle SVCB
-responses to improve address and protocol selection.
+responses to improve connection establishment.
 
 #  Conventions and Definitions
 
@@ -501,52 +501,77 @@ If an address is added to the list, it should be sorted into the list
 of addresses not yet attempted according to the rules above (see
 {{sorting}}).
 
-# Supporting IPv6-Only Networks with NAT64 and DNS64 {#v6only}
+# Supporting IPv6-Mostly and IPv6-Only Networks {#v6only}
 
 While many IPv6 transition protocols have been standardized and
-deployed, most are transparent to client devices. The combined use
-of NAT64 {{!RFC6146}} and DNS64 {{!RFC6147}} is a popular solution that is
-being deployed and requires changes in client devices. One possible
-way to handle these networks is for the client device networking
-stack to implement 464XLAT {{?RFC6877}}. 464XLAT has the advantage of
-not requiring changes to user space software; however, it requires
-per-packet translation if the application is using IPv4 literals and
-does not encourage client application software to support native
-IPv6. On platforms that do not support 464XLAT, the Happy Eyeballs
-engine SHOULD follow the recommendations in this section to properly
-support IPv6-only networks with NAT64 and DNS64.
+deployed, most are transparent to client devices. Supporting IPv6-only
+networks often requires specific clide-side changes, especially when
+interacting with IPv4-only services. Two primary mechanisms for this
+are the combined use of NAT64 {{!RFC6146}} with DNS64 {{!RFC6147}}, or
+leveraging NAT64 with a discovered PREF64 prefix {{!RFC8781}}.
 
-The features described in this section SHOULD only be enabled when
-the host detects one of these networks. A simple heuristic to
-achieve that is to check if the network offers routable IPv6
-addressing, does not offer routable IPv4 addressing, and offers a DNS
-resolver address.
+One possible way to handle these networks is for the client device
+networking stack to implement 464XLAT {{?RFC6877}}. 464XLAT has the
+advantage of not requiring changes to user space software; however, it
+requires per-packet translation if the application is using IPv4
+literals and does not encourage client application software to support
+native IPv6. On platforms that do not support 464XLAT, the Happy
+Eyeballs engine SHOULD follow the recommendations in this section to
+properly support IPv6-mostly ({{?V6-MOSTLY=I-D.ietf-v6ops-6mops}}) and IPv6-only networks.
+
+The features described in this section SHOULD only be enabled when the
+host detects an IPv6-mostly or IPv6-only network. A simple heuristic
+to detect one of these networks is to check if the network offers
+routable IPv6 addressing, does not offer routable IPv4 addressing, and
+offers a DNS resolver address.
 
 ## IPv4 Address Literals {#literals}
 
 If client applications or users wish to connect to IPv4 address
-literals, the Happy Eyeballs engine will need to perform NAT64
-address synthesis for them. The solution is similar to "Bump-in-the-
-Host" {{!RFC6535}} but is implemented inside the Happy Eyeballs library.
+literals, the Happy Eyeballs engine will need to perform NAT64 address
+synthesis for them. The solution is similar to "Bump-in-the-Host"
+{{!RFC6535}} but is implemented inside the Happy Eyeballs client.
 
-Note that some IPv4 prefixes are scoped to a given host or network, such as
-0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/32, and
-therefore do not require NAT64 address synthesis.
+Note that some IPv4 prefixes are scoped to a given host or network,
+such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and
+255.255.255.255/32, and therefore do not require NAT64 address
+synthesis.
 
-When an IPv4 address is passed into the library instead of a
-hostname, the device SHOULD use PREF64s received from Router
-Advertisements {{!RFC8781}}. If the network does not provide PREF64s,
-the device SHOULD query the network for the NAT64 prefix using
-"Discovery of the IPv6 Prefix Used for IPv6 Address Synthesis"
-{{!RFC7050}}. It then synthesizes an appropriate IPv6 address (or
-several) using the encoding described in "IPv6 Addressing of IPv4/
-IPv6 Translators" {{!RFC6052}}. The synthesized addresses are then
-inserted into the list of addresses as if they were results from DNS
-queries; connection attempts follow the algorithm described above
-(see {{connections}}).
+## Discovering and Utilizing PREF64 {#pref64-detection}
+
+When an IPv4 address is passed into the Happy Eyeballs implementation
+instead of a hostname, it SHOULD use PREF64s received from Router
+Advertisements {{!RFC8781}}.
+
+With PREF64 available, networks might choose to not deploy DNS64, as
+the latter has a number of disadvantages (see
+{{V6-MOSTLY, Section 4.3.4}}). To ensure
+compatibility with such networks, if PREF64 is available, clients
+SHOULD send an A query in addition to an AAAA query for a given
+hostname. This allows the client to receive any existing IPv4 A
+records and perform local NAT64 address synthesis, eliminating the
+network's need to run DNS64.
+
+If the network does not provide PREF64s, the implementation SHOULD
+query the network for the NAT64 prefix using "Discovery of the IPv6
+Prefix Used for IPv6 Address Synthesis" {{!RFC7050}}. It then
+synthesizes an appropriate IPv6 address (or several) using the
+encoding described in "IPv6 Addressing of IPv4/ IPv6 Translators"
+{{!RFC6052}}. The synthesized addresses are then inserted into the
+list of addresses as if they were results from DNS A queries;
+connection attempts follow the algorithm described above (see
+{{connections}}).
 
 Such translation also applies to any IPv4 addresses received in A
 records and IPv4 address hints received in SVCB records.
+
+## Supporting DNS64 {#dns64}
+
+If PREF64 is not available and the NAT64 prefix cannot be discovered,
+clients SHOULD assume the network is relying on DNS64 for IPv4-to-IPv6
+address synthesis. In this scenario, clients will typically only
+receive AAAA records from DNS queries, as DNS64 servers synthese these
+records for IPv4-only domains.
 
 ## Hostnames with Broken AAAA Records {#broken}
 
