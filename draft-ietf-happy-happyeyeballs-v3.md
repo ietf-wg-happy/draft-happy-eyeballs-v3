@@ -255,7 +255,7 @@ destination endpoints support, and which security features
 those endpoints offer. These are based on
 information from SVCB/HTTPS records about application-layer protocols
 ("alpn" values) and other parameters like TLS Encrypted Client Hello
-configuration.
+configuration ("ech" values, see {{!SVCB-ECH=I-D.ietf-tls-svcb-ech}}).
 
 For cases where the answers do not include any SVCB/HTTPS information,
 or if all of the answers are associated with the same SVCB/HTTPS record,
@@ -457,7 +457,7 @@ attempts to establish a connection, some cryptographic handshakes may
 be dependent on SVCB ServiceMode records and could impose limitations on
 establishing a connection.  For instance, ECH-capable clients may
 become SVCB-reliant clients ({{Section 3 of SVCB}}) when SVCB records
-contain the "ech" SvcParamKey {{!SVCB-ECH=I-D.ietf-tls-svcb-ech}}. If the
+contain the "ech" SvcParamKey {{SVCB-ECH}}. If the
 client is either an SVCB-reliant client or a SVCB-optional client that
 might switch to SVCB-reliant connection establishment during the
 process, the client MUST wait for SVCB records before proceeding with the
