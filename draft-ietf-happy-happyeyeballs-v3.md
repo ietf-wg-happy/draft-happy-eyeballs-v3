@@ -122,7 +122,7 @@ distinct phases:
 
 1. Initiation of asynchronous connection attempts ({{connections}})
 
-1. Successful establishment of one connection, and cancellation of
+1. Successful establishment of one connection and cancellation of
 other attempts ({{connections}})
 
 Note that this document assumes that the preference policy for the
@@ -141,7 +141,7 @@ recommendations in this document can be easily adapted.
 
 When a client is trying to establish a connection to a named host,
 it needs to determine which destination IP addresses it can use
-to reach the host. The client resolves the host name into IP
+to reach the host. The client resolves the hostname into IP
 addresses by sending DNS queries and collecting the answers.
 This section describes how a client initiates DNS queries
 and asynchronously handles the answers.
@@ -170,7 +170,7 @@ possible. The order in which the queries are sent SHOULD be as
 follows (omitting any query that doesn't apply based on the
 logic described above):
 
-1. HTTPS or SVCB query
+1. SVCB or HTTPS query
 1. AAAA query
 1. A query
 
@@ -187,7 +187,7 @@ the other answers can significantly delay the connection
 establishment of the first one.
 
 Therefore, the client SHOULD treat DNS resolution as asynchronous,
-being able to process different record types independently.
+processing different record types independently.
 Note that if the platform does not offer an asynchronous DNS API,
 this behavior can be simulated by making separate synchronous queries
 for each record type, each on a different thread.
@@ -215,7 +215,7 @@ are received.
 
 On networks that allow connectivity on both IPv6 and IPv4, IPv6 is
 assumed to be the preferred address family. If only IPv6 or IPv4 offers
-connectivity, that address family should be considered preferred address
+connectivity, that address family should be considered the preferred address
 family for progressing the algorithm.
 
 The resolution time delay is a short time that provides a chance
@@ -244,7 +244,7 @@ non-empty answers for the purpose of the algorithm when A and AAAA records
 corresponding to the TargetName are not available yet. Clients are required
 to issue A and AAAA queries as applicable for the TargetNames they don't
 have answers for yet. When those answers return, they update the available
-the set of responses as new answer (see {{new-answers}}).
+set of responses as new answers (see {{new-answers}}).
 
 ### Examples
 
