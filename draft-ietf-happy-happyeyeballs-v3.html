@@ -1066,7 +1066,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 3 January 2026</td>
+<td class="center">Expires 4 January 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1079,12 +1079,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-happy-happyeyeballs-v3-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-07-02" class="published">2 July 2025</time>
+<time datetime="2025-07-03" class="published">3 July 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-01-03">3 January 2026</time></dd>
+<dd class="expires"><time datetime="2026-01-04">4 January 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1155,7 +1155,7 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 3 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 4 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1301,25 +1301,25 @@ definition updates the description in <span>[<a href="#HEV2" class="cite xref">H
 itself obsoleted <span>[<a href="#RFC6555" class="cite xref">RFC6555</a>]</span>.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">The Happy Eyeballs algorithm of racing connections to resolved
 addresses has several stages to avoid delays to the user whenever
-possible, while preferring the use of IPv6. This document discusses
-how to handle DNS queries when starting a connection on a dual-stack
-client, how to create an ordered list of destination addresses to
-which to attempt connections, and how to race the connection
-attempts.<a href="#section-1-3" class="pilcrow">¶</a></p>
-<p id="section-1-4">As compared to <span>[<a href="#HEV2" class="cite xref">HEV2</a>]</span>, this document adds support for incorporating
-SVCB / HTTPS resource records
-<span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span>. SVCB records provide alternative
-endpoints and associated information about protocol support, Encrypted
-ClientHello <span>[<a href="#ECH" class="cite xref">ECH</a>]</span> keys, address hints, among
-other relevant hints which may help speed up connection establishment
-and improve user privacy. Discovering protocol support during
-resolution, such as for HTTP/3 over QUIC <span>[<a href="#RFC9114" class="cite xref">RFC9114</a>]</span>, allows
+possible, while respecting client priorities, such as preferring
+the use of IPv6 or the availability of protocols like HTTP/3 <span>[<a href="#HTTP3" class="cite xref">HTTP3</a>]</span> and
+TLS Encrypted Client Hello <span>[<a href="#ECH" class="cite xref">ECH</a>]</span>. This document discusses
+how to initiate DNS queries when starting a connection, how to
+sort the list of destination addresses received from DNS answers,
+and how to race the connection attempts.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">The major difference between the algorithm defined in this document
+and <span>[<a href="#HEV2" class="cite xref">HEV2</a>]</span> is the addition of support for SVCB / HTTPS resource
+records <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span>. SVCB records provide alternative
+endpoints and information about application protocol support, Encrypted
+Client Hello <span>[<a href="#ECH" class="cite xref">ECH</a>]</span> keys, address hints, and other relevant details
+about the services being accessed. Discovering protocol support during
+resolution, such as for HTTP/3 over QUIC <span>[<a href="#HTTP3" class="cite xref">HTTP3</a>]</span>, allows
 upgrading between protocols on the current connection attempts,
 instead of waiting for subsequent attempts to use information from
 other discovery mechanisms such as HTTP Alternative Services
 <span>[<a href="#AltSvc" class="cite xref">AltSvc</a>]</span>. These records can be queried along with A and
 AAAA records, and the updated algorithm defines how to handle SVCB
-responses to improve address and protocol selection.<a href="#section-1-4" class="pilcrow">¶</a></p>
+responses to improve connection establishment.<a href="#section-1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -2018,6 +2018,10 @@ addresses.<a href="#section-11-1" class="pilcrow">¶</a></p>
         <dd>
 <span class="refAuthor">Schinazi, D.</span> and <span class="refAuthor">T. Pauly</span>, <span class="refTitle">"Happy Eyeballs Version 2: Better Connectivity Using Concurrency"</span>, <span class="seriesInfo">RFC 8305</span>, <span class="seriesInfo">DOI 10.17487/RFC8305</span>, <time datetime="2017-12" class="refDate">December 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8305">https://www.rfc-editor.org/rfc/rfc8305</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="HTTP3">[HTTP3]</dt>
+        <dd>
+<span class="refAuthor">Bishop, M., Ed.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="seriesInfo">RFC 9114</span>, <span class="seriesInfo">DOI 10.17487/RFC9114</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9114">https://www.rfc-editor.org/rfc/rfc9114</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="IPV6">[IPV6]</dt>
         <dd>
 <span class="refAuthor">Deering, S.</span> and <span class="refAuthor">R. Hinden</span>, <span class="refTitle">"Internet Protocol, Version 6 (IPv6) Specification"</span>, <span class="seriesInfo">STD 86</span>, <span class="seriesInfo">RFC 8200</span>, <span class="seriesInfo">DOI 10.17487/RFC8200</span>, <time datetime="2017-07" class="refDate">July 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8200">https://www.rfc-editor.org/rfc/rfc8200</a>&gt;</span>. </dd>
@@ -2043,12 +2047,8 @@ addresses.<a href="#section-11-1" class="pilcrow">¶</a></p>
 <span class="refAuthor">Pusateri, T.</span> and <span class="refAuthor">S. Cheshire</span>, <span class="refTitle">"DNS Push Notifications"</span>, <span class="seriesInfo">RFC 8765</span>, <span class="seriesInfo">DOI 10.17487/RFC8765</span>, <time datetime="2020-06" class="refDate">June 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8765">https://www.rfc-editor.org/rfc/rfc8765</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9002">[RFC9002]</dt>
-        <dd>
-<span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">I. Swett, Ed.</span>, <span class="refTitle">"QUIC Loss Detection and Congestion Control"</span>, <span class="seriesInfo">RFC 9002</span>, <span class="seriesInfo">DOI 10.17487/RFC9002</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9002">https://www.rfc-editor.org/rfc/rfc9002</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC9114">[RFC9114]</dt>
       <dd>
-<span class="refAuthor">Bishop, M., Ed.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="seriesInfo">RFC 9114</span>, <span class="seriesInfo">DOI 10.17487/RFC9114</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9114">https://www.rfc-editor.org/rfc/rfc9114</a>&gt;</span>. </dd>
+<span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">I. Swett, Ed.</span>, <span class="refTitle">"QUIC Loss Detection and Congestion Control"</span>, <span class="seriesInfo">RFC 9002</span>, <span class="seriesInfo">DOI 10.17487/RFC9002</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9002">https://www.rfc-editor.org/rfc/rfc9002</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
