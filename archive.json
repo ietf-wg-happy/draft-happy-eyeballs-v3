@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-01T02:06:34.962993+00:00",
+  "timestamp": "2025-07-03T01:55:42.108404+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -675,7 +675,7 @@
       "id": "I_kwDOKH7CuM521BWM",
       "title": "\"AAAA response\" is ambiguous",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/37",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ericorth",
       "authorAssociation": "NONE",
       "assignees": [
@@ -684,8 +684,8 @@
       "labels": [],
       "body": "In the context of this draft \"AAAA response\" seems it could be interpreted as just the DNS response to the AAAA query.  But for most of the usage/discussion, I think we want AAAA records received in response to the AAAA query or AAAA records received in the Additional section of the response to the HTTPS query, whichever is received first.\r\n\r\nMaybe we should rephrase all those references to \"received AAAA records\" or something like that.  Maybe we even need an explicit mention that those records could come in the response to the HTTPS query and that clients should use those if received first instead of waiting for a response to the AAAA query.",
       "createdAt": "2023-11-14T21:34:08Z",
-      "updatedAt": "2025-06-25T08:37:04Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-02T23:43:00Z",
+      "closedAt": "2025-07-02T23:43:00Z",
       "comments": []
     },
     {
@@ -1234,11 +1234,13 @@
       "state": "OPEN",
       "author": "martinthomson",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "nidhijaju"
+      ],
       "labels": [],
       "body": "> it SHOULD add another Destination Address Selection rule between the RTT rule and rule 9, which prefers used addresses over unused ones\n\nFor as long as you retain that information, this rule will mean that clients are sticky.  That has some interesting implications for server operators who might find it is difficult to shift load away from a server instance that is under duress as a result, for instance.  Obviously, a server that is sufficiently stressed will likely be slower, but the attempt pacing might be long enough that you would need to be under a lot of load for that to happen.\n\nShould this instead de-emphasize \"used successfully\", except for when there are no higher order decision factors.",
       "createdAt": "2025-03-18T10:33:20Z",
-      "updatedAt": "2025-03-18T10:33:43Z",
+      "updatedAt": "2025-07-01T03:35:50Z",
       "closedAt": null,
       "comments": []
     }
@@ -4801,24 +4803,26 @@
       "id": "PR_kwDOKH7CuM6cN00F",
       "title": "Update language around responses and records",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/79",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "nidhijaju",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Fixes https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/37.",
       "createdAt": "2025-06-26T11:04:16Z",
-      "updatedAt": "2025-06-27T00:54:25Z",
+      "updatedAt": "2025-07-02T23:42:59Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "bb59f12ad589a890244892e2137a55eed9ccf002",
       "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
       "headRefName": "ambiguous-aaaa",
       "headRefOid": "26480196a113ba2b0632914dad2248d568620cde",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-07-02T23:42:58Z",
+      "mergedAt": "2025-07-02T23:42:58Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "b42cf39ab1f39bb5e7a0952e09c2e97df1944959"
+      },
       "comments": [],
       "reviews": [
         {
@@ -4832,6 +4836,19 @@
           "body": "",
           "createdAt": "2025-06-26T23:57:11Z",
           "updatedAt": "2025-06-26T23:57:11Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6xrX6u",
+          "commit": {
+            "abbreviatedOid": "2648019"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-02T23:42:52Z",
+          "updatedAt": "2025-07-02T23:42:52Z",
           "comments": []
         }
       ]
@@ -4877,6 +4894,174 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 81,
+      "id": "PR_kwDOKH7CuM6czZns",
+      "title": "Support IPv6-mostly networks",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/81",
+      "state": "OPEN",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Took a pass at adding some text to support IPv6-mostly networks, open to any feedback and changes.\r\n\r\nCloses https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/41.",
+      "createdAt": "2025-07-01T03:12:05Z",
+      "updatedAt": "2025-07-02T22:12:27Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "a3b71b43b0417e1b8ba45ead6295e07a43236950",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "v6-mostly",
+      "headRefOid": "e2e72fe1d9df8134e78653c1ae569b4b7b72509f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM6xqtjX",
+          "commit": {
+            "abbreviatedOid": "e2e72fe"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Overall this LGTM",
+          "createdAt": "2025-07-02T22:04:00Z",
+          "updatedAt": "2025-07-02T22:12:27Z",
+          "comments": [
+            {
+              "originalPosition": 98,
+              "body": "Another option is that if PREF64 is not available, then the client should use RFC7050 to find the NAT64 prefix, and then still do local synthesis. That has the advantage of being more aligned with the VPN subsection below",
+              "createdAt": "2025-07-02T22:04:00Z",
+              "updatedAt": "2025-07-02T22:12:27Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 82,
+      "id": "PR_kwDOKH7CuM6czi10",
+      "title": "Move rule for preferring past endpoints",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/82",
+      "state": "OPEN",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This doesn't make clients completely \"unsticky\", but it means that we will only prefer past endpoints if there are no other higher order decision factors.\r\n\r\nCloses https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/77.",
+      "createdAt": "2025-07-01T03:42:30Z",
+      "updatedAt": "2025-07-02T22:15:33Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "a3b71b43b0417e1b8ba45ead6295e07a43236950",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "target-fixation",
+      "headRefOid": "c00ebfee3dde80b625012094d3777cade0f47822",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM6xqzgp",
+          "commit": {
+            "abbreviatedOid": "c00ebfe"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-02T22:15:32Z",
+          "updatedAt": "2025-07-02T22:15:33Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Since Rule 9 is \"Use longest matching prefix\", how does moving the sticky rule after rule 9 resolve the issue? ",
+              "createdAt": "2025-07-02T22:15:33Z",
+              "updatedAt": "2025-07-02T22:15:33Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 83,
+      "id": "PR_kwDOKH7CuM6dIjJH",
+      "title": "Editorial pass on introduction",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/83",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-07-02T18:27:32Z",
+      "updatedAt": "2025-07-02T23:43:55Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "b42cf39ab1f39bb5e7a0952e09c2e97df1944959",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfp/intro-editorial",
+      "headRefOid": "73175591d500b322083c0e6b041d89c76200e6b0",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yeah I agree there is more to do there",
+          "createdAt": "2025-07-02T23:43:16Z",
+          "updatedAt": "2025-07-02T23:43:16Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM6xq5rz",
+          "commit": {
+            "abbreviatedOid": "edc39d5"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "This change LGTM. We'll probably want to edit the first paragraph of the intro to focus less on broken address and more on availability of protocols, but we can do that in a follow up",
+          "createdAt": "2025-07-02T22:27:33Z",
+          "updatedAt": "2025-07-02T22:27:33Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 84,
+      "id": "PR_kwDOKH7CuM6dKhXz",
+      "title": "Rework resolution explantion",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/84",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Rework to resolution to incorporate feedback / issues",
+      "createdAt": "2025-07-02T23:02:51Z",
+      "updatedAt": "2025-07-02T23:45:25Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "b42cf39ab1f39bb5e7a0952e09c2e97df1944959",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfp/resolution",
+      "headRefOid": "55a7f09739a41d090f439ab7d9ab17fc08f5cc73",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
