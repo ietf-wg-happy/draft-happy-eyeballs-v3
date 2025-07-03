@@ -301,7 +301,8 @@ Table of Contents
    destination endpoints support, and which security features those
    endpoints offer.  These are based on information from SVCB/HTTPS
    records about application-layer protocols ("alpn" values) and other
-   parameters like TLS Encrypted Client Hello configuration.
+   parameters like TLS Encrypted Client Hello configuration ("ech"
+   values, see [SVCB-ECH]).
 
    For cases where the answers do not include any SVCB/HTTPS
    information, or if all of the answers are associated with the same
