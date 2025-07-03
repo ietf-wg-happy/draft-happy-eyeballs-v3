@@ -239,8 +239,8 @@ by this point, as this allows the client to get the racing effect of
 Happy Eyeballs for the entire list, not just the first IPv4 and first
 IPv6 addresses.
 
-The client goes through three levels of grouping
-and sorting of addresses, based on the DNS answers received.
+The client performs three levels of grouping
+and sorting of addresses based on the DNS answers received.
 Each subsequent level of sorting only changes orders and
 preferences within the previously defined groups.
 
@@ -250,9 +250,9 @@ preferences within the previously defined groups.
 
 ## Grouping By Application Protocols and Security Requirements {#application-group}
 
-The first step of grouping clients perform is based on
-which application protocols are supported by destination endpoints, and which
-security features are offered by these endpoints. These are based on
+Clients first group based on which application protocols the
+destination endpoints support, and which security features
+those endpoints offer. These are based on
 information from SVCB/HTTPS records about application-layer protocols
 ("alpn" values) and other parameters like TLS Encrypted Client Hello
 configuration.
@@ -260,14 +260,14 @@ configuration.
 For cases where the answers do not include any SVCB/HTTPS information,
 or if all of the answers are associated with the same SVCB/HTTPS record,
 this step is trivial: all answers belong to one group, and the client
-assumes they support they same protocols and security properties.
+assumes they support the same protocols and security properties.
 
-However, for cases where there are multiple distinct SVCB/HTTPS records
-returned, the client is aware of different sets of destination endpoints
-that advertise different capabilities. The client SHOULD separate these
-addresses out into different groups, such that all addresses in a
+However, the client is aware of different sets of destination endpoints
+that advertise different capabilities when it receives multiple distinct
+SVCB/HTTPS records. The client SHOULD separate these
+addresses into different groups, such that all addresses in a
 group share the same application protocols and relevant security
-properties. The specific parameters that will be relevant to the client
+properties. The specific parameters that are relevant to the client
 depend on the client implementation and application.
 
 Note that some destination addresses might need to be added to
@@ -290,9 +290,9 @@ the same).
 
 Connection racing as described in {{connections}} applies
 to different destination address options within one of these groups.
-The logic for deciding to prioritize and fall back between groups
+The logic for prioritizing and falling back between groups
 of addresses with different security properties and protocol
-properties is up to client implementations.
+properties is implementation-defined.
 
 ## Grouping By Service Priority {#service-group}
 
@@ -318,7 +318,7 @@ any A or AAAA records for the same owner name. These answers are
 sorted according to that SVCB record's priority.
 
 All addresses received from a particular SVCB service (within a group
-as defined in {{application-group}}) either by an associated AAAA
+as defined in {{application-group}}), either by an associated AAAA
 or A record or address hints, SHOULD be separated into a group by
 the client. These service-based groups SHOULD then be sorted
 using the service priority.
@@ -332,9 +332,9 @@ When there are multiple services, and thus multiple groups, with the
 same priority, the client SHOULD shuffle these groups randomly.
 
 If there are some SVCB/HTTPS services received, but there are AAAA or A
-records that do not have an associated service (as can happen if no
+records that do not have an associated service (for example, if no
 SVCB/HTTPS record is received for the original name using the "."
-TargetName), the un-associated addresses SHOULD be put in a group
+TargetName), the unassociated addresses SHOULD be put in a group
 that is prioritized at the end of the list.
 
 ## Sorting Destination Addresses Within Groups
