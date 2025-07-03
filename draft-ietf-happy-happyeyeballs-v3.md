@@ -116,7 +116,7 @@ This document defines a method of connection establishment, named the
 "Happy Eyeballs Connection Setup". This approach has several
 distinct phases:
 
-1. Resolution of a hostname into destination addresses ({{resolution}})
+1. Asynchronous resolution of a hostname into destination addresses ({{resolution}})
 
 1. Sorting of the resolved destination addresses ({{sorting}})
 
@@ -158,12 +158,11 @@ and A records, or only a query for AAAA records, depending on
 the network configuration. See {{v6only}} for more discussion of
 handling IPv6-only networks.
 
-In addition to requesting AAAA and A records, clients can request
-either SVCB or HTTPS records {{SVCB}}. Sending a query for SVCB
-records will be based on which application is establishing the
-connection. For applications using HTTP or HTTPS (including
-applications using WebSockets), the client SHOULD send a
-query for HTTPS records.
+In addition to requesting AAAA and A records, depending on which
+application is establishing the connection, clients can request
+either SVCB or HTTPS records {{SVCB}}. For applications using
+HTTP or HTTPS (including applications using WebSockets), the
+client SHOULD send a query for HTTPS records.
 
 All of the DNS queries SHOULD be made as soon after one another as
 possible. The order in which the queries are sent SHOULD be as
