@@ -85,7 +85,7 @@ itself obsoleted {{?RFC6555}}.
 The Happy Eyeballs algorithm of racing connections to resolved
 addresses has several stages to avoid delays to the user whenever
 possible, while respecting client priorities, such as preferring
-the use of IPv6 or the availability of protocols like HTTP/3 {{?HTTP3=RFC9114}} or
+the use of IPv6 or the availability of protocols like HTTP/3 {{?HTTP3=RFC9114}} and
 TLS Encrypted Client Hello {{!ECH=I-D.ietf-tls-esni}}. This document discusses
 how to initiate DNS queries when starting a connection, how to
 sort the list of destination addresses received from DNS answers,
