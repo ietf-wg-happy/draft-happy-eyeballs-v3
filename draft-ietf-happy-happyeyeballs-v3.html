@@ -1224,16 +1224,22 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-dns-answer-changes-during-h" class="internal xref">DNS Answer Changes During Happy Eyeballs Connection Setup</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-supporting-ipv6-only-networ" class="internal xref">Supporting IPv6-Only Networks with NAT64 and DNS64</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-supporting-ipv6-mostly-and-" class="internal xref">Supporting IPv6-Mostly and IPv6-Only Networks</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
                 <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-ipv4-address-literals" class="internal xref">IPv4 Address Literals</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
-                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-hostnames-with-broken-aaaa-" class="internal xref">Hostnames with Broken AAAA Records</a></p>
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-discovering-and-utilizing-p" class="internal xref">Discovering and Utilizing PREF64</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
-                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-virtual-private-networks" class="internal xref">Virtual Private Networks</a></p>
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-supporting-dns64" class="internal xref">Supporting DNS64</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.4">
+                <p id="section-toc.1-1.8.2.4.1"><a href="#section-8.4" class="auto internal xref">8.4</a>.  <a href="#name-hostnames-with-broken-aaaa-" class="internal xref">Hostnames with Broken AAAA Records</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.5">
+                <p id="section-toc.1-1.8.2.5.1"><a href="#section-8.5" class="auto internal xref">8.5</a>.  <a href="#name-virtual-private-networks" class="internal xref">Virtual Private Networks</a></p>
 </li>
             </ul>
 </li>
@@ -1685,85 +1691,116 @@ of addresses not yet attempted according to the rules above (see
 <a href="#sorting" class="auto internal xref">Section 5</a>).<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="supporting-ipv6-only-networks-with-nat64-and-dns64">
+<div id="supporting-ipv6-mostly-and-ipv6-only-networks">
 <section id="section-8">
-      <h2 id="name-supporting-ipv6-only-networ">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-supporting-ipv6-only-networ" class="section-name selfRef">Supporting IPv6-Only Networks with NAT64 and DNS64</a>
+      <h2 id="name-supporting-ipv6-mostly-and-">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-supporting-ipv6-mostly-and-" class="section-name selfRef">Supporting IPv6-Mostly and IPv6-Only Networks</a>
       </h2>
 <p id="section-8-1">While many IPv6 transition protocols have been standardized and
-deployed, most are transparent to client devices. The combined use
-of NAT64 <span>[<a href="#RFC6146" class="cite xref">RFC6146</a>]</span> and DNS64 <span>[<a href="#RFC6147" class="cite xref">RFC6147</a>]</span> is a popular solution that is
-being deployed and requires changes in client devices. One possible
-way to handle these networks is for the client device networking
-stack to implement 464XLAT <span>[<a href="#RFC6877" class="cite xref">RFC6877</a>]</span>. 464XLAT has the advantage of
-not requiring changes to user space software; however, it requires
-per-packet translation if the application is using IPv4 literals and
-does not encourage client application software to support native
-IPv6. On platforms that do not support 464XLAT, the Happy Eyeballs
-engine <span class="bcp14">SHOULD</span> follow the recommendations in this section to properly
-support IPv6-only networks with NAT64 and DNS64.<a href="#section-8-1" class="pilcrow">¶</a></p>
-<p id="section-8-2">The features described in this section <span class="bcp14">SHOULD</span> only be enabled when
-the host detects one of these networks. A simple heuristic to
-achieve that is to check if the network offers routable IPv6
-addressing, does not offer routable IPv4 addressing, and offers a DNS
-resolver address.<a href="#section-8-2" class="pilcrow">¶</a></p>
+deployed, most are transparent to client devices. Supporting IPv6-only
+networks often requires specific clide-side changes, especially when
+interacting with IPv4-only services. Two primary mechanisms for this
+are the combined use of NAT64 <span>[<a href="#RFC6146" class="cite xref">RFC6146</a>]</span> with DNS64 <span>[<a href="#RFC6147" class="cite xref">RFC6147</a>]</span>, or
+leveraging NAT64 with a discovered PREF64 prefix <span>[<a href="#RFC8781" class="cite xref">RFC8781</a>]</span>.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">One possible way to handle these networks is for the client device
+networking stack to implement 464XLAT <span>[<a href="#RFC6877" class="cite xref">RFC6877</a>]</span>. 464XLAT has the
+advantage of not requiring changes to user space software; however, it
+requires per-packet translation if the application is using IPv4
+literals and does not encourage client application software to support
+native IPv6. On platforms that do not support 464XLAT, the Happy
+Eyeballs engine <span class="bcp14">SHOULD</span> follow the recommendations in this section to
+properly support IPv6-mostly (<span>[<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>]</span>) and IPv6-only networks.<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3">The features described in this section <span class="bcp14">SHOULD</span> only be enabled when the
+host detects an IPv6-mostly or IPv6-only network. A simple heuristic
+to detect one of these networks is to check if the network offers
+routable IPv6 addressing, does not offer routable IPv4 addressing, and
+offers a DNS resolver address.<a href="#section-8-3" class="pilcrow">¶</a></p>
 <div id="literals">
 <section id="section-8.1">
         <h3 id="name-ipv4-address-literals">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-ipv4-address-literals" class="section-name selfRef">IPv4 Address Literals</a>
         </h3>
 <p id="section-8.1-1">If client applications or users wish to connect to IPv4 address
-literals, the Happy Eyeballs engine will need to perform NAT64
-address synthesis for them. The solution is similar to "Bump-in-the-
-Host" <span>[<a href="#RFC6535" class="cite xref">RFC6535</a>]</span> but is implemented inside the Happy Eyeballs library.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2">Note that some IPv4 prefixes are scoped to a given host or network, such as
-0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/32, and
-therefore do not require NAT64 address synthesis.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
-<p id="section-8.1-3">When an IPv4 address is passed into the library instead of a
-hostname, the device <span class="bcp14">SHOULD</span> use PREF64s received from Router
-Advertisements <span>[<a href="#RFC8781" class="cite xref">RFC8781</a>]</span>. If the network does not provide PREF64s,
-the device <span class="bcp14">SHOULD</span> query the network for the NAT64 prefix using
-"Discovery of the IPv6 Prefix Used for IPv6 Address Synthesis"
-<span>[<a href="#RFC7050" class="cite xref">RFC7050</a>]</span>. It then synthesizes an appropriate IPv6 address (or
-several) using the encoding described in "IPv6 Addressing of IPv4/
-IPv6 Translators" <span>[<a href="#RFC6052" class="cite xref">RFC6052</a>]</span>. The synthesized addresses are then
-inserted into the list of addresses as if they were results from DNS
-queries; connection attempts follow the algorithm described above
-(see <a href="#connections" class="auto internal xref">Section 6</a>).<a href="#section-8.1-3" class="pilcrow">¶</a></p>
-<p id="section-8.1-4">Such translation also applies to any IPv4 addresses received in A
-records and IPv4 address hints received in SVCB records.<a href="#section-8.1-4" class="pilcrow">¶</a></p>
+literals, the Happy Eyeballs engine will need to perform NAT64 address
+synthesis for them. The solution is similar to "Bump-in-the-Host"
+<span>[<a href="#RFC6535" class="cite xref">RFC6535</a>]</span> but is implemented inside the Happy Eyeballs client.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">Note that some IPv4 prefixes are scoped to a given host or network,
+such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and
+255.255.255.255/32, and therefore do not require NAT64 address
+synthesis.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="pref64-detection">
+<section id="section-8.2">
+        <h3 id="name-discovering-and-utilizing-p">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-discovering-and-utilizing-p" class="section-name selfRef">Discovering and Utilizing PREF64</a>
+        </h3>
+<p id="section-8.2-1">When an IPv4 address is passed into the Happy Eyeballs implementation
+instead of a hostname, it <span class="bcp14">SHOULD</span> use PREF64s received from Router
+Advertisements <span>[<a href="#RFC8781" class="cite xref">RFC8781</a>]</span>.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.2-2">With PREF64 available, networks might choose to not deploy DNS64, as
+the latter has a number of disadvantages (see
+<span>[<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-01#section-4.3.4" class="relref">Section 4.3.4</a></span>). To ensure
+compatibility with such networks, if PREF64 is available, clients
+<span class="bcp14">SHOULD</span> send an A query in addition to an AAAA query for a given
+hostname. This allows the client to receive any existing IPv4 A
+records and perform local NAT64 address synthesis, eliminating the
+network's need to run DNS64.<a href="#section-8.2-2" class="pilcrow">¶</a></p>
+<p id="section-8.2-3">If the network does not provide PREF64s, the implementation <span class="bcp14">SHOULD</span>
+query the network for the NAT64 prefix using "Discovery of the IPv6
+Prefix Used for IPv6 Address Synthesis" <span>[<a href="#RFC7050" class="cite xref">RFC7050</a>]</span>. It then
+synthesizes an appropriate IPv6 address (or several) using the
+encoding described in "IPv6 Addressing of IPv4/ IPv6 Translators"
+<span>[<a href="#RFC6052" class="cite xref">RFC6052</a>]</span>. The synthesized addresses are then inserted into the
+list of addresses as if they were results from DNS A queries;
+connection attempts follow the algorithm described above (see
+<a href="#connections" class="auto internal xref">Section 6</a>).<a href="#section-8.2-3" class="pilcrow">¶</a></p>
+<p id="section-8.2-4">Such translation also applies to any IPv4 addresses received in A
+records and IPv4 address hints received in SVCB records.<a href="#section-8.2-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="dns64">
+<section id="section-8.3">
+        <h3 id="name-supporting-dns64">
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-supporting-dns64" class="section-name selfRef">Supporting DNS64</a>
+        </h3>
+<p id="section-8.3-1">If PREF64 is not available and the NAT64 prefix cannot be discovered,
+clients <span class="bcp14">SHOULD</span> assume the network is relying on DNS64 for IPv4-to-IPv6
+address synthesis. In this scenario, clients will typically only
+receive AAAA records from DNS queries, as DNS64 servers synthese these
+records for IPv4-only domains.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="broken">
-<section id="section-8.2">
+<section id="section-8.4">
         <h3 id="name-hostnames-with-broken-aaaa-">
-<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-hostnames-with-broken-aaaa-" class="section-name selfRef">Hostnames with Broken AAAA Records</a>
+<a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-hostnames-with-broken-aaaa-" class="section-name selfRef">Hostnames with Broken AAAA Records</a>
         </h3>
-<p id="section-8.2-1">At the time of writing, there exist a small but non-negligible number
+<p id="section-8.4-1">At the time of writing, there exist a small but non-negligible number
 of hostnames that resolve to valid A records and broken AAAA records,
 which we define as AAAA records that contain seemingly valid IPv6
 addresses but those addresses never reply when contacted on the usual
-ports. These can be, for example, caused by:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+ports. These can be, for example, caused by:<a href="#section-8.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-8.2-2.1">
-            <p id="section-8.2-2.1.1">Mistyping of the IPv6 address in the DNS zone configuration<a href="#section-8.2-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-8.4-2.1">
+            <p id="section-8.4-2.1.1">Mistyping of the IPv6 address in the DNS zone configuration<a href="#section-8.4-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-8.2-2.2">
-            <p id="section-8.2-2.2.1">Routing black holes<a href="#section-8.2-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-8.4-2.2">
+            <p id="section-8.4-2.2.1">Routing black holes<a href="#section-8.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-8.2-2.3">
-            <p id="section-8.2-2.3.1">Service outages<a href="#section-8.2-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-8.4-2.3">
+            <p id="section-8.4-2.3.1">Service outages<a href="#section-8.4-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-8.2-3">While an algorithm complying with the other sections of this document
+<p id="section-8.4-3">While an algorithm complying with the other sections of this document
 would correctly handle such hostnames on a dual-stack network, they
 will not necessarily function correctly on IPv6-only networks with
 NAT64 and DNS64. Since DNS64 recursive resolvers rely on the
 authoritative name servers sending negative (no error, no data)
 responses for AAAA records in order to synthesize, they will not
 synthesize records for these particular hostnames and will instead
-pass through the broken AAAA record.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
-<p id="section-8.2-4">In order to support these scenarios, the client device needs to query
+pass through the broken AAAA record.<a href="#section-8.4-3" class="pilcrow">¶</a></p>
+<p id="section-8.4-4">In order to support these scenarios, the client device needs to query
 the DNS for the A record and then perform local synthesis. Since
 these types of hostnames are rare and, in order to minimize load on
 DNS servers, this A query should only be performed when the client
@@ -1774,15 +1811,15 @@ The timer is started when the last connection attempt is fired. If
 no connection attempt has succeeded when this timer fires, the device
 queries the DNS for the IPv4 address and, on reception of a valid A
 record, treats it as if it were provided by the application (see
-<a href="#literals" class="auto internal xref">Section 8.1</a>).<a href="#section-8.2-4" class="pilcrow">¶</a></p>
+<a href="#literals" class="auto internal xref">Section 8.1</a>).<a href="#section-8.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="virtual-private-networks">
-<section id="section-8.3">
+<section id="section-8.5">
         <h3 id="name-virtual-private-networks">
-<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-virtual-private-networks" class="section-name selfRef">Virtual Private Networks</a>
+<a href="#section-8.5" class="section-number selfRef">8.5. </a><a href="#name-virtual-private-networks" class="section-name selfRef">Virtual Private Networks</a>
         </h3>
-<p id="section-8.3-1">Some Virtual Private Networks (VPNs) may be configured to handle DNS
+<p id="section-8.5-1">Some Virtual Private Networks (VPNs) may be configured to handle DNS
 queries from the device. The configuration could encompass all
 queries or a subset such as "*.internal.example.com". These VPNs can
 also be configured to only route part of the IPv4 address space, such
@@ -1800,7 +1837,7 @@ resolver does not know the company's internal addresses, so it cannot
 resolve the hostname. Because of this, the client device needs to
 resolve the A record using the company's resolver and then locally
 synthesize an IPv6 address, as if the resolved IPv4 address were
-provided by the application (<a href="#literals" class="auto internal xref">Section 8.1</a>).<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+provided by the application (<a href="#literals" class="auto internal xref">Section 8.1</a>).<a href="#section-8.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1840,7 +1877,7 @@ milliseconds. <span class="bcp14">MUST NOT</span> be less than 10 milliseconds.<
 wait between connection attempts. Recommended to be 2 seconds.<a href="#section-9-2.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-9-2.6">
-          <p id="section-9-2.6.1">Last Resort Local Synthesis Delay (<a href="#broken" class="auto internal xref">Section 8.2</a>): The time to wait
+          <p id="section-9-2.6.1">Last Resort Local Synthesis Delay (<a href="#broken" class="auto internal xref">Section 8.4</a>): The time to wait
 after starting the last IPv6 attempt and before sending the A
 query. Recommended to be 2 seconds.<a href="#section-9-2.6.1" class="pilcrow">¶</a></p>
 </li>
@@ -2047,8 +2084,12 @@ addresses.<a href="#section-11-1" class="pilcrow">¶</a></p>
 <span class="refAuthor">Pusateri, T.</span> and <span class="refAuthor">S. Cheshire</span>, <span class="refTitle">"DNS Push Notifications"</span>, <span class="seriesInfo">RFC 8765</span>, <span class="seriesInfo">DOI 10.17487/RFC8765</span>, <time datetime="2020-06" class="refDate">June 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8765">https://www.rfc-editor.org/rfc/rfc8765</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9002">[RFC9002]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">I. Swett, Ed.</span>, <span class="refTitle">"QUIC Loss Detection and Congestion Control"</span>, <span class="seriesInfo">RFC 9002</span>, <span class="seriesInfo">DOI 10.17487/RFC9002</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9002">https://www.rfc-editor.org/rfc/rfc9002</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="V6-MOSTLY">[V6-MOSTLY]</dt>
+      <dd>
+<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-Mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-01</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-01">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-01</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
