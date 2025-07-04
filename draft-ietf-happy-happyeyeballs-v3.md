@@ -218,7 +218,7 @@ connectivity, that address family should be considered the preferred address
 family for progressing the algorithm.
 
 The resolution time delay is a short time that provides a chance
-for preferred addresses to come back (via AAAA records) along
+to receive preferred addresses (via AAAA records) along
 with service information (via SVCB/HTTPS records). This accounts
 for the case where the AAAA or SVCB/HTTPS records follow the
 A records by a few milliseconds. This delay is referred to as
