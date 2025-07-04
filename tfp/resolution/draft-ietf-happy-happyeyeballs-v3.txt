@@ -228,7 +228,7 @@ Table of Contents
 4.2.  Handling DNS Answers Asynchronously
 
    Once the client receives sufficient answers to its DNS queries, it
-   can move onto the phase of sorting addresses (Section 5) and
+   can move onto the phases of sorting addresses (Section 5) and
    establishing connections (Section 6).
 
    Implementations SHOULD NOT wait for all answers to return before
