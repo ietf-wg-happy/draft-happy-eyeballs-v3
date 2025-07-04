@@ -181,8 +181,8 @@ and establishing connections ({{connections}}).
 
 Implementations SHOULD NOT wait for all answers to return
 before starting the next steps of connection establishment. If one query
-fails to return or takes significantly longer to return, waiting for
-the other answers can significantly delay the connection
+fails or takes significantly longer to return, waiting for
+those answers can significantly delay connection
 establishment of the first one.
 
 Therefore, the client SHOULD treat DNS resolution as asynchronous,
