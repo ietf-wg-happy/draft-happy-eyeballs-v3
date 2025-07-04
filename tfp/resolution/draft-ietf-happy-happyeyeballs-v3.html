@@ -1449,7 +1449,7 @@ and establishing connections (<a href="#connections" class="auto internal xref">
 before starting the next steps of connection establishment. If one query
 fails or takes significantly longer to return, waiting for
 those answers can significantly delay connection
-establishment of the first one.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+establishment that could otherwise proceed with already received answers.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <p id="section-4.2-3">Therefore, the client <span class="bcp14">SHOULD</span> treat DNS resolution as asynchronous,
 processing different record types independently.
 Note that if the platform does not offer an asynchronous DNS API,
