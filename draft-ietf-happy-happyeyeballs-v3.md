@@ -213,7 +213,7 @@ connection establishment will fail or need to wait until other answers
 are received.
 
 On networks that allow connectivity on both IPv6 and IPv4, IPv6 is
-assumed to be the preferred address family. If only IPv6 or IPv4 offers
+assumed to be the preferred address family. If only one of IPv6 or IPv4 offers
 connectivity, that address family should be considered the preferred address
 family for progressing the algorithm.
 
