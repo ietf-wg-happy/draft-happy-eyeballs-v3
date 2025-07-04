@@ -192,7 +192,7 @@ this behavior can be simulated by making separate synchronous queries
 for each record type, each on a different thread.
 
 The client moves onto sorting addresses and establishing connections
-once one of the following condition sets are met:
+once one of the following condition sets is met:
 
 Either:
 
