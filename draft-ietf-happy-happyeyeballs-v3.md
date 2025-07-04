@@ -221,7 +221,7 @@ The resolution time delay is a short time that provides a chance
 for preferred addresses to come back (via AAAA records) along
 with service information (via SVCB/HTTPS records). This accounts
 for the case where the AAAA or SVCB/HTTPS records follow the
-A recoreds by a few milliseconds. This delay is referred to as
+A records by a few milliseconds. This delay is referred to as
 the "Resolution Delay".
 
 The RECOMMENDED value for the Resolution Delay is 50 milliseconds.
