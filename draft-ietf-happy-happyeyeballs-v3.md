@@ -232,7 +232,7 @@ SVCB and HTTPS records describe information for network services. Individual
 records are either AliasMode or ServiceMode records, where AliasMode requires
 another SVCB/HTTPS query for the alias name. ServiceMode records either are
 associated with the original name being queried, in which case their TargetName
-is "."; or are associated with another service name (see {{Section 2.5 of SVCB}}).
+is ".", or are associated with another service name (see {{Section 2.5 of SVCB}}).
 
 The algorithm in this document does not consider service information to be received
 until ServiceMode records are available.
