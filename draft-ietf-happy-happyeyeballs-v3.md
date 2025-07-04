@@ -189,7 +189,7 @@ Therefore, the client SHOULD treat DNS resolution as asynchronous,
 processing different record types independently.
 Note that if the platform does not offer an asynchronous DNS API,
 this behavior can be simulated by making separate synchronous queries
-for each record type, each on a different thread.
+for each record type in parallel.
 
 The client moves onto sorting addresses and establishing connections
 once one of the following condition sets is met:
