@@ -183,7 +183,7 @@ Implementations SHOULD NOT wait for all answers to return
 before starting the next steps of connection establishment. If one query
 fails or takes significantly longer to return, waiting for
 those answers can significantly delay connection
-establishment of the first one.
+establishment that could otherwise proceed with already received answers.
 
 Therefore, the client SHOULD treat DNS resolution as asynchronous,
 processing different record types independently.
