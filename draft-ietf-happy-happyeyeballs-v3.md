@@ -337,7 +337,7 @@ SVCB/HTTPS record is received for the original name using the "."
 TargetName), the unassociated addresses SHOULD be put in a group
 that is prioritized at the end of the list.
 
-## Sorting Destination Addresses Within Groups
+## Sorting Destination Addresses Within Groups {#address-sorting}
 
 Within each group of addresses, after grouping based on the logic
 in {{application-group}} and {{service-group}}, the client sorts
