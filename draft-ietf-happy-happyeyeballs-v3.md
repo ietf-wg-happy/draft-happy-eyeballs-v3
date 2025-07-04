@@ -156,7 +156,7 @@ it will send a query for A records. On a network with only IPv6
 connectivity, the client will either send out queries for both AAAA
 and A records, or only a query for AAAA records, depending on
 the network configuration. See {{v6only}} for more discussion of
-handling IPv6-only networks.
+handling IPv6-mostly and IPv6-only networks.
 
 In addition to requesting AAAA and A records, depending on which
 application is establishing the connection, clients can request
