@@ -227,10 +227,10 @@ If such a limit is required by hardware limitations, the client
 SHOULD use at least one address from each address family from the
 available list.
 
-# Sorting Addresses {#sorting}
+# Grouping and Sorting Addresses {#sorting}
 
 Before attempting to connect to any of the resolved destination
-addresses, the client should define the order in which to start the
+addresses, the client defines the order in which to start the
 attempts. Once the order has been defined, the client can use a
 simple algorithm for racing each option after a short delay (see
 {{connections}}). It is important that the ordered list involve all
@@ -239,71 +239,69 @@ by this point, as this allows the client to get the racing effect of
 Happy Eyeballs for the entire list, not just the first IPv4 and first
 IPv6 addresses.
 
-Note that the following sorting steps are an incremental sort, meaning
-that the client SHOULD sort within each sorted group for each
-incremental step.
+The client performs three levels of grouping
+and sorting of addresses based on the DNS answers received.
+Each subsequent level of sorting only changes orders and
+preferences within the previously defined groups.
 
-If any of the answers were from SVCB records, they SHOULD be sorted ahead
-of any answers that were not associated with a SVCB record.
+1. Grouping and sorting by application protocol and security requirements ({{application-group}})
+1. Grouping and sorting by service priorities ({{service-group}})
+1. Sorting by destination address preferences ({{address-sorting}})
 
-If the client supports TLS Encrypted Client Hello (ECH) discovery through
-SVCB records {{!SVCB-ECH=I-D.ietf-tls-svcb-ech}}, depending on the
-client's preference to handle ECH, the client SHOULD sort addresses with
-ECH keys taking priority to maintain privacy when attempting connection
-establishment.
+## Grouping By Application Protocols and Security Requirements {#application-group}
 
-The client then sorts the addresses received up to this point, within
-each group, by service priority if the set of addresses contain any
-answers from SVCB records. See {{priority}} for details.
+Clients first group based on which application protocols the
+destination endpoints support and which security features
+those endpoints offer. These are based on
+information from SVCB/HTTPS records about application-layer protocols
+("alpn" values) and other parameters like TLS Encrypted Client Hello
+configuration ("ech" values, see {{!SVCB-ECH=I-D.ietf-tls-svcb-ech}}).
 
-The client SHOULD also sort the addresses in protocol order, such that
-QUIC is prioritized over TCP, as it connects faster and generally
-results in a better experience once connected. For example, QUIC
-provides improved delivery and congestion control, supports connection
-migration, and provides other benefits {{QUIC}}.
+For cases where the answers do not include any SVCB/HTTPS information,
+or if all of the answers are associated with the same SVCB/HTTPS record,
+this step is trivial: all answers belong to one group, and the client
+assumes they support the same protocols and security properties.
 
-Then, within each group at equal priority, the client MUST sort the
-addresses using Destination Address Selection ({{!RFC6724, Section 6}}).
+However, the client is aware of different sets of destination endpoints
+that advertise different capabilities when it receives multiple distinct
+SVCB/HTTPS records. The client SHOULD separate these
+addresses into different groups, such that all addresses in a
+group share the same application protocols and relevant security
+properties. The specific parameters that are relevant to the client
+depend on the client implementation and application.
 
-If the client is stateful and has a history of expected round-trip
-times (RTTs) for the routes to access each address, it SHOULD add a
-Destination Address Selection rule between rules 8 and 9 that prefers
-addresses with lower RTTs. If the client keeps track of which
-addresses it used in the past, it SHOULD add another Destination
-Address Selection rule between the RTT rule and rule 9, which prefers
-used addresses over unused ones. This helps servers that use the
-client's IP address during authentication, as is the case for TCP
-Fast Open {{?RFC7413}} and some Hypertext Transport Protocol (HTTP)
-cookies. This historical data MUST NOT be used across different
-network interfaces and SHOULD be flushed whenever a device changes
-the network to which it is attached.
+Note that some destination addresses might need to be added to
+multiple groups at this stage. For example, consider the following
+HTTPS records:
 
-Next, the client SHOULD modify the ordered list to interleave
-protocols and address families. Whichever combination of protocol
-and address family is first in the list should be followed by an
-endpoint of the other protocol type and same address family, then an
-endpoint from the same protocol and other address family, and then an
-endpoint from the other protocol and other address family. For example,
-if the first address in the sorted list is a QUIC IPv6 address, then
-the first TCP IPv6 address should be moved up in the list to be second
-in the list, then the first QUIC IPv4 address should be moved up to be
-third in the list, and then the first TCP IPv4 address should be moved
-up to be fourth in the list. An implementation MAY choose to favor one
-protocol or address family more by allowing multiple addresses of that
-protocol or family to be attempted before trying the other combinations.
-The number of contiguous addresses of the first combination of
-properties will be referred to as the "Preferred Protocol Combination
-Count" and can be a configurable value. This avoids waiting through a
-long list of addresses from a given address family using a given
-protocol if connectivity over a protocol or an address family is
-impaired.
+~~~
+ example.com. 60 IN HTTPS 1 svc1.example.com. (
+     alpn="h3,h2" ipv6hint=2001:db8::2 )
+ example.com. 60 IN HTTPS 1 svc2.example.com. (
+     alpn="h2" ipv6hint=2001:db8::4 )
+~~~
 
-Note that the address selection described in this section only
-applies to destination addresses; Source Address Selection
-({{!RFC6724-UPDATE=I-D.ietf-6man-rfc6724-update, Section 3.2}}) is performed
-once per destination address and is out of scope of this document.
+In this case, 2001:db8::2 can be used with HTTP/3 and HTTP/2,
+but 2001:db8::4 can only be used with HTTP/2. If the client
+creates a grouping for HTTP/3-capable addresses and
+HTTP/2-capable addresses, 2001:db8::2 would exist in both
+groups (assuming that all other security properties are
+the same).
 
-## Sorting Based on Priority {#priority}
+Connection racing as described in {{connections}} applies
+to different destination address options within one of these groups.
+The logic for prioritizing and falling back between groups
+of addresses with different security properties and protocol
+properties is implementation-defined.
+
+## Grouping By Service Priority {#service-group}
+
+The next step of grouping and sorting is to group across different
+services (as defined by SVCB/HTTPS records), and sort these groups
+by priority.
+
+This step allows server-published priorities to be reflected
+in the client connection establishment algorithm.
 
 SVCB {{SVCB}} records indicate a priority for each ServiceMode response.
 This priority applies to any IPv4 or IPv6 address hints in the record
@@ -319,23 +317,96 @@ name in the record, and the priority of that SVCB record applies to
 any A or AAAA records for the same owner name. These answers are
 sorted according to that SVCB record's priority.
 
+All addresses received from a particular SVCB service (within a group
+as defined in {{application-group}}), either by an associated AAAA
+or A record or address hints, SHOULD be separated into a group by
+the client. These service-based groups SHOULD then be sorted
+using the service priority.
+
+For cases where the answers do not include any SVCB/HTTPS information,
+or if all of the answers are associated with the same SVCB/HTTPS record,
+this step is trivial: all answers belong to one group that has the same
+priority.
+
+When there are multiple services, and thus multiple groups, with the
+same priority, the client SHOULD shuffle these groups randomly.
+
+If there are some SVCB/HTTPS services received, but there are AAAA or A
+records that do not have an associated service (for example, if no
+SVCB/HTTPS record is received for the original name using the "."
+TargetName), the unassociated addresses SHOULD be put in a group
+that is prioritized at the end of the list.
+
+## Sorting Destination Addresses Within Groups {#address-sorting}
+
+Within each group of addresses, after grouping based on the logic
+in {{application-group}} and {{service-group}}, the client sorts
+the addresses based on preference and historical data.
+
+First, the client MUST sort the addresses using Destination Address
+Selection ({{!RFC6724, Section 6}}).
+
+If the client is stateful and has a history of expected round-trip
+times (RTTs) for the routes to access each address, it SHOULD add a
+Destination Address Selection rule between rules 8 and 9 that prefers
+addresses with lower RTTs. If the client keeps track of which
+addresses it used in the past, it SHOULD add another Destination
+Address Selection rule between the RTT rule and rule 9, which prefers
+used addresses over unused ones. This helps servers that use the
+client's IP address during authentication, as is the case for TCP
+Fast Open {{?RFC7413}} and some Hypertext Transport Protocol (HTTP)
+cookies. This historical data MUST NOT be used across different
+network interfaces and SHOULD be flushed whenever a device changes
+the network to which it is attached.
+
+Next, the client SHOULD modify the ordered list to interleave
+address families. Whichever address family is first in the list
+should be followed by an endpoint of the other address family. For example,
+if the first address in the sorted list is an IPv6 address, then
+the first IPv4 address should be moved up in the list to be second
+in the list. An implementation MAY choose to favor one
+address family more by allowing multiple addresses of that
+family to be attempted before trying the next.
+The number of contiguous addresses of the first address family of
+properties will be referred to as the "Preferred Address Family
+Count" and can be a configurable value. This avoids waiting through a
+long list of addresses from a given address family if connectivity
+over that address family is impaired.
+
+Note that the address selection described in this section only
+applies to destination addresses; Source Address Selection
+({{!RFC6724-UPDATE=I-D.ietf-6man-rfc6724-update, Section 3.2}}) is performed
+once per destination address and is out of scope of this document.
+
 # Connection Attempts {#connections}
 
 Once the list of addresses received up to this point has been
 constructed, the client will attempt to make connections. In order to
 avoid unreasonable network load, connection attempts SHOULD NOT be
 made simultaneously. Instead, one connection attempt to a single
-address is started first, followed by the others in the list, one at a
+address is started first, followed by the others, one at a
 time. Starting a new connection attempt does not affect previous
 attempts, as multiple connection attempts may occur in parallel.  Once
 one of the connection attempts succeeds ({{success}}), all other
 connections attempts that have not yet succeeded SHOULD be canceled.
 Any address that was not yet attempted as a connection SHOULD be
-ignored.  At that time, the asynchronous DNS query MAY be canceled as
+ignored.  At that time, any asynchronous DNS queries MAY be canceled as
 new addresses will not be used for this connection. However, the DNS
 client resolver SHOULD still process DNS replies from the network for
 a short period of time (recommended to be 1 second), as they will
 populate the DNS cache and can be used for subsequent connections.
+
+If grouping addresses by application or security requirements
+({{application-group}}) produced multiple groups, the application
+SHOULD start with connection attempts to the most preferred option.
+The policy for attempting any addresses outside of the most preferred
+group is up to the client implementation and out of scope for this document.
+
+If grouping addresses by service ({{service-group}}) produced multiple
+groups, all of the addresses of the first group SHOULD be started
+before starting attempts using the next group. Attempts across service groups
+SHOULD be allowed to continue in parallel; in effect, the groups
+are flattened into a single list.
 
 A simple implementation can have a fixed delay for how long to wait
 before starting the next connection attempt. This delay is referred to
@@ -582,10 +653,9 @@ Happy Eyeballs are as follows:
 - Resolution Delay ({{query}}): The time to wait for a AAAA record
 after receiving an A record. Recommended to be 50 milliseconds.
 
-- Preferred Protocol Combination Count ({{sorting}}): The number of
-addresses belonging to the preferred address family (such as IPv6) using
-the preferred protocol (such as QUIC) that should be attempted before
-attempting the next combination of address family and protocol.
+- Preferred Address Family Count ({{sorting}}): The number of
+addresses belonging to the preferred address family (such as IPv6)
+that should be attempted before attempting the next address family.
 Recommended to be 1; 2 may be used to more aggressively favor a
 particular combination of address family and protocol.
 
