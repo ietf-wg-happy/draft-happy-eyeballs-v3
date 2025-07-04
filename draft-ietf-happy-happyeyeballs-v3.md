@@ -176,7 +176,7 @@ logic described above):
 ## Handling DNS Answers Asynchronously
 
 Once the client receives sufficient answers to its DNS queries, it can
-move onto the phase of sorting addresses ({{sorting}})
+move onto the phases of sorting addresses ({{sorting}})
 and establishing connections ({{connections}}).
 
 Implementations SHOULD NOT wait for all answers to return
