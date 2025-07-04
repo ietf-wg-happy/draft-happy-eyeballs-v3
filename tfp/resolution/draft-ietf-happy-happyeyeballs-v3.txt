@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 4 January 2026                                          N. Jaju
+Expires: 5 January 2026                                          N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                             3 July 2025
+                                                             4 July 2025
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 January 2026.
+   This Internet-Draft will expire on 5 January 2026.
 
 Copyright Notice
 
@@ -232,10 +232,10 @@ Table of Contents
    establishing connections (Section 6).
 
    Implementations SHOULD NOT wait for all answers to return before
-   starting the next steps of establishment.  If one query fails to
-   return or takes significantly longer to return, waiting for the other
-   answers can significantly delay the connection establishment of the
-   first one.
+   starting the next steps of connection establishment.  If one query
+   fails to return or takes significantly longer to return, waiting for
+   the other answers can significantly delay the connection
+   establishment of the first one.
 
    Therefore, the client SHOULD treat DNS resolution as asynchronous,
    processing different record types independently.  Note that if the
