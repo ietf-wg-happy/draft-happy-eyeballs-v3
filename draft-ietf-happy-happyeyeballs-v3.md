@@ -244,9 +244,9 @@ and sorting of addresses based on the DNS answers received.
 Each subsequent level of sorting only changes orders and
 preferences within the previously defined groups.
 
-1. Grouping and sorting by application protocol and security requirements
-1. Grouping and sorting by service priorities
-1. Sorting by destination address preferences
+1. Grouping and sorting by application protocol and security requirements ({{application-group}})
+1. Grouping and sorting by service priorities ({{service-group}})
+1. Sorting by destination address preferences ({{address-sorting}})
 
 ## Grouping By Application Protocols and Security Requirements {#application-group}
 
