@@ -208,7 +208,12 @@ Or:
 - A resolution time delay has passed after which other answers have
 not been received
 
-If all answers come back with negative answers (no addresses), the
+Positive answers can be addresses received either from AAAA or A
+records, or address hints received directly in SVCB/HTTPS records.
+
+Negative answers are exclusively responses to AAAA or A records
+that contain no addresses (with or without an error like NXDOMAIN).
+If all answers come back with negative answers, the
 connection establishment will fail or need to wait until other answers
 are received.
 
@@ -240,10 +245,10 @@ until ServiceMode records are available.
 ServiceMode records can contain address hints via `ipv6hint` and `ipv4hint`
 parameters. When these are received, they SHOULD be considered as positive
 non-empty answers for the purpose of the algorithm when A and AAAA records
-corresponding to the TargetName are not available yet. Clients are required
-to issue A and AAAA queries as applicable for the TargetNames they don't
-have answers for yet. When those answers return, they update the available
-set of responses as new answers (see {{new-answers}}).
+corresponding to the TargetName are not available yet. Note that clients are
+still required to issue A and AAAA queries for those TargetNames if they haven't
+yet received those records. When those records are received, they replace the hints
+and update the available set of responses as new answers (see {{new-answers}}).
 
 ### Examples
 
