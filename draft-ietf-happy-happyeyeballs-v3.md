@@ -180,7 +180,7 @@ move onto the phase of sorting addresses ({{sorting}})
 and establishing connections ({{connections}}).
 
 Implementations SHOULD NOT wait for all answers to return
-before starting the next steps of establishment. If one query
+before starting the next steps of connection establishment. If one query
 fails to return or takes significantly longer to return, waiting for
 the other answers can significantly delay the connection
 establishment of the first one.
