@@ -251,7 +251,7 @@ preferences within the previously defined groups.
 ## Grouping By Application Protocols and Security Requirements {#application-group}
 
 Clients first group based on which application protocols the
-destination endpoints support, and which security features
+destination endpoints support and which security features
 those endpoints offer. These are based on
 information from SVCB/HTTPS records about application-layer protocols
 ("alpn" values) and other parameters like TLS Encrypted Client Hello
