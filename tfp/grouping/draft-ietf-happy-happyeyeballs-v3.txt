@@ -289,11 +289,11 @@ Table of Contents
    groups.
 
    1.  Grouping and sorting by application protocol and security
-       requirements
+       requirements (Section 5.1)
 
-   2.  Grouping and sorting by service priorities
+   2.  Grouping and sorting by service priorities (Section 5.2)
 
-   3.  Sorting by destination address preferences
+   3.  Sorting by destination address preferences (Section 5.3)
 
 5.1.  Grouping By Application Protocols and Security Requirements
 
