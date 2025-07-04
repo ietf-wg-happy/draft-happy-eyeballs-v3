@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 4 January 2026                                          N. Jaju
+Expires: 5 January 2026                                          N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                             3 July 2025
+                                                             4 July 2025
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 January 2026.
+   This Internet-Draft will expire on 5 January 2026.
 
 Copyright Notice
 
@@ -298,7 +298,7 @@ Table of Contents
 5.1.  Grouping By Application Protocols and Security Requirements
 
    Clients first group based on which application protocols the
-   destination endpoints support, and which security features those
+   destination endpoints support and which security features those
    endpoints offer.  These are based on information from SVCB/HTTPS
    records about application-layer protocols ("alpn" values) and other
    parameters like TLS Encrypted Client Hello configuration ("ech"
