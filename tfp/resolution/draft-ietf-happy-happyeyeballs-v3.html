@@ -1447,8 +1447,8 @@ move onto the phases of sorting addresses (<a href="#sorting" class="auto intern
 and establishing connections (<a href="#connections" class="auto internal xref">Section 6</a>).<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2-2">Implementations <span class="bcp14">SHOULD NOT</span> wait for all answers to return
 before starting the next steps of connection establishment. If one query
-fails to return or takes significantly longer to return, waiting for
-the other answers can significantly delay the connection
+fails or takes significantly longer to return, waiting for
+those answers can significantly delay connection
 establishment of the first one.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <p id="section-4.2-3">Therefore, the client <span class="bcp14">SHOULD</span> treat DNS resolution as asynchronous,
 processing different record types independently.
