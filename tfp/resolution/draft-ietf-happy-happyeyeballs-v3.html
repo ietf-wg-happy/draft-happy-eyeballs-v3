@@ -1454,7 +1454,7 @@ establishment of the first one.<a href="#section-4.2-2" class="pilcrow">¶</a></
 processing different record types independently.
 Note that if the platform does not offer an asynchronous DNS API,
 this behavior can be simulated by making separate synchronous queries
-for each record type, each on a different thread.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+for each record type in parallel.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
 <p id="section-4.2-4">The client moves onto sorting addresses and establishing connections
 once one of the following condition sets is met:<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 <p id="section-4.2-5">Either:<a href="#section-4.2-5" class="pilcrow">¶</a></p>
