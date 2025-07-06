@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-03T01:55:42.108404+00:00",
+  "timestamp": "2025-07-06T02:04:15.798516+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -143,7 +143,7 @@
       "id": "I_kwDOKH7CuM5u3cMM",
       "title": "Specify when and how to request SVCB/HTTP RRs",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/3",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -154,8 +154,8 @@
       ],
       "body": "My initial proposal here is:\r\n\r\n- Request HTTPS records for any case where the port is 443 or 80, or the URL has a scheme of http:// or https://\r\n- Request the HTTPS record in parallel with A and AAAA",
       "createdAt": "2023-08-21T19:44:13Z",
-      "updatedAt": "2023-10-31T18:22:21Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-05T04:14:35Z",
+      "closedAt": "2025-07-05T04:14:35Z",
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -717,7 +717,7 @@
       "id": "I_kwDOKH7CuM6Cv_fx",
       "title": "Section 8: IPv6-mostly networks can provide NAT64 w/o DNS64",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/41",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "furry13",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -726,8 +726,8 @@
       "labels": [],
       "body": "(copying from an email I sent to the authors)\r\n\r\nWith PREF64 being available, some networks might only provide PREF64 and do not use DNS64, as the latter has a number of disadvantages, such as breaking DNSSEC and not working if the host has custom DNS\r\nservers configured.\r\n\r\nSo do you think it's worth adding some text saying that some Ipv6-only\r\nor, more likely, IPv6-mostly networks might only deploy PREF64 w/o DNS64?\r\n\r\nSee https://www.ietf.org/archive/id/draft-link-v6ops-6mops-00.html#name-dns-vs-dns64",
       "createdAt": "2024-03-18T23:01:03Z",
-      "updatedAt": "2025-06-30T04:52:23Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-03T18:54:59Z",
+      "closedAt": "2025-07-03T18:54:59Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -4900,24 +4900,26 @@
       "id": "PR_kwDOKH7CuM6czZns",
       "title": "Support IPv6-mostly networks",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/81",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "nidhijaju",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Took a pass at adding some text to support IPv6-mostly networks, open to any feedback and changes.\r\n\r\nCloses https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/41.",
       "createdAt": "2025-07-01T03:12:05Z",
-      "updatedAt": "2025-07-02T22:12:27Z",
+      "updatedAt": "2025-07-03T18:54:58Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
-      "baseRefOid": "a3b71b43b0417e1b8ba45ead6295e07a43236950",
+      "baseRefOid": "b42cf39ab1f39bb5e7a0952e09c2e97df1944959",
       "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
       "headRefName": "v6-mostly",
-      "headRefOid": "e2e72fe1d9df8134e78653c1ae569b4b7b72509f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "5a056ae865656befc1347f8323a2b2bb69ecedd1",
+      "closedAt": "2025-07-03T18:54:58Z",
+      "mergedAt": "2025-07-03T18:54:58Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "e4bd8d197e7ea1685cdd338d8402a698200d942d"
+      },
       "comments": [],
       "reviews": [
         {
@@ -4939,6 +4941,86 @@
               "updatedAt": "2025-07-02T22:12:27Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6xtkDE",
+          "commit": {
+            "abbreviatedOid": "e2e72fe"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T03:43:50Z",
+          "updatedAt": "2025-07-03T03:43:50Z",
+          "comments": [
+            {
+              "originalPosition": 98,
+              "body": "We already had some text about this above, so I moved it below and restructured it a bit to clarify that we should assume DNS64 when PREF64 is not available and the NAT64 prefix can't be discovered.",
+              "createdAt": "2025-07-03T03:43:50Z",
+              "updatedAt": "2025-07-03T03:43:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6xyPg6",
+          "commit": {
+            "abbreviatedOid": "077b64b"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looks good with one nit about the reference!",
+          "createdAt": "2025-07-03T11:04:10Z",
+          "updatedAt": "2025-07-03T11:06:49Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "Let's add a reference for what IPv6-mostly means up here at the first time we use it (I see the reference below too)",
+              "createdAt": "2025-07-03T11:04:11Z",
+              "updatedAt": "2025-07-03T11:06:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x4Vg7",
+          "commit": {
+            "abbreviatedOid": "077b64b"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T18:53:54Z",
+          "updatedAt": "2025-07-03T18:53:54Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "```suggestion\r\nproperly support IPv6-mostly ({{?V6-MOSTLY=I-D.ietf-v6ops-6mops}}) and IPv6-only networks.\r\n```",
+              "createdAt": "2025-07-03T18:53:54Z",
+              "updatedAt": "2025-07-03T18:53:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x4Vm0",
+          "commit": {
+            "abbreviatedOid": "077b64b"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T18:54:02Z",
+          "updatedAt": "2025-07-03T18:54:03Z",
+          "comments": [
+            {
+              "originalPosition": 85,
+              "body": "```suggestion\r\n{{V6-MOSTLY, Section 4.3.4}}). To ensure\r\n```",
+              "createdAt": "2025-07-03T18:54:03Z",
+              "updatedAt": "2025-07-03T18:54:03Z"
+            }
+          ]
         }
       ]
     },
@@ -4947,21 +5029,21 @@
       "id": "PR_kwDOKH7CuM6czi10",
       "title": "Move rule for preferring past endpoints",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/82",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "nidhijaju",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This doesn't make clients completely \"unsticky\", but it means that we will only prefer past endpoints if there are no other higher order decision factors.\r\n\r\nCloses https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/77.",
       "createdAt": "2025-07-01T03:42:30Z",
-      "updatedAt": "2025-07-02T22:15:33Z",
+      "updatedAt": "2025-07-04T04:31:11Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "a3b71b43b0417e1b8ba45ead6295e07a43236950",
       "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
       "headRefName": "target-fixation",
       "headRefOid": "c00ebfee3dde80b625012094d3777cade0f47822",
-      "closedAt": null,
+      "closedAt": "2025-07-04T04:31:11Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -4986,6 +5068,66 @@
               "updatedAt": "2025-07-02T22:15:33Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6xtqp4",
+          "commit": {
+            "abbreviatedOid": "c00ebfe"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T04:01:36Z",
+          "updatedAt": "2025-07-03T04:01:36Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Rule 9 is fairly minor, but the intent was to get as close to making the stickiness the very last decision factor as possible without removing it entirely. Whether or not to remove it is something that could still up for discussion, but the suggestion in the issue was to make sure that we use it as the absolute last decision factor. Happy to adjust if you have other suggestions.",
+              "createdAt": "2025-07-03T04:01:36Z",
+              "updatedAt": "2025-07-03T04:01:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x5zf6",
+          "commit": {
+            "abbreviatedOid": "c00ebfe"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T21:21:03Z",
+          "updatedAt": "2025-07-03T21:21:04Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "I guess the question to me is if having server-provided service priority be in separate groups is enough to resolve this in effect, since the server does have a mechanism there to get clients to move more forcibly.",
+              "createdAt": "2025-07-03T21:21:03Z",
+              "updatedAt": "2025-07-03T21:21:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x8pGM",
+          "commit": {
+            "abbreviatedOid": "c00ebfe"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-04T04:31:08Z",
+          "updatedAt": "2025-07-04T04:31:08Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Yeah, it makes sense that servers can use service priority to explicitly shift clients as necessary.\r\nFor longest matching prefix, I don't have particularly strong opinions either way, so let me close this PR for now and we can discuss on the issue if needed.",
+              "createdAt": "2025-07-04T04:31:08Z",
+              "updatedAt": "2025-07-04T04:31:08Z"
+            }
+          ]
         }
       ]
     },
@@ -4994,24 +5136,26 @@
       "id": "PR_kwDOKH7CuM6dIjJH",
       "title": "Editorial pass on introduction",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/83",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-07-02T18:27:32Z",
-      "updatedAt": "2025-07-02T23:43:55Z",
+      "updatedAt": "2025-07-03T10:59:36Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "b42cf39ab1f39bb5e7a0952e09c2e97df1944959",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfp/intro-editorial",
-      "headRefOid": "73175591d500b322083c0e6b041d89c76200e6b0",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "cb3237223a85066528e218432eb7c70d8349fe1c",
+      "closedAt": "2025-07-03T10:59:36Z",
+      "mergedAt": "2025-07-03T10:59:35Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "c10ac02f7f0ef33cb6bf8218e97afd3810f9a825"
+      },
       "comments": [
         {
           "author": "tfpauly",
@@ -5034,6 +5178,32 @@
           "createdAt": "2025-07-02T22:27:33Z",
           "updatedAt": "2025-07-02T22:27:33Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6xtt3a",
+          "commit": {
+            "abbreviatedOid": "7317559"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Overall lgtm, just minor nits.",
+          "createdAt": "2025-07-03T04:07:08Z",
+          "updatedAt": "2025-07-03T04:09:14Z",
+          "comments": [
+            {
+              "originalPosition": 29,
+              "body": "```suggestion\r\nClient Hello {{ECH}} keys, address hints, and other relevant details\r\n```",
+              "createdAt": "2025-07-03T04:07:09Z",
+              "updatedAt": "2025-07-03T04:09:15Z"
+            },
+            {
+              "originalPosition": 19,
+              "body": "```suggestion\r\nthe use of IPv6 or the availability of protocols like HTTP/3 {{?HTTP3=RFC9114}} and\r\n```",
+              "createdAt": "2025-07-03T04:08:35Z",
+              "updatedAt": "2025-07-03T04:09:15Z"
+            }
+          ]
         }
       ]
     },
@@ -5042,26 +5212,581 @@
       "id": "PR_kwDOKH7CuM6dKhXz",
       "title": "Rework resolution explantion",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/84",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Rework to resolution to incorporate feedback / issues",
       "createdAt": "2025-07-02T23:02:51Z",
-      "updatedAt": "2025-07-02T23:45:25Z",
+      "updatedAt": "2025-07-05T04:14:34Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "e4bd8d197e7ea1685cdd338d8402a698200d942d",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfp/resolution",
+      "headRefOid": "70ce077e6634bf6b811b649a340e46cfc726e54a",
+      "closedAt": "2025-07-05T04:14:34Z",
+      "mergedAt": "2025-07-05T04:14:34Z",
+      "mergedBy": "nidhijaju",
+      "mergeCommit": {
+        "oid": "c4bd1046242e626df21dd0145ca5671c37d08597"
+      },
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Addressed the comments! Please let me know if you want any other changes @nidhijaju!",
+          "createdAt": "2025-07-03T19:01:40Z",
+          "updatedAt": "2025-07-03T19:01:40Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM6xtv9Z",
+          "commit": {
+            "abbreviatedOid": "55a7f09"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Took a first pass, but I think some of the language may still need some work for clarity, I'll try to give more suggestions later.\r\nOverall looks good though.",
+          "createdAt": "2025-07-03T04:11:08Z",
+          "updatedAt": "2025-07-03T04:33:47Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\r\n1. Successful establishment of one connection and cancellation of\r\n```",
+              "createdAt": "2025-07-03T04:11:08Z",
+              "updatedAt": "2025-07-03T04:33:47Z"
+            },
+            {
+              "originalPosition": 5,
+              "body": "Is it worth keeping the note that this is asynchronous?",
+              "createdAt": "2025-07-03T04:12:00Z",
+              "updatedAt": "2025-07-03T04:33:47Z"
+            },
+            {
+              "originalPosition": 47,
+              "body": "```suggestion\r\nto reach the host. The client resolves the hostname into IP\r\n```",
+              "createdAt": "2025-07-03T04:13:01Z",
+              "updatedAt": "2025-07-03T04:33:47Z"
+            },
+            {
+              "originalPosition": 69,
+              "body": "```suggestion\r\nIn addition to requesting AAAA and A records, depending on which\r\napplication is establishing the connection, clients can request\r\neither SVCB or HTTPS records {{SVCB}}. For applications using\r\nHTTP or HTTPS (including applications using WebSockets), the\r\nclient SHOULD send a query for HTTPS records.\r\n```",
+              "createdAt": "2025-07-03T04:21:11Z",
+              "updatedAt": "2025-07-03T04:33:47Z"
+            },
+            {
+              "originalPosition": 76,
+              "body": "Just to be consistent about ordering with above:\r\n```suggestion\r\n1. SVCB or HTTPS query\r\n```",
+              "createdAt": "2025-07-03T04:22:00Z",
+              "updatedAt": "2025-07-03T04:33:48Z"
+            },
+            {
+              "originalPosition": 129,
+              "body": "```suggestion\r\nprocessing different record types independently.\r\n```",
+              "createdAt": "2025-07-03T04:23:41Z",
+              "updatedAt": "2025-07-03T04:33:48Z"
+            },
+            {
+              "originalPosition": 157,
+              "body": "```suggestion\r\nconnectivity, that address family should be considered the preferred address\r\n```",
+              "createdAt": "2025-07-03T04:28:41Z",
+              "updatedAt": "2025-07-03T04:33:48Z"
+            },
+            {
+              "originalPosition": 186,
+              "body": "```suggestion\r\nset of responses as new answers (see {{new-answers}}).\r\n```",
+              "createdAt": "2025-07-03T04:31:15Z",
+              "updatedAt": "2025-07-03T04:33:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x4bNc",
+          "commit": {
+            "abbreviatedOid": "55a7f09"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T18:59:04Z",
+          "updatedAt": "2025-07-03T18:59:04Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\r\n1. Asynchronous resolution of a hostname into destination addresses ({{resolution}})\r\n```",
+              "createdAt": "2025-07-03T18:59:04Z",
+              "updatedAt": "2025-07-03T18:59:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x86fq",
+          "commit": {
+            "abbreviatedOid": "302cd9f"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-04T04:45:55Z",
+          "updatedAt": "2025-07-04T05:23:51Z",
+          "comments": [
+            {
+              "originalPosition": 62,
+              "body": "```suggestion\r\nhandling IPv6-mostly and IPv6-only networks.\r\n```\r\nShould we also mention IPv6-mostly here, since that section now talks about both?",
+              "createdAt": "2025-07-04T04:45:55Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            },
+            {
+              "originalPosition": 82,
+              "body": "```suggestion\r\nmove onto the phases of sorting addresses ({{sorting}})\r\n```",
+              "createdAt": "2025-07-04T04:48:26Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            },
+            {
+              "originalPosition": 86,
+              "body": "```suggestion\r\nbefore starting the next steps of connection establishment. If one query\r\n```",
+              "createdAt": "2025-07-04T04:49:05Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            },
+            {
+              "originalPosition": 88,
+              "body": "```suggestion\r\nfails or takes significantly longer to return, waiting for\r\nthose answers can significantly delay connection\r\n```",
+              "createdAt": "2025-07-04T04:58:31Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            },
+            {
+              "originalPosition": 125,
+              "body": "```suggestion\r\nestablishment that could otherwise proceed with already received answers.\r\n```\r\nNot sure that's the best wording, but that's the best I could come up with to clarify what we mean.",
+              "createdAt": "2025-07-04T05:00:34Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            },
+            {
+              "originalPosition": 131,
+              "body": "```suggestion\r\nfor each record type in parallel.\r\n```\r\nJust think it's maybe better to keep threads out of it, since it's an implementation detail.",
+              "createdAt": "2025-07-04T05:01:49Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            },
+            {
+              "originalPosition": 134,
+              "body": "```suggestion\r\nonce one of the following condition sets is met:\r\n```",
+              "createdAt": "2025-07-04T05:03:45Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            },
+            {
+              "originalPosition": 138,
+              "body": "No strong opinions, but should we define what \"address answers\" means? i.e. it includes address hints from SVCB records.",
+              "createdAt": "2025-07-04T05:09:38Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            },
+            {
+              "originalPosition": 155,
+              "body": "```suggestion\r\nassumed to be the preferred address family. If only one of IPv6 or IPv4 offers\r\n```",
+              "createdAt": "2025-07-04T05:11:54Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            },
+            {
+              "originalPosition": 160,
+              "body": "```suggestion\r\nto receive preferred addresses (via AAAA records) along\r\n```",
+              "createdAt": "2025-07-04T05:13:15Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            },
+            {
+              "originalPosition": 163,
+              "body": "```suggestion\r\nfor the case where the AAAA or SVCB/HTTPS records follow the\r\nA records by a few milliseconds. This delay is referred to as\r\n```\r\n\"answers\" is maybe better here? If not, recoreds --> records :)",
+              "createdAt": "2025-07-04T05:17:17Z",
+              "updatedAt": "2025-07-04T14:17:46Z"
+            },
+            {
+              "originalPosition": 183,
+              "body": "This kind of implies that if we get a ipv6hint, we don't need to issue AAAA queries anymore for that TargetName, since we just claimed that it was considered a positive answer. We should still issue AAAA queries, right?\r\n\r\nIs there a way to clarify that we want to use the hints as address answers without confusing people here?",
+              "createdAt": "2025-07-04T05:21:24Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            },
+            {
+              "originalPosition": 174,
+              "body": "```suggestion\r\nis \".\", or are associated with another service name (see {{Section 2.5 of SVCB}}).\r\n```",
+              "createdAt": "2025-07-04T05:21:58Z",
+              "updatedAt": "2025-07-04T05:23:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6yEIu0",
+          "commit": {
+            "abbreviatedOid": "ae288ae"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-04T14:19:13Z",
+          "updatedAt": "2025-07-04T14:19:13Z",
+          "comments": [
+            {
+              "originalPosition": 183,
+              "body": "So this sentence you highlight is the one that says \"you still needs to send A and AAAA queries for the target name, even though you start moving forward with the hints if that is all you have\". I think that's the right behavior. ",
+              "createdAt": "2025-07-04T14:19:13Z",
+              "updatedAt": "2025-07-04T14:19:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6yFa0z",
+          "commit": {
+            "abbreviatedOid": "302cd9f"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-04T16:06:27Z",
+          "updatedAt": "2025-07-04T16:06:27Z",
+          "comments": [
+            {
+              "originalPosition": 183,
+              "body": "@nidhijaju I updated the paragraph to be a bit clearer, let me know what you think",
+              "createdAt": "2025-07-04T16:06:27Z",
+              "updatedAt": "2025-07-04T16:06:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6yFa6d",
+          "commit": {
+            "abbreviatedOid": "302cd9f"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-04T16:06:45Z",
+          "updatedAt": "2025-07-04T16:06:45Z",
+          "comments": [
+            {
+              "originalPosition": 138,
+              "body": "I added sentences below now, explaining positive and negative answers more clearly",
+              "createdAt": "2025-07-04T16:06:45Z",
+              "updatedAt": "2025-07-04T16:06:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6yKF0Q",
+          "commit": {
+            "abbreviatedOid": "70ce077"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looks good, thank you!",
+          "createdAt": "2025-07-05T04:13:09Z",
+          "updatedAt": "2025-07-05T04:13:09Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 85,
+      "id": "PR_kwDOKH7CuM6dMb-O",
+      "title": "Separate out application / service priority / address sorting",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/85",
+      "state": "MERGED",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Rework to sorting section, to update based on discussion and feedback at IETF 122",
+      "createdAt": "2025-07-03T04:31:33Z",
+      "updatedAt": "2025-07-04T13:59:57Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "b42cf39ab1f39bb5e7a0952e09c2e97df1944959",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
-      "headRefName": "tfp/resolution",
-      "headRefOid": "55a7f09739a41d090f439ab7d9ab17fc08f5cc73",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefName": "tfp/grouping",
+      "headRefOid": "1edb943e58320476ea3dee5f8d3b3dc9a0dfa509",
+      "closedAt": "2025-07-04T13:59:57Z",
+      "mergedAt": "2025-07-04T13:59:57Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "d43651622a864e94bfab5c665bb40c618ba38e8a"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM6xuewP",
+          "commit": {
+            "abbreviatedOid": "3b847cb"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T05:30:35Z",
+          "updatedAt": "2025-07-03T06:08:52Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Is it possible to make \"goes through\" less colloquial? Maybe something like \"uses\"?",
+              "createdAt": "2025-07-03T05:30:35Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 21,
+              "body": "```suggestion\r\nand sorting of addresses based on the DNS answers received.\r\n```",
+              "createdAt": "2025-07-03T05:31:14Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 33,
+              "body": "```suggestion\r\nClients first group based on which application protocols the\r\ndestination endpoints support, and which security features\r\nthose endpoints offer. These are based on\r\n```",
+              "createdAt": "2025-07-03T05:34:58Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 41,
+              "body": "```suggestion\r\nassumes they support the same protocols and security properties.\r\n```",
+              "createdAt": "2025-07-03T05:37:50Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 45,
+              "body": "```suggestion\r\nHowever, the client is aware of different sets of destination endpoints\r\nthat advertise different capabilities when it receives multiple distinct\r\nSVCB/HTTPS records. The client SHOULD separate these\r\n```",
+              "createdAt": "2025-07-03T05:42:54Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 46,
+              "body": "```suggestion\r\naddresses into different groups, such that all addresses in a\r\n```",
+              "createdAt": "2025-07-03T05:43:19Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 48,
+              "body": "```suggestion\r\nproperties. The specific parameters that are relevant to the client\r\n```",
+              "createdAt": "2025-07-03T05:44:24Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 73,
+              "body": "```suggestion\r\nThe logic for prioritizing and falling back between groups\r\n```",
+              "createdAt": "2025-07-03T05:48:22Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 75,
+              "body": "```suggestion\r\nproperties is implementation-defined.\r\n```",
+              "createdAt": "2025-07-03T05:48:43Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 76,
+              "body": "This section doesn't really talk about what security properties clients should consider. Is there more we need to say here for clarity, perhaps an example?",
+              "createdAt": "2025-07-03T05:49:41Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 81,
+              "body": "Just noting that this doesn't address the operational consideration raised in https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/71 that sometimes the security properties may not be preferred over SVCB priorities. Could be addressed in a follow-up, but thought it was worth mentioning here since we're moving around a lot of text.",
+              "createdAt": "2025-07-03T05:55:03Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 101,
+              "body": "```suggestion\r\nas defined in {{application-group}}), either by an associated AAAA\r\n```",
+              "createdAt": "2025-07-03T05:57:30Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 125,
+              "body": "```suggestion\r\nTargetName), the unassociated addresses SHOULD be put in a group\r\n```",
+              "createdAt": "2025-07-03T05:59:18Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 123,
+              "body": "```suggestion\r\nrecords that do not have an associated service (for example, if no\r\n```",
+              "createdAt": "2025-07-03T06:00:36Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 225,
+              "body": "Are we saying that this is out of scope for the document or implementation-defined? I assume it's the latter.",
+              "createdAt": "2025-07-03T06:05:09Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            },
+            {
+              "originalPosition": 241,
+              "body": "Just curious, don't we refer to this above as well? Why do we need to link it here again?",
+              "createdAt": "2025-07-03T06:08:41Z",
+              "updatedAt": "2025-07-03T06:08:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x4SpR",
+          "commit": {
+            "abbreviatedOid": "3b847cb"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T18:51:05Z",
+          "updatedAt": "2025-07-03T18:51:06Z",
+          "comments": [
+            {
+              "originalPosition": 20,
+              "body": "Yup!\r\n```suggestion\r\nThe client performs three levels of grouping\r\n```",
+              "createdAt": "2025-07-03T18:51:06Z",
+              "updatedAt": "2025-07-03T18:51:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x475U",
+          "commit": {
+            "abbreviatedOid": "3b847cb"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T19:53:11Z",
+          "updatedAt": "2025-07-03T19:53:11Z",
+          "comments": [
+            {
+              "originalPosition": 225,
+              "body": "```suggestion\r\ngroup is up to the client implementation and out of scope for this document.\r\n```",
+              "createdAt": "2025-07-03T19:53:11Z",
+              "updatedAt": "2025-07-03T19:53:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x5xUN",
+          "commit": {
+            "abbreviatedOid": "96e5884"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T21:15:08Z",
+          "updatedAt": "2025-07-03T21:15:08Z",
+          "comments": [
+            {
+              "originalPosition": 81,
+              "body": "Right, this doesn't address that yet, but I think that was something the WG didn't come to agreement on yet.",
+              "createdAt": "2025-07-03T21:15:08Z",
+              "updatedAt": "2025-07-03T21:15:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x5x0D",
+          "commit": {
+            "abbreviatedOid": "96e5884"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T21:16:30Z",
+          "updatedAt": "2025-07-03T21:16:30Z",
+          "comments": [
+            {
+              "originalPosition": 36,
+              "body": "```suggestion\r\nconfiguration (\"ech\" values, see {{!SVCB-ECH=I-D.ietf-tls-svcb-ech}}).\r\n```",
+              "createdAt": "2025-07-03T21:16:30Z",
+              "updatedAt": "2025-07-03T21:16:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x5x6s",
+          "commit": {
+            "abbreviatedOid": "96e5884"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T21:16:49Z",
+          "updatedAt": "2025-07-03T21:16:49Z",
+          "comments": [
+            {
+              "originalPosition": 241,
+              "body": "```suggestion\r\ncontain the \"ech\" SvcParamKey {{SVCB-ECH}}. If the\r\n```",
+              "createdAt": "2025-07-03T21:16:49Z",
+              "updatedAt": "2025-07-03T21:16:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x5yYm",
+          "commit": {
+            "abbreviatedOid": "aa65b4e"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-03T21:18:02Z",
+          "updatedAt": "2025-07-03T21:18:02Z",
+          "comments": [
+            {
+              "originalPosition": 76,
+              "body": "What do you mean? We do mention ECH, and that the client can group by that support, and thus prioritize based on that. Is there another concrete example you were thinking of?",
+              "createdAt": "2025-07-03T21:18:02Z",
+              "updatedAt": "2025-07-03T21:18:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM6x9Tt2",
+          "commit": {
+            "abbreviatedOid": "aa65b4e"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-04T05:25:42Z",
+          "updatedAt": "2025-07-04T05:38:11Z",
+          "comments": [
+            {
+              "originalPosition": 133,
+              "body": "```suggestion\r\n## Sorting Destination Addresses Within Groups {#address-sorting}\r\n```",
+              "createdAt": "2025-07-04T05:25:42Z",
+              "updatedAt": "2025-07-04T05:38:11Z"
+            },
+            {
+              "originalPosition": 27,
+              "body": "```suggestion\r\n1. Grouping and sorting by application protocol and security requirements ({{application-group}})\r\n1. Grouping and sorting by service priorities ({{service-group}})\r\n1. Sorting by destination address preferences ({{address-sorting}})\r\n```",
+              "createdAt": "2025-07-04T05:26:02Z",
+              "updatedAt": "2025-07-04T05:38:11Z"
+            },
+            {
+              "originalPosition": 32,
+              "body": "```suggestion\r\ndestination endpoints support and which security features\r\n```",
+              "createdAt": "2025-07-04T05:26:32Z",
+              "updatedAt": "2025-07-04T05:38:11Z"
+            },
+            {
+              "originalPosition": 76,
+              "body": "We kind of mentioned ECH in the first paragraph, but it seems to be in passing. I was wondering if we could add some more of the considerations around how to incorporate ECH into sorting in this group, which will also help make it more clear how to tell when security properties are the same.\r\n\r\nI know we have an issue open specifically for discussing the impact of ECH though, so we can punt it to that, if preferred.",
+              "createdAt": "2025-07-04T05:29:40Z",
+              "updatedAt": "2025-07-04T05:38:11Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
