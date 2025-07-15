@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 6 January 2026                                          N. Jaju
+Expires: 16 January 2026                                         N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                             5 July 2025
+                                                            15 July 2025
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 January 2026.
+   This Internet-Draft will expire on 16 January 2026.
 
 Copyright Notice
 
@@ -637,7 +637,7 @@ Table of Contents
 
    While many IPv6 transition protocols have been standardized and
    deployed, most are transparent to client devices.  Supporting
-   IPv6-only networks often requires specific clide-side changes,
+   IPv6-only networks often requires specific client-side changes,
    especially when interacting with IPv4-only services.  Two primary
    mechanisms for this are the combined use of NAT64 [RFC6146] with
    DNS64 [RFC6147], or leveraging NAT64 with a discovered PREF64 prefix
@@ -902,9 +902,9 @@ Table of Contents
               Buraglio, N., Chown, T., and J. Duncan, "Prioritizing
               known-local IPv6 ULAs through address selection policy",
               Work in Progress, Internet-Draft, draft-ietf-6man-rfc6724-
-              update-22, 24 June 2025,
+              update-23, 7 July 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-6man-
-              rfc6724-update-22>.
+              rfc6724-update-23>.
 
    [RFC7050]  Savolainen, T., Korhonen, J., and D. Wing, "Discovery of
               the IPv6 Prefix Used for IPv6 Address Synthesis",
