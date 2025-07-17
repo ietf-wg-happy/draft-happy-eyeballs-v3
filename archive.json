@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-06T02:04:15.798516+00:00",
+  "timestamp": "2025-07-17T02:01:40.722080+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -57,6 +57,16 @@
       "name": "charter",
       "description": "",
       "color": "fbca04"
+    },
+    {
+      "name": "ietf-123",
+      "description": "Issues discussed at IETF 123",
+      "color": "3f4843"
+    },
+    {
+      "name": "editorial",
+      "description": "Editorial issues",
+      "color": "87fa46"
     }
   ],
   "issues": [
@@ -621,9 +631,17 @@
       "labels": [],
       "body": "The draft says: \r\n\r\n> For example, if the first address in the sorted list is a QUIC IPv6 address, then the first TCP IPv6 address should be moved up in the list to be second in the list, then the first QUIC IPv4 address should be moved up to be third in the list, \r\n\r\n1. Why is TCP IPv6 preferred over QUIC IPv4? Does this also mean that the dial delay to misconfigured IPv6 servers with a fixed delay is 500ms now? \r\n\r\n2. What happens when there's only a QUIC IPv4 and TCP IPv6 address. I assume the preference is QUIC IPv4 over TCP IPv6, as the draft says. I understand, this ia a highly unusual situation.\r\n\r\n> The client SHOULD also sort the addresses in protocol order, such that QUIC is prioritized over TCP, as it connects faster and generally results in a better experience once connected.\r\n\r\n",
       "createdAt": "2023-11-07T12:13:51Z",
-      "updatedAt": "2023-11-07T12:13:51Z",
+      "updatedAt": "2025-07-15T07:19:58Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This should potentially be addressed by #85, which reworked sorting connection attempts to prioritize protocol preferences over address families, meaning QUIC IPv4 would be preferred over TCP IPv6. ",
+          "createdAt": "2025-07-15T07:19:58Z",
+          "updatedAt": "2025-07-15T07:19:58Z"
+        }
+      ]
     },
     {
       "number": 36,
@@ -1141,7 +1159,7 @@
       "labels": [],
       "body": "The SVCB SvcPriority was designed to guide a simple client that is connecting \"from scratch\", with no further information about the service or the network. In that context, the function of SvcPriority is fairly clear.\r\n\r\nFor clients with a memory of prior connection attempts, the function of SvcPriority is less clear.  If the most preferred endpoint failed recently, can the client skip it the next time?\r\n\r\nAnd what about highly optimized clients that are racing multiple connections?  Can they race connections across multiple SvcPriorities, or should they wait until all the priority 1 endpoints fail?\r\n\r\nEven in the simple case, the definition of \"failure\" is somewhat nebulous.  TCP (and QUIC) connection initiation generally relies on exponential backoff that may not give up until multiple minutes have passed.  Surely we don't want clients to wait 100+ seconds before trying the priority 2 endpoint...\r\n\r\nThese questions are obviously relevant to mobile- and browser-like clients.  They're also increasingly relevant to DNS servers, as the DELEG group is considering SVCB-based definitions of DNS delegation.  DNS resolvers already use complex heuristics to estimate the latency and reliability of each nameserver, in order to select the best one (while still monitoring the others).\r\n\r\n@enygren @mikebishop",
       "createdAt": "2024-11-13T23:16:35Z",
-      "updatedAt": "2024-11-15T08:17:54Z",
+      "updatedAt": "2025-07-15T07:14:59Z",
       "closedAt": null,
       "comments": [
         {
@@ -1157,6 +1175,13 @@
           "body": "Another similar complexity may come from the Alt-Svc header and the ALTSVC HTTP/2 frame.",
           "createdAt": "2024-11-15T08:17:52Z",
           "updatedAt": "2024-11-15T08:17:52Z"
+        },
+        {
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It seems like this was potentially addressed by #85, especially [Section 5.2](https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/draft-ietf-happy-happyeyeballs-v3.html#name-grouping-by-service-priorit).",
+          "createdAt": "2025-07-15T07:14:50Z",
+          "updatedAt": "2025-07-15T07:14:59Z"
         }
       ]
     },
@@ -1165,16 +1190,24 @@
       "id": "I_kwDOKH7CuM6lK4KI",
       "title": "Handling SVCB RR When TargetName Differs from Hostname",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/70",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "KershawChang",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "The behavior regarding querying SVCB RRs in section 4 states:\r\n\r\n> If the client receives any positive response back (containing a valid AAAA, A, or SVCB ServiceMode RR), it starts the Resolution Delay timer, which runs until both the AAAA and SVCB ServiceMode responses are received, or a SVCB response is received that includes at least one address in the ipv6hint parameter. Once a SVCB response and at least one IPv6 address have been received, or the timer expires, the client proceeds with sorting addresses and initiating staggered connection attempts.\r\n\r\nIt's unclear to me what a client should do when the `TargetName` in the SVCB RR differs from the original host name. For example, consider the following HTTPS RR:\r\n\r\n```\r\nexample.com. 60 IN HTTPS 1 svc1.example.com. (alpn=\"h3\")\r\n```\r\n\r\nIf the IP address of `svc1.example.com` is different from that of `example.com`, should the client cancel the existing A and AAAA queries to example.com and initiate new A and AAAA queries to `svc1.example.com` instead?\r\nI think the specification should clarify this scenario.\r\n\r\nThanks,\r\nKershaw",
       "createdAt": "2025-01-06T17:15:33Z",
-      "updatedAt": "2025-01-06T17:15:33Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-07-15T07:11:10Z",
+      "closedAt": "2025-07-15T07:11:10Z",
+      "comments": [
+        {
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing this as it was addressed in #84. ",
+          "createdAt": "2025-07-15T07:11:10Z",
+          "updatedAt": "2025-07-15T07:11:10Z"
+        }
+      ]
     },
     {
       "number": 71,
@@ -1197,7 +1230,7 @@
       "id": "I_kwDOKH7CuM6n44zR",
       "title": "Describe SVCB shuffling between same priority",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/74",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -1206,9 +1239,17 @@
       "labels": [],
       "body": "We should make sure we align with this text from RFC 9460 Section 2.4.1:\n\n> When receiving an RRset containing multiple SVCB records with the same SvcPriority value, clients SHOULD apply a random shuffle within a priority level to the records before using them, to ensure uniform load balancing.\n\n",
       "createdAt": "2025-01-28T21:00:54Z",
-      "updatedAt": "2025-06-20T03:09:51Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-07-15T07:09:41Z",
+      "closedAt": "2025-07-15T07:09:41Z",
+      "comments": [
+        {
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing this as it seems to be addressed by https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/85.",
+          "createdAt": "2025-07-15T07:09:41Z",
+          "updatedAt": "2025-07-15T07:09:41Z"
+        }
+      ]
     },
     {
       "number": 75,
@@ -5785,6 +5826,48 @@
               "updatedAt": "2025-07-04T05:38:11Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 86,
+      "id": "PR_kwDOKH7CuM6fAfJx",
+      "title": "fix: minor typo clide-side client-side",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/86",
+      "state": "MERGED",
+      "author": "mxinden",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-07-15T14:54:56Z",
+      "updatedAt": "2025-07-15T16:37:48Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "c4bd1046242e626df21dd0145ca5671c37d08597",
+      "headRepository": "mxinden/draft-happy-eyeballs-v3",
+      "headRefName": "patch-1",
+      "headRefOid": "0b02d358351fe150e6e16b232c1d978baac05716",
+      "closedAt": "2025-07-15T16:37:48Z",
+      "mergedAt": "2025-07-15T16:37:47Z",
+      "mergedBy": "DavidSchinazi",
+      "mergeCommit": {
+        "oid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM60FA8x",
+          "commit": {
+            "abbreviatedOid": "0b02d35"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-15T16:37:40Z",
+          "updatedAt": "2025-07-15T16:37:40Z",
+          "comments": []
         }
       ]
     }
