@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-17T02:01:40.722080+00:00",
+  "timestamp": "2025-07-20T02:10:58.776786+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -374,10 +374,12 @@
       "author": "DavidSchinazi",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "The Acknowledgements section is currently copy-pasted from HEv2",
       "createdAt": "2023-10-20T01:12:42Z",
-      "updatedAt": "2023-10-20T01:12:42Z",
+      "updatedAt": "2025-07-19T10:55:01Z",
       "closedAt": null,
       "comments": []
     },
@@ -624,15 +626,15 @@
       "id": "I_kwDOKH7CuM52FuUi",
       "title": "Why is TCP IPv6 preferred over QUIC IPv4",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/35",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "sukunrt",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "The draft says: \r\n\r\n> For example, if the first address in the sorted list is a QUIC IPv6 address, then the first TCP IPv6 address should be moved up in the list to be second in the list, then the first QUIC IPv4 address should be moved up to be third in the list, \r\n\r\n1. Why is TCP IPv6 preferred over QUIC IPv4? Does this also mean that the dial delay to misconfigured IPv6 servers with a fixed delay is 500ms now? \r\n\r\n2. What happens when there's only a QUIC IPv4 and TCP IPv6 address. I assume the preference is QUIC IPv4 over TCP IPv6, as the draft says. I understand, this ia a highly unusual situation.\r\n\r\n> The client SHOULD also sort the addresses in protocol order, such that QUIC is prioritized over TCP, as it connects faster and generally results in a better experience once connected.\r\n\r\n",
       "createdAt": "2023-11-07T12:13:51Z",
-      "updatedAt": "2025-07-15T07:19:58Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-19T10:59:03Z",
+      "closedAt": "2025-07-19T10:59:03Z",
       "comments": [
         {
           "author": "nidhijaju",
@@ -640,6 +642,13 @@
           "body": "This should potentially be addressed by #85, which reworked sorting connection attempts to prioritize protocol preferences over address families, meaning QUIC IPv4 would be preferred over TCP IPv6. ",
           "createdAt": "2025-07-15T07:19:58Z",
           "updatedAt": "2025-07-15T07:19:58Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, I agree this is resolved by #85 ",
+          "createdAt": "2025-07-19T10:59:03Z",
+          "updatedAt": "2025-07-19T10:59:03Z"
         }
       ]
     },
@@ -1143,9 +1152,17 @@
       "labels": [],
       "body": "Clients can remember expired DNS answers (also called \"optimistic DNS\"), and try expired answers in parallel with requesting new DNS answers. This needs to be folded into the happy eyeballs algorithm.",
       "createdAt": "2024-11-06T14:55:08Z",
-      "updatedAt": "2024-11-06T14:55:09Z",
+      "updatedAt": "2025-07-19T11:00:10Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Potentially optimistic DNS is covered in a separate doc that the main algorithm references",
+          "createdAt": "2025-07-19T11:00:10Z",
+          "updatedAt": "2025-07-19T11:00:10Z"
+        }
+      ]
     },
     {
       "number": 69,
@@ -1159,7 +1176,7 @@
       "labels": [],
       "body": "The SVCB SvcPriority was designed to guide a simple client that is connecting \"from scratch\", with no further information about the service or the network. In that context, the function of SvcPriority is fairly clear.\r\n\r\nFor clients with a memory of prior connection attempts, the function of SvcPriority is less clear.  If the most preferred endpoint failed recently, can the client skip it the next time?\r\n\r\nAnd what about highly optimized clients that are racing multiple connections?  Can they race connections across multiple SvcPriorities, or should they wait until all the priority 1 endpoints fail?\r\n\r\nEven in the simple case, the definition of \"failure\" is somewhat nebulous.  TCP (and QUIC) connection initiation generally relies on exponential backoff that may not give up until multiple minutes have passed.  Surely we don't want clients to wait 100+ seconds before trying the priority 2 endpoint...\r\n\r\nThese questions are obviously relevant to mobile- and browser-like clients.  They're also increasingly relevant to DNS servers, as the DELEG group is considering SVCB-based definitions of DNS delegation.  DNS resolvers already use complex heuristics to estimate the latency and reliability of each nameserver, in order to select the best one (while still monitoring the others).\r\n\r\n@enygren @mikebishop",
       "createdAt": "2024-11-13T23:16:35Z",
-      "updatedAt": "2025-07-15T07:14:59Z",
+      "updatedAt": "2025-07-19T11:01:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -1182,6 +1199,13 @@
           "body": "It seems like this was potentially addressed by #85, especially [Section 5.2](https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/draft-ietf-happy-happyeyeballs-v3.html#name-grouping-by-service-priorit).",
           "createdAt": "2025-07-15T07:14:50Z",
           "updatedAt": "2025-07-15T07:14:59Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "#85 does address most of this, but it doesn't stop clients from racing options to the lower-priority services after trying all of the higher-priority services first. I don't think we should stop clients from doing that, but we should confirm with the WG.",
+          "createdAt": "2025-07-19T11:01:25Z",
+          "updatedAt": "2025-07-19T11:01:25Z"
         }
       ]
     },
@@ -1281,7 +1305,47 @@
       "labels": [],
       "body": "> it SHOULD add another Destination Address Selection rule between the RTT rule and rule 9, which prefers used addresses over unused ones\n\nFor as long as you retain that information, this rule will mean that clients are sticky.  That has some interesting implications for server operators who might find it is difficult to shift load away from a server instance that is under duress as a result, for instance.  Obviously, a server that is sufficiently stressed will likely be slower, but the attempt pacing might be long enough that you would need to be under a lot of load for that to happen.\n\nShould this instead de-emphasize \"used successfully\", except for when there are no higher order decision factors.",
       "createdAt": "2025-03-18T10:33:20Z",
-      "updatedAt": "2025-07-01T03:35:50Z",
+      "updatedAt": "2025-07-19T11:04:11Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Now that we group different service priorities into their own buckets (see #85), we'd only have \"stickiness\" within a particular priority. I think that addresses the notion of \"no higher order decision factors\", but we should confirm.",
+          "createdAt": "2025-07-19T11:04:11Z",
+          "updatedAt": "2025-07-19T11:04:11Z"
+        }
+      ]
+    },
+    {
+      "number": 87,
+      "id": "I_kwDOKH7CuM7BcRyY",
+      "title": "Treat synthesized NAT64 addresses as IPv4?",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/87",
+      "state": "OPEN",
+      "author": "philsbln",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 8 suggests synthesizing NAT64-addresses in IPv6 only/mostly in cases without 464XLAT being used.\nWhile in the 464XLAT case NAT64 is clearly treated as IPv4, Section 8 does not suggest whether from A-records self-synthesized addresses should be treated as IPv4.\n\nNote that this issue is related to #42 but suggests a totally different outcome.\nBeyond that\u2026 in the all-in case with DNS64 and 464XLAT, should DNS64 synthesized AAAAs be detected and somehow treated special?",
+      "createdAt": "2025-07-19T16:07:18Z",
+      "updatedAt": "2025-07-19T16:07:18Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 88,
+      "id": "I_kwDOKH7CuM7BcS7y",
+      "title": "Generalizing successful connection establishment",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/88",
+      "state": "OPEN",
+      "author": "philsbln",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "There might be use cases when applications want to override what [successful connection establishment](https://www.ietf.org/archive/id/draft-ietf-happy-happyeyeballs-v3-01.html#name-determining-successful-conn) means. \nAs a concrete example, an application may want to treat certain applications layer errors as failed connection attempt to retry with a less preferable protocol or address family to work around buggy intermediaries or customers who don\u2019t get their ip-level allow lists updated for IPv6.\nShould we mention this in the text?",
+      "createdAt": "2025-07-19T16:14:37Z",
+      "updatedAt": "2025-07-19T16:15:56Z",
       "closedAt": null,
       "comments": []
     }
