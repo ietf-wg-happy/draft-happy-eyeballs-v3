@@ -576,12 +576,12 @@ If an address is added to the list, it should be sorted into the list
 of addresses not yet attempted according to the rules above (see
 {{sorting}}).
 
-# Supporting IPv6-Mostly and IPv6-Only Networks {#v6only}
+# Supporting IPv6-Only Networks using IPv6 transition protocols {#v6only}
 
-While many IPv6 transition protocols have been standardized and
-deployed, most are transparent to client devices. Supporting IPv6-only
-networks often requires specific client-side changes, especially when
-interacting with IPv4-only services. Two primary mechanisms for this
+Most of the IPv6 transition protocols that have been standardized and
+deployed are considered transparent to client devices. However, integrating
+into Happy Eyeballs in a meaningful way requires special handling of them.
+Two primary mechanisms Happy Eyeballs interacts with
 are the combined use of NAT64 {{!RFC6146}} with DNS64 {{!RFC6147}}, or
 leveraging NAT64 with a discovered PREF64 prefix {{!RFC8781}}.
 
@@ -590,9 +590,9 @@ networking stack to implement 464XLAT {{?RFC6877}}. 464XLAT has the
 advantage of not requiring changes to user space software; however, it
 requires per-packet translation if the application is using IPv4
 literals and does not encourage client application software to support
-native IPv6. On platforms that do not support 464XLAT, the Happy
-Eyeballs engine SHOULD follow the recommendations in this section to
-properly support IPv6-mostly ({{?V6-MOSTLY=I-D.ietf-v6ops-6mops}}) and IPv6-only networks.
+native IPv6. Implementation should weigh the per-packet processing
+overhead against the increase complexity of doing NAT64 address synthesis
+(see {{literals}}) within their Happy Eyeballs engine.
 
 The features described in this section SHOULD only be enabled when the
 host detects an IPv6-mostly or IPv6-only network. A simple heuristic
@@ -614,8 +614,7 @@ synthesis.
 
 ## Discovering and Utilizing PREF64 {#pref64-detection}
 
-When an IPv4 address is passed into the Happy Eyeballs implementation
-instead of a hostname, it SHOULD use PREF64s received from Router
+Happy Eyeballs engines SHOULD use PREF64s received from Router
 Advertisements {{!RFC8781}}.
 
 With PREF64 available, networks might choose to not deploy DNS64, as
@@ -633,7 +632,8 @@ Prefix Used for IPv6 Address Synthesis" {{!RFC7050}}. It then
 synthesizes an appropriate IPv6 address (or several) using the
 encoding described in "IPv6 Addressing of IPv4/ IPv6 Translators"
 {{!RFC6052}}. The synthesized addresses are then inserted into the
-list of addresses as if they were results from DNS A queries;
+list of addresses as if they were results from DNS A queries
+and be treated as members of the IPv4 address family;
 connection attempts follow the algorithm described above (see
 {{connections}}).
 
@@ -642,10 +642,16 @@ records and IPv4 address hints received in SVCB records.
 
 ## Supporting DNS64 {#dns64}
 
+If PREF64 is available or the NAT64 prefix can be discovered otherwise,
+AAAA records returned SHOULD be checked whether they have been
+synthesized by DNS64 and either be treated as members of the
+IPv4 address family or filtered out as duplicates if the Happy Eyeballs
+engine performs NAT64 address synthesis based on A records.
+
 If PREF64 is not available and the NAT64 prefix cannot be discovered,
 clients SHOULD assume the network is relying on DNS64 for IPv4-to-IPv6
 address synthesis. In this scenario, clients will typically only
-receive AAAA records from DNS queries, as DNS64 servers synthese these
+receive AAAA records from DNS queries, as DNS64 servers syntheses these
 records for IPv4-only domains.
 
 ## Hostnames with Broken AAAA Records {#broken}
