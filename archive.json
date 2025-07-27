@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-20T02:10:58.776786+00:00",
+  "timestamp": "2025-07-27T02:11:46.854385+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -82,7 +82,7 @@
       "labels": [],
       "body": "Should the first SYN retransmission and next connection attempt happen at the same time?\r\ni.e. If we attempt to connect to address A, should retransmitting to address A happen at the same time as attempting to connect to address B (the next address in the list)?\r\n\r\nIf we have packet loss in the network, that would probably exacerbate the problem. Maybe we should use packet pacing or some kind of delay between them?",
       "createdAt": "2023-08-21T08:37:04Z",
-      "updatedAt": "2023-09-05T22:21:50Z",
+      "updatedAt": "2025-07-24T09:02:11Z",
       "closedAt": null,
       "comments": [
         {
@@ -105,6 +105,13 @@
           "body": "I was testing our implementation currently, and I see that we send out the happy eyeballs race attempt well ahead of the SYN retransmission currently \u2014 so it's the opposite of the delay that @DavidSchinazi mentioned here. Something to look deeper into.",
           "createdAt": "2023-09-05T22:21:50Z",
           "updatedAt": "2023-09-05T22:21:50Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "IETF 123: \n- All of this is best effort (you may not have control over the retransmissions, or even know the timing of them)\n- Would be good to do some measurement\n- A recommendation is maybe okay, but no need to guarantee",
+          "createdAt": "2025-07-24T09:02:11Z",
+          "updatedAt": "2025-07-24T09:02:11Z"
         }
       ]
     },
@@ -798,9 +805,31 @@
       "labels": [],
       "body": "This is an open question I do not have an answer for yet - I guess the arguments can be made for both approaches..\r\n\r\nSo if an IPv6-mostly network provides DNS64, then a dual-stack host talking to an IPv4-only destination would have a choice between:\r\n\r\n* a synthesized IPv6 address which will be routed via NAT64\r\n* a native IPv4 path\r\n\r\n(we have a similar discussion in https://datatracker.ietf.org/doc/draft-link-v6ops-claton/: shall CLAT be enabled if both PLAT and IPv4 are available?)",
       "createdAt": "2024-03-18T23:06:41Z",
-      "updatedAt": "2024-03-18T23:06:41Z",
+      "updatedAt": "2025-07-24T09:32:49Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "IETF 123: \n- Clients may not really see this, since v6 (real or synthesized) just looks like v6, and v4 looks like dual stack.\n- There exist v6 addresses that are less preferred than v4\n- If you're v6 mostly, then you know that you're v6 mostly and you can do the right thing\n- Cases: v6 only and dual stack",
+          "createdAt": "2025-07-24T08:59:44Z",
+          "updatedAt": "2025-07-24T08:59:44Z"
+        },
+        {
+          "author": "MikeBishop",
+          "authorAssociation": "NONE",
+          "body": "I think this is mostly moot. When NAT64 is in use, the conversion occurs below the application doing HE. I think there are only two real-world cases here, no?\n\n- The client sees itself as IPv6-only (and DNS64 possibly exists), in which case it only makes AAAA requests, makes IPv6 connections, and what happens with those is a network issue the client doesn't need to know about. The DNS64 *shouldn't* generate NAT64 addresses if native AAAA records exist, but the client isn't concerned with that.\n- The client sees itself as dual-stack, but underneath its IPv4 address is CLAT. The client should prefer IPv6 addresses, but if it selects an IPv4 address the network stack will synthesize an IPv6 address underneath it.\n\nThe question really only comes up if a) DNS64 is present, b) DNS64 is broken and synthesizing addresses despite the presence of authoritative AAAA records, c) the client knows the Pref64 and can recognize that the DNS64 is broken. That's niche enough I don't think we need to care.\n\nIf the implementation of a to-be-deprecated protocol is misbehaving, that's the network's problem.",
+          "createdAt": "2025-07-24T09:06:37Z",
+          "updatedAt": "2025-07-24T09:06:37Z"
+        },
+        {
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "body": "Actually, I think this document should say that HE3-capable client should **avoid using CLAT** as much as possible. All the provisions in section 8 are only useful if there is no CLAT. If there is CLAT present, the whole section 8 can be ignored.\n\nI am very in favour of using CLAT as little as possible. Applications should create native IPv6 as much as possible so I think section 8 is beneficial. But that also means that the HE3 library somehow has to detect that the default gateway is CLAT and if it is the case, avoid generating any native IPv4 connections. However, it should still support establishing native IPv4 packets towards (split-mode) VPNs.",
+          "createdAt": "2025-07-24T09:32:49Z",
+          "updatedAt": "2025-07-24T09:32:49Z"
+        }
+      ]
     },
     {
       "number": 43,
@@ -1176,7 +1205,7 @@
       "labels": [],
       "body": "The SVCB SvcPriority was designed to guide a simple client that is connecting \"from scratch\", with no further information about the service or the network. In that context, the function of SvcPriority is fairly clear.\r\n\r\nFor clients with a memory of prior connection attempts, the function of SvcPriority is less clear.  If the most preferred endpoint failed recently, can the client skip it the next time?\r\n\r\nAnd what about highly optimized clients that are racing multiple connections?  Can they race connections across multiple SvcPriorities, or should they wait until all the priority 1 endpoints fail?\r\n\r\nEven in the simple case, the definition of \"failure\" is somewhat nebulous.  TCP (and QUIC) connection initiation generally relies on exponential backoff that may not give up until multiple minutes have passed.  Surely we don't want clients to wait 100+ seconds before trying the priority 2 endpoint...\r\n\r\nThese questions are obviously relevant to mobile- and browser-like clients.  They're also increasingly relevant to DNS servers, as the DELEG group is considering SVCB-based definitions of DNS delegation.  DNS resolvers already use complex heuristics to estimate the latency and reliability of each nameserver, in order to select the best one (while still monitoring the others).\r\n\r\n@enygren @mikebishop",
       "createdAt": "2024-11-13T23:16:35Z",
-      "updatedAt": "2025-07-19T11:01:25Z",
+      "updatedAt": "2025-07-24T09:08:08Z",
       "closedAt": null,
       "comments": [
         {
@@ -1206,6 +1235,13 @@
           "body": "#85 does address most of this, but it doesn't stop clients from racing options to the lower-priority services after trying all of the higher-priority services first. I don't think we should stop clients from doing that, but we should confirm with the WG.",
           "createdAt": "2025-07-19T11:01:25Z",
           "updatedAt": "2025-07-19T11:01:25Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "IETF 123: \n- If you have 1 thing in the top priority and it's not responsive, then you did that to yourself\n- There should be a strong bias towards higher priority options, but not required to wait for full failure\n\n- Not necessary to be super strict to priorities if you have better information, but try to avoid being permanently stuck because of a small number of bad measurements",
+          "createdAt": "2025-07-24T09:05:29Z",
+          "updatedAt": "2025-07-24T09:08:08Z"
         }
       ]
     },
@@ -1305,7 +1341,7 @@
       "labels": [],
       "body": "> it SHOULD add another Destination Address Selection rule between the RTT rule and rule 9, which prefers used addresses over unused ones\n\nFor as long as you retain that information, this rule will mean that clients are sticky.  That has some interesting implications for server operators who might find it is difficult to shift load away from a server instance that is under duress as a result, for instance.  Obviously, a server that is sufficiently stressed will likely be slower, but the attempt pacing might be long enough that you would need to be under a lot of load for that to happen.\n\nShould this instead de-emphasize \"used successfully\", except for when there are no higher order decision factors.",
       "createdAt": "2025-03-18T10:33:20Z",
-      "updatedAt": "2025-07-19T11:04:11Z",
+      "updatedAt": "2025-07-24T10:33:29Z",
       "closedAt": null,
       "comments": [
         {
@@ -1314,6 +1350,13 @@
           "body": "Now that we group different service priorities into their own buckets (see #85), we'd only have \"stickiness\" within a particular priority. I think that addresses the notion of \"no higher order decision factors\", but we should confirm.",
           "createdAt": "2025-07-19T11:04:11Z",
           "updatedAt": "2025-07-19T11:04:11Z"
+        },
+        {
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "body": "Even without any SVCB records, infinite stickiness is still an operational problem (and also a privacy problem, #90).  Consider a domain with two IP addresses, one of which experiences an outage.  If all the clients stick to the address A (because they have history showing that address B is broken), then load remains imbalanced even after the outage is resolved.\n\nThe text needs some guarantee that \"wise\" and \"fresh\" client behaviors will converge with some reasonable time constant.  Possible behaviors include:\n* Expiring history entries after a specified retention window.  (10 minutes? One week?  Hard to choose a value that makes everyone happy.) Any connection configuration whose history state is \"unknown\" must have higher prefernce than the configurations with \"known\" history.\n* Clearing all relevant history with probably at least 5% on each connection attempt.\n* Making the first connection attempt in each priority group history-free.\n* Complicated combinations of the above...\n\nI doubt we can agree on a precise behavior, but we should at least impose a requirement like:\n\n> Clients that apply history-based preference MUST ensure that clients with different histories will eventually converge toward the same behaviors.\n\nIdeally, we would also give some guidance about the timescale, like:\n\n> Convergence SHOULD occur on a timescale no longer than the sum of the applicable DNS TTLs and the typical connection lifetime.\n\n(That seems like the longest \"natural time constant\" we have in the system.)",
+          "createdAt": "2025-07-24T10:31:06Z",
+          "updatedAt": "2025-07-24T10:33:29Z"
         }
       ]
     },
@@ -1346,6 +1389,86 @@
       "body": "There might be use cases when applications want to override what [successful connection establishment](https://www.ietf.org/archive/id/draft-ietf-happy-happyeyeballs-v3-01.html#name-determining-successful-conn) means. \nAs a concrete example, an application may want to treat certain applications layer errors as failed connection attempt to retry with a less preferable protocol or address family to work around buggy intermediaries or customers who don\u2019t get their ip-level allow lists updated for IPv6.\nShould we mention this in the text?",
       "createdAt": "2025-07-19T16:14:37Z",
       "updatedAt": "2025-07-19T16:15:56Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 89,
+      "id": "I_kwDOKH7CuM7CQUqP",
+      "title": "Connection Escalator mode",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/89",
+      "state": "OPEN",
+      "author": "bemasc",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently, HEv3 is defined as a procedure that produces a single connection as its output.  This does not model the actual behavior of optimized HTTP clients, which continue to race QUIC and TCP even after TCP \"wins\" and the first HTTP request is sent, so that the QUIC connection can be used for the next HTTP request.\n\nI would like to see a mode of HE that is a \"connection escalator\": its output is an asynchronous finite sequence of connections, each more preferred than the last.\n\nThe charter requires that HEv3 \"ends with a single established connection to a server\".  Like the current specification, this is true of a connection escalator: less preferred connections are closed in favor of more-preferred connections as they become available.",
+      "createdAt": "2025-07-24T08:48:54Z",
+      "updatedAt": "2025-07-24T08:48:54Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 90,
+      "id": "I_kwDOKH7CuM7CRPbe",
+      "title": "IP Memory Supercookie",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/90",
+      "state": "OPEN",
+      "author": "bemasc",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "If HE remembers the fastest (or workingest) IP address for each domain, this creates a supercookie.  A website could send subresource fetches to a few dozen domains, each with 2 IPv6 addresses (all pointed to the same server), and clients would \"stick\" to one or the other at random, resulting in 1 bit of identification entropy per domain.\n\nTo fix this, all HE connectivity history needs to be wiped when cookies (etc.) are cleared.",
+      "createdAt": "2025-07-24T10:00:55Z",
+      "updatedAt": "2025-07-24T12:49:10Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The other way to view this is that the state and history about previous races is isolated to the same boundaries of caching that cookies are (and when cookies flush that cache state is all reset together). That's our implementation's current approach. ",
+          "createdAt": "2025-07-24T12:49:10Z",
+          "updatedAt": "2025-07-24T12:49:10Z"
+        }
+      ]
+    },
+    {
+      "number": 91,
+      "id": "I_kwDOKH7CuM7CWj0l",
+      "title": "Section 8 needs major adjustments",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/91",
+      "state": "OPEN",
+      "author": "oskar456",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I think there are some issues with section 8 (Supporting IPv6-Mostly and IPv6-Only Networks). Some of them are already discussed in issues #32, #42, and #87, maybe others but I think a complex review of this section is necessary.\n\nHere are my notes of what I think is not correct:\n  \n -  The title should not mention IPv6-mostly but should mention NAT64. IPv6-mostly refers to the network setup side, on the host this manifests itself either as dual stack (if DHCP Option 108 is not supported) or as IPv6-only. If the IPv6-mostly network is in the dual stack mode then nothing from Section 8 applies.\n - Section 8 introduction mentions that it is intended only for platforms not supporting 464XLAT. In a long term, this would be possibly a very small minority of platforms. So I wonder whether it is worth implementing all the features from this section for only a very tiny amount of use cases. Having said that I believe that even on platforms with CLAT, the HE library should instead use the mitigations from Section 8 and avoid using CLAT (I believe this is the way the Apple ecosystem works already).\n - \"A simple heuristic to detect one of these networks is to check if the network offers routable IPv6 addressing, does not offer routable IPv4 addressing, and offers a DNS resolver address.\" - that does detect IPv6-only network but not NAT64. The whole section is about mitigating issues with accessing IPv4 resources over NAT64, so the heuristic here needs to somehow detect NAT64 presence.\n - Section 8.2 \"Discovering and Utilizing PREF64\" should probably be the first one as this forms the foundation of detecting NAT64 network and also obtaining enough data to perform other mitigations.\n - Section 8.3 \"Supporting DNS64\" is wrong: \"If PREF64 is not available and the NAT64 prefix cannot be discovered, clients SHOULD assume the network is relying on DNS64 for IPv4-to-IPv6 address synthesis\" -  if the NAT64 prefix cannot be discovered, then the client cannot assume anything else than that there is no NAT64 in the network. Without discovered NAT64 prefix, all the mitigations mentioned in Section 8 cannot work. I believe this section could be easily dropped, it does not bring any new information.\n - It is not clear whether the mitigation of the VPN issue in Section 8.5 should also use \"Last Resort Local Synthesis Delay\" or not.\n - I think there should be a section summarising the algorithm, because just from the text, it is hard to figure out what exactly should happen. I am still wrapping my head around a proper solution supporting at the same time dual-stack, NAT64/DNS64 and NAT64/PREF64 (without DNS64) - that last one is quite tricky.\n\nThe issue is that if there would be network with NAT64 without DNS64, under current text, every single connection to IPv4-only destination would be penalised by \"Last Resort Local Synthesis Delay\". This is unacceptable. There might be an exception that you don't apply this delay if AAAA query returned empty answer, but you will still be dependant on every AAAA query properly finishing.\nI don't think the \"Last Resort Local Synthesis Delay\" is necessary. If the system uses 464XLAT, it would do A queries for every single hostname without any delay and it would not cause any overload of the DNS. \n\nMaybe the proper solution would be \"undo and redo DNS64\" like this:\n  1. detect PREF64 (either RA option or RFC 7050)\n  2. no PREF64 - business as usual.\n  3. if there is PREF64:\n      a. Start doing A queries even if there is no IPv4 connectivity\n      b. Every time you receive AAAA answer, try to undo the DNS64. If it was possible, consider both A and AAAA queries finished with no IPv6 addresses and IPv4 addresses extracted from the AAAA answers.\n      c. For each connection towards an IPv4 destination:\n           1. if covered via a specific route not going towards CLAT, send natively (this is needed for the VPN case)\n           2. if covered only by route towards CLAT, combine the destination with the detected PREF64 and create IPv6 packet.",
+      "createdAt": "2025-07-24T17:39:35Z",
+      "updatedAt": "2025-07-25T07:35:41Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "body": "I agree that the section would benefit from a major rewrite in a mood of renaming the section to __Supporting environments with NAT64, DNS64 and CLAT__ and describing it as pre-processing step for the addresses. With this, I guess we can slay issue #42, #87 ans #91 (this one).",
+          "createdAt": "2025-07-25T07:35:41Z",
+          "updatedAt": "2025-07-25T07:35:41Z"
+        }
+      ]
+    },
+    {
+      "number": 92,
+      "id": "I_kwDOKH7CuM7CWr49",
+      "title": "Define connectivity properly",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/92",
+      "state": "OPEN",
+      "author": "oskar456",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The document mentions \"IPv4 connectivity\" and \"IPv6 connectivity\" in various places without defining what is considered having connectivity.\n\nIn Section 4.1:\n > When a client has both IPv4 and IPv6 connectivity, it needs to send out queries for both AAAA and A records. On a network with only IPv4 connectivity, it will send a query for A records. On a network with only IPv6 connectivity, the client will either send out queries for both AAAA and A records, or only a query for AAAA records, depending on the network configuration.\n\nHere, the connectivity should be considered present if there is at least one route in the routing table towards a non-link-local destination. It should not be necessary to have the default route to consider connectivity to be present. This is particularly important for split-mode VPNs that push only some IPv6 routes to otherwise IPv4-only host.\n\nIn Section 4.2:\n> On networks that allow connectivity on both IPv6 and IPv4, IPv6 is assumed to be the preferred address family. If only one of IPv6 or IPv4 offers connectivity, that address family should be considered the preferred address family for progressing the algorithm.\n\nHere, it would be appropriate to only consider IPv6 default route, that is: \"If host has IPv6 default route, then IPv6 is assumed to be the preferred address family. Otherwise, IPv4 should be the preferred address family.\"\nThe reason for this is that if there is not IPv6 default route, it is safe to assume that most attempts to connect over IPv6 would not succeed. Considering IPv6 in that case the preferred address family would lead to unnecessary excessive usage of \"resolution time delay\".",
+      "createdAt": "2025-07-24T17:51:16Z",
+      "updatedAt": "2025-07-24T17:51:16Z",
       "closedAt": null,
       "comments": []
     }
@@ -5934,6 +6057,40 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 93,
+      "id": "PR_kwDOKH7CuM6go6LF",
+      "title": "Try of minor rewrite of Transition Technology section",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/93",
+      "state": "OPEN",
+      "author": "philsbln",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "This tries to address issues #42 #87 #91\r\n\r\nIt is merely meant as a discussion starter and my open more questions than it answers,\r\nbut should reflect the discussions @oskar456 and I had.\r\n\r\nBasic assumptions:\r\n - We want to treat synthesized NAT64 address as IPv4\r\n - NAT64 address synthesis makes sense when knowing the NAT64 prefix\r\n - If we have PREF64 and DNS64, that's kind of double and we want to adjust for that\r\n ",
+      "createdAt": "2025-07-25T14:10:03Z",
+      "updatedAt": "2025-07-26T10:23:34Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
+      "headRepository": "philsbln/draft-happy-eyeballs-v3",
+      "headRefName": "philsbln-trans46-minor-rewrite",
+      "headRefOid": "84cd60845856fddad2951faa2733c4bc0c2a4573",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "body": "Hey @philsbln, thank you for this PR. I think it goes in the right direction but it still keep some issues mentioned in #91 open. I am trying now to rephrase section 8 in a more dramatic way. I will come back soon with a competing PR.",
+          "createdAt": "2025-07-26T10:23:34Z",
+          "updatedAt": "2025-07-26T10:23:34Z"
+        }
+      ],
+      "reviews": []
     }
   ]
 }
