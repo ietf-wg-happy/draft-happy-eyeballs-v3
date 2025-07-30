@@ -613,12 +613,10 @@ Advertisement.
 
 ## Handling of IPv4 connections {#ipv4}
 
-When PREF64 is discovered, the host should consider this as a signal of the
-presence of IPv4 connectivity and therefore should start doing A queries.
+When PREF64 is discovered, dual-stack connectivity can be assumed and the Happy Eyeballs engine should query DNS for AAAA and A records.
 
-Whenever an IPv4 connection is requested, either as a result of A query, as an
-IPv4 hint in SVCB record or by passing in an IPv4 address literal, the host does
-the following:
+All IPv4 based candidates, independent whether they came from an IPv4 address literal,
+hint in SVCB record, or were result of a query for A records, should be pre-processed in the following way:
 
   1. Consult IPv4 routing table. If there is a valid route towards requested
      destination, send native IPv4 data.
