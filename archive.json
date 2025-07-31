@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-27T02:11:46.854385+00:00",
+  "timestamp": "2025-07-31T02:04:52.376781+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -6070,7 +6070,7 @@
       "labels": [],
       "body": "This tries to address issues #42 #87 #91\r\n\r\nIt is merely meant as a discussion starter and my open more questions than it answers,\r\nbut should reflect the discussions @oskar456 and I had.\r\n\r\nBasic assumptions:\r\n - We want to treat synthesized NAT64 address as IPv4\r\n - NAT64 address synthesis makes sense when knowing the NAT64 prefix\r\n - If we have PREF64 and DNS64, that's kind of double and we want to adjust for that\r\n ",
       "createdAt": "2025-07-25T14:10:03Z",
-      "updatedAt": "2025-07-26T10:23:34Z",
+      "updatedAt": "2025-07-29T21:47:45Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
@@ -6088,9 +6088,121 @@
           "body": "Hey @philsbln, thank you for this PR. I think it goes in the right direction but it still keep some issues mentioned in #91 open. I am trying now to rephrase section 8 in a more dramatic way. I will come back soon with a competing PR.",
           "createdAt": "2025-07-26T10:23:34Z",
           "updatedAt": "2025-07-26T10:23:34Z"
+        },
+        {
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "body": "> Hey @philsbln, thank you for this PR. I think it goes in the right direction but it still keep some issues mentioned in #91 open. I am trying now to rephrase section 8 in a more dramatic way. I will come back soon with a competing PR.\r\n\r\nThe competing PR is #94. ",
+          "createdAt": "2025-07-29T21:47:45Z",
+          "updatedAt": "2025-07-29T21:47:45Z"
         }
       ],
       "reviews": []
+    },
+    {
+      "number": 94,
+      "id": "PR_kwDOKH7CuM6hQQbS",
+      "title": "Rewrite Supporting IPv6-only networks section",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/94",
+      "state": "OPEN",
+      "author": "oskar456",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "This simplifies the section about IPv6-only networks while hopefully addressing comments from #91:\r\n\r\n - Remove mentions of IPv6-mostly, since the host where Happy Eyeballs runs will never be IPv6-mostly, it would be either Dual-stack or IPv6-only.\r\n - Use the presence of PREF64 as the only detection mechanism of NAT64\r\n - Note that RFC 7050 should be used, but only when RFC 8781 failed\r\n - Prescribe handling of IPv4 addresses by first looking up the routing table (needed for VPNs) and then synthesizing IPv6. This already covers the former text on IPv4 literals, broken AAAA records and VPN case\r\n - Add section on dealing with DNS64: basically detect and undo since it is not needed for HE.\r\n - Removed the `Last Resort Local Synthesis Delay` configurable variable. If we want HE to function properly without DNS64, every IPv4-only destination looks exactly like \"Broken AAAA record\" case and we definitely don't want 2 second delay every single time.",
+      "createdAt": "2025-07-29T21:43:48Z",
+      "updatedAt": "2025-07-30T08:40:04Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
+      "headRepository": "oskar456/draft-happy-eyeballs-v3",
+      "headRefName": "oc-fix-section8",
+      "headRefOid": "e7512aa5f77f2476d581287caecf9b0d9585ac7b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM62_u64",
+          "commit": {
+            "abbreviatedOid": "d7a9b63"
+          },
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "I like the rewrite, but it still needs refining. \r\n\r\nWe let's have the editors take a look at this one and #93 and have them decide which one would be the better starting point. Either one works for me.",
+          "createdAt": "2025-07-30T07:04:46Z",
+          "updatedAt": "2025-07-30T07:16:51Z",
+          "comments": [
+            {
+              "originalPosition": 71,
+              "body": "Too complicated\u2026\r\n```suggestion\r\nWhen PREF64 is discovered, dual-stack connectivity can be assumed and the Happy Eyeballs engine should query DNS for AAAA and A records.\r\n```",
+              "createdAt": "2025-07-30T07:04:47Z",
+              "updatedAt": "2025-07-30T07:16:51Z"
+            },
+            {
+              "originalPosition": 75,
+              "body": "```suggestion\r\nAll IPv4 based candidates, independent whether they came from an IPv4 address literal,\r\nhint in SVCB record, or were result of a query for A records, should be pre-processed in the following way:\r\n```",
+              "createdAt": "2025-07-30T07:08:50Z",
+              "updatedAt": "2025-07-30T07:16:51Z"
+            },
+            {
+              "originalPosition": 78,
+              "body": "```suggestion\r\n  1. Consult IPv4 routing table. If there is a valid route towards requested\r\n     destination, that is not a CLAT device, send native IPv4 data.\r\n```",
+              "createdAt": "2025-07-30T07:13:21Z",
+              "updatedAt": "2025-07-30T07:16:51Z"
+            },
+            {
+              "originalPosition": 175,
+              "body": "```suggestion\r\nThe IPv6 addresses created\r\n```",
+              "createdAt": "2025-07-30T07:13:57Z",
+              "updatedAt": "2025-07-30T07:16:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM63AnLG",
+          "commit": {
+            "abbreviatedOid": "d7a9b63"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-30T08:21:50Z",
+          "updatedAt": "2025-07-30T08:21:51Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "I don't agree here. Figuring out whether a device is CLAT is not something that can be easily done in a portable way.  Hence the MAY in my text. It can be easily done in HE implementation inside the operating system which also takes care of the CLAT, but it might be virtually impossible to detect that the device is CLAT if this is a HE library embedded in something like Firefox or Chrome.",
+              "createdAt": "2025-07-30T08:21:50Z",
+              "updatedAt": "2025-07-30T08:21:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM63A2Jc",
+          "commit": {
+            "abbreviatedOid": "d7a9b63"
+          },
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-07-30T08:40:04Z",
+          "updatedAt": "2025-07-30T08:40:04Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "I am less pessimistic here\u2026 All host based CLAT Implementations i know use a source address from 192.0.0.0/29, as recommended by [draft-ietf-v6ops-claton/](https://datatracker.ietf.org/doc/draft-ietf-v6ops-claton/), so you can check the source address (which is the only way to query the routing table anyway) and have a clear signal. ",
+              "createdAt": "2025-07-30T08:40:04Z",
+              "updatedAt": "2025-07-30T08:40:04Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
