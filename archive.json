@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-31T02:04:52.376781+00:00",
+  "timestamp": "2025-09-04T01:40:13.228629+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -805,7 +805,7 @@
       "labels": [],
       "body": "This is an open question I do not have an answer for yet - I guess the arguments can be made for both approaches..\r\n\r\nSo if an IPv6-mostly network provides DNS64, then a dual-stack host talking to an IPv4-only destination would have a choice between:\r\n\r\n* a synthesized IPv6 address which will be routed via NAT64\r\n* a native IPv4 path\r\n\r\n(we have a similar discussion in https://datatracker.ietf.org/doc/draft-link-v6ops-claton/: shall CLAT be enabled if both PLAT and IPv4 are available?)",
       "createdAt": "2024-03-18T23:06:41Z",
-      "updatedAt": "2025-07-24T09:32:49Z",
+      "updatedAt": "2025-09-03T11:30:45Z",
       "closedAt": null,
       "comments": [
         {
@@ -828,6 +828,13 @@
           "body": "Actually, I think this document should say that HE3-capable client should **avoid using CLAT** as much as possible. All the provisions in section 8 are only useful if there is no CLAT. If there is CLAT present, the whole section 8 can be ignored.\n\nI am very in favour of using CLAT as little as possible. Applications should create native IPv6 as much as possible so I think section 8 is beneficial. But that also means that the HE3 library somehow has to detect that the default gateway is CLAT and if it is the case, avoid generating any native IPv4 connections. However, it should still support establishing native IPv4 packets towards (split-mode) VPNs.",
           "createdAt": "2025-07-24T09:32:49Z",
           "updatedAt": "2025-07-24T09:32:49Z"
+        },
+        {
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "body": "Should Happl Eyeballs define this behavior or is this an update to RFC6724\u2026 de-prioritization of NAT64 well-known prefix against normal IPv6 GUA and introducing different scopes for RFC1918 and non RFC1918 would be the cleanest solution.\nSame goes for detecting PREF64\u2026",
+          "createdAt": "2025-09-03T11:30:45Z",
+          "updatedAt": "2025-09-03T11:30:45Z"
         }
       ]
     },
@@ -1469,6 +1476,22 @@
       "body": "The document mentions \"IPv4 connectivity\" and \"IPv6 connectivity\" in various places without defining what is considered having connectivity.\n\nIn Section 4.1:\n > When a client has both IPv4 and IPv6 connectivity, it needs to send out queries for both AAAA and A records. On a network with only IPv4 connectivity, it will send a query for A records. On a network with only IPv6 connectivity, the client will either send out queries for both AAAA and A records, or only a query for AAAA records, depending on the network configuration.\n\nHere, the connectivity should be considered present if there is at least one route in the routing table towards a non-link-local destination. It should not be necessary to have the default route to consider connectivity to be present. This is particularly important for split-mode VPNs that push only some IPv6 routes to otherwise IPv4-only host.\n\nIn Section 4.2:\n> On networks that allow connectivity on both IPv6 and IPv4, IPv6 is assumed to be the preferred address family. If only one of IPv6 or IPv4 offers connectivity, that address family should be considered the preferred address family for progressing the algorithm.\n\nHere, it would be appropriate to only consider IPv6 default route, that is: \"If host has IPv6 default route, then IPv6 is assumed to be the preferred address family. Otherwise, IPv4 should be the preferred address family.\"\nThe reason for this is that if there is not IPv6 default route, it is safe to assume that most attempts to connect over IPv6 would not succeed. Considering IPv6 in that case the preferred address family would lead to unnecessary excessive usage of \"resolution time delay\".",
       "createdAt": "2025-07-24T17:51:16Z",
       "updatedAt": "2025-07-24T17:51:16Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 95,
+      "id": "I_kwDOKH7CuM7Jaefm",
+      "title": "Address sorting should include all addresses, including already attempted",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/95",
+      "state": "OPEN",
+      "author": "kvkln",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The document is not clear in this regard, in my opinion. If a client performs address sorting only on the remaining addresses (not those already attempted), it can easily create a situation in which HE doesn't behave as expected.\n\nExample:\nThe client receives a negative HTTPS response and a AAAA response containing two IPv6 addresses 2001:db8::2 and 2001:db8::4.\nThis is sufficient to skip the Resolution Delay, so the client continues to address sorting and then starts a connection attempt to let's say 2001:db8::2.\nThen, the response to the A query arrives, containing an IPv4 address 192.0.2.1.\nIf we now perform the address grouping and sorting algorithm only on the remaining addresses (2001:db8::4 and 192.0.2.1), 2001:db8::4 would be sorted before 192.0.2.1.\nThis means that the IPv4 address will be attempted third, not second as intended. For more complex scenarios, the result might be worse.\n\nFurther, I think that already attempted addresses should always be sorted at the beginning of the list, even if they are less preferred than the newly added addresses. I don't have an easy example for this, but if a later arriving DNS response contains an IPv6 address that has higher priority than the previously attempted IPv6 address, it might result in the same situation as the example above.",
+      "createdAt": "2025-09-03T09:52:49Z",
+      "updatedAt": "2025-09-03T09:52:49Z",
       "closedAt": null,
       "comments": []
     }
