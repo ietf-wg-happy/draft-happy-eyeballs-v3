@@ -496,9 +496,12 @@ current recommended value is 2 seconds.
 ## Determining successful connection establishment {#success}
 
 The determination of when a connection attempt has successfully
-completed (and other attempts can be cancelled) depends on the
-protocols being used to establish a connection. This can involve one
-or more protocol handshakes.
+completed (and other attempts can be cancelled) ultimately depends
+on the client application's interpretation of the connection
+state being ready to use. This will generally include at least
+the transport-level handshake with remote endpoint (such as
+the TCP or QUIC handshake), but can involve other higher-level
+handshakes or state checks as well.
 
 Client connections that use TCP only (without TLS or another protocol
 on top, such as for unencrypted HTTP connections) will determine
@@ -510,8 +513,26 @@ attempts. This is particularly useful for networks in which a
 TCP-terminating proxy might be causing TCP handshakes to succeed
 quickly, even though end-to-end connectivity with the TLS-terminating
 server will fail. QUIC connections inherently include a secure
-handshake in their main handshakes, and thus only need to wait for a
-single handshake to complete.
+handshake in their main handshakes, and thus usually only need to
+wait for a single handshake to complete.
+
+Beyond TCP, TLS, and/or QUIC handshakes, clients may also wait for
+other requirements to be met before determining that the connection
+establishment was successful.
+
+In cases where the connection establishment determination goes beyond
+the initial transport handshake, the timer that is set to the
+"Connection Attempt Delay" to determine when to start the next attempt
+ought to be adjusted after the initial transport handshake is completed.
+When the connection establishment makes progress, but has not completed,
+the timer SHOULD be extended to a new value that represents an estimated
+time for the full connection establishment to complete.
+
+For example, consider a case where connection establishment involves
+both a TCP handshake and a TLS handshake. If the timer is initially set
+to be roughly at the time when a TCP SYN packet would be retransmitted,
+and the TCP handshake completes before the timer fires, the timer should
+be adjusted to allow for the time the TLS handshake could complete in.
 
 While transport layer handshakes generally do not have restrictions on
 attempts to establish a connection, some cryptographic handshakes may
