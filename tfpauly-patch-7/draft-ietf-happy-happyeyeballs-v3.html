@@ -21,7 +21,7 @@ requirements for algorithms that reduce this user-visible delay and
 provides an example algorithm, referred to as "Happy Eyeballs". This
 document updates the algorithm description in RFC 8305. 
     ' name="description">
-<meta content="xml2rfc 3.29.0" name="generator">
+<meta content="xml2rfc 3.30.2" name="generator">
 <meta content="ipv6" name="keyword">
 <meta content="ipv4" name="keyword">
 <meta content="racing" name="keyword">
@@ -31,19 +31,19 @@ document updates the algorithm description in RFC 8305.
 <meta content="ech" name="keyword">
 <meta content="draft-ietf-happy-happyeyeballs-v3-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.29.0
+  xml2rfc 3.30.2
     Python 3.12.11
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.3.8
+    platformdirs 4.4.0
     pycountry 24.6.1
     PyYAML 6.0.2
-    requests 2.32.4
+    requests 2.32.5
     setuptools 80.9.0
-    wcwidth 0.2.13
+    wcwidth 0.2.14
 -->
 <link href="draft-ietf-happy-happyeyeballs-v3.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1062,11 +1062,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Happy Eyeballs v3</td>
-<td class="right">July 2025</td>
+<td class="right">October 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 4 January 2026</td>
+<td class="center">Expires 18 April 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1079,12 +1079,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-happy-happyeyeballs-v3-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-07-03" class="published">3 July 2025</time>
+<time datetime="2025-10-15" class="published">15 October 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-01-04">4 January 2026</time></dd>
+<dd class="expires"><time datetime="2026-04-18">18 April 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1155,7 +1155,7 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 4 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 18 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1194,18 +1194,41 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
             <p id="section-toc.1-1.3.1" class="keepWithNext"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-overview" class="internal xref">Overview</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
-            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-hostname-resolution-query-h" class="internal xref">Hostname Resolution Query Handling</a></p>
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-hostname-resolution" class="internal xref">Hostname Resolution</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
-                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-handling-multiple-dns-serve" class="internal xref">Handling Multiple DNS Server Addresses</a></p>
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-sending-dns-queries" class="internal xref">Sending DNS Queries</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-handling-dns-answers-asynch" class="internal xref">Handling DNS Answers Asynchronously</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.1">
+                    <p id="section-toc.1-1.4.2.2.2.1.1"><a href="#section-4.2.1" class="auto internal xref">4.2.1</a>.  <a href="#name-resolving-svcb-https-aliase" class="internal xref">Resolving SVCB/HTTPS Aliases and Targets</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.2">
+                    <p id="section-toc.1-1.4.2.2.2.2.1"><a href="#section-4.2.2" class="auto internal xref">4.2.2</a>.  <a href="#name-examples" class="internal xref">Examples</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-handling-new-answers" class="internal xref">Handling New Answers</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
+                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-handling-multiple-dns-serve" class="internal xref">Handling Multiple DNS Server Addresses</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-sorting-addresses" class="internal xref">Sorting Addresses</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-grouping-and-sorting-addres" class="internal xref">Grouping and Sorting Addresses</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
-                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-sorting-based-on-priority" class="internal xref">Sorting Based on Priority</a></p>
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-grouping-by-application-pro" class="internal xref">Grouping By Application Protocols and Security Requirements</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-grouping-by-service-priorit" class="internal xref">Grouping By Service Priority</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-sorting-destination-address" class="internal xref">Sorting Destination Addresses Within Groups</a></p>
 </li>
             </ul>
 </li>
@@ -1224,16 +1247,22 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
             <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-dns-answer-changes-during-h" class="internal xref">DNS Answer Changes During Happy Eyeballs Connection Setup</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-supporting-ipv6-only-networ" class="internal xref">Supporting IPv6-Only Networks with NAT64 and DNS64</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-supporting-ipv6-mostly-and-" class="internal xref">Supporting IPv6-Mostly and IPv6-Only Networks</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
                 <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-ipv4-address-literals" class="internal xref">IPv4 Address Literals</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
-                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-hostnames-with-broken-aaaa-" class="internal xref">Hostnames with Broken AAAA Records</a></p>
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-discovering-and-utilizing-p" class="internal xref">Discovering and Utilizing PREF64</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
-                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-virtual-private-networks" class="internal xref">Virtual Private Networks</a></p>
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-supporting-dns64" class="internal xref">Supporting DNS64</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.4">
+                <p id="section-toc.1-1.8.2.4.1"><a href="#section-8.4" class="auto internal xref">8.4</a>.  <a href="#name-hostnames-with-broken-aaaa-" class="internal xref">Hostnames with Broken AAAA Records</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.5">
+                <p id="section-toc.1-1.8.2.5.1"><a href="#section-8.5" class="auto internal xref">8.5</a>.  <a href="#name-virtual-private-networks" class="internal xref">Virtual Private Networks</a></p>
 </li>
             </ul>
 </li>
@@ -1343,17 +1372,17 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 distinct phases:<a href="#section-3-1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-3-2">
 <li id="section-3-2.1">
-          <p id="section-3-2.1.1">Initiation of asynchronous DNS queries (<a href="#query" class="auto internal xref">Section 4</a>)<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.1.1">Asynchronous resolution of a hostname into destination addresses (<a href="#resolution" class="auto internal xref">Section 4</a>)<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-3-2.2">
-          <p id="section-3-2.2.1">Sorting of resolved destination addresses (<a href="#sorting" class="auto internal xref">Section 5</a>)<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.2.1">Sorting of the resolved destination addresses (<a href="#sorting" class="auto internal xref">Section 5</a>)<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-3-2.3">
           <p id="section-3-2.3.1">Initiation of asynchronous connection attempts (<a href="#connections" class="auto internal xref">Section 6</a>)<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-3-2.4">
-          <p id="section-3-2.4.1">Establishment of one connection, which cancels all other attempts
-(<a href="#connections" class="auto internal xref">Section 6</a>)<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.4.1">Successful establishment of one connection and cancellation of
+other attempts (<a href="#connections" class="auto internal xref">Section 6</a>)<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
 <p id="section-3-3">Note that this document assumes that the preference policy for the
@@ -1367,81 +1396,166 @@ making it quicker compared to TCP <span>[<a href="#QUIC" class="cite xref">QUIC<
 recommendations in this document can be easily adapted.<a href="#section-3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="query">
+<div id="resolution">
 <section id="section-4">
-      <h2 id="name-hostname-resolution-query-h">
-<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-hostname-resolution-query-h" class="section-name selfRef">Hostname Resolution Query Handling</a>
+      <h2 id="name-hostname-resolution">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-hostname-resolution" class="section-name selfRef">Hostname Resolution</a>
       </h2>
-<p id="section-4-1">When a client has both IPv4 and IPv6 connectivity and is trying to
-establish a connection with a named host, it needs to send out both
-AAAA and A DNS queries. Both queries <span class="bcp14">SHOULD</span> be made as soon after
-one another as possible, with the AAAA query made first and
-immediately followed by the A query.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">Additionally, if the client also wants to receive SVCB / HTTPS
-resource records <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span>, it <span class="bcp14">SHOULD</span> issue the SVCB query
-immediately before the AAAA and A queries (prioritizing the SVCB query
-since it can also include address hints). If the client has only one
-of IPv4 or IPv6 connectivity, it still issues the SVCB query prior to
-whichever AAAA or A query is appropriate. Note that upon
-receiving a SVCB answer, the client might need to issue futher
-AAAA and/or A queries to resolve the service name included in
-the record.<a href="#section-4-2" class="pilcrow">¶</a></p>
-<p id="section-4-3">Implementations <span class="bcp14">SHOULD NOT</span> wait for all answers to
-return before attempting connection establishment. If one query
-fails to return or takes significantly longer to return, waiting for
-the other answers can significantly delay the connection
-establishment of the first one. Therefore, the client <span class="bcp14">SHOULD</span> treat
-DNS resolution as asynchronous. Note that if the platform does not
-offer an asynchronous DNS API, this behavior can be simulated by
-making separate synchronous queries, each on a different thread.<a href="#section-4-3" class="pilcrow">¶</a></p>
-<p id="section-4-4">The algorithm for acting upon received answers depends on whether the
-client sent out queries for SVCB records.<a href="#section-4-4" class="pilcrow">¶</a></p>
-<p id="section-4-5">If the client did not request SVCB records:<a href="#section-4-5" class="pilcrow">¶</a></p>
+<p id="section-4-1">When a client is trying to establish a connection to a named host,
+it needs to determine which destination IP addresses it can use
+to reach the host. The client resolves the hostname into IP
+addresses by sending DNS queries and collecting the answers.
+This section describes how a client initiates DNS queries
+and asynchronously handles the answers.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<div id="sending-dns-queries">
+<section id="section-4.1">
+        <h3 id="name-sending-dns-queries">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-sending-dns-queries" class="section-name selfRef">Sending DNS Queries</a>
+        </h3>
+<p id="section-4.1-1">Clients first need to determine which DNS resource records
+they will include in queries for a named host. When a client
+has both IPv4 and IPv6 connectivity, it needs to send out queries for
+both AAAA and A records. On a network with only IPv4 connectivity,
+it will send a query for A records. On a network with only IPv6
+connectivity, the client will either send out queries for both AAAA
+and A records, or only a query for AAAA records, depending on
+the network configuration. See <a href="#v6only" class="auto internal xref">Section 8</a> for more discussion of
+handling IPv6-mostly and IPv6-only networks.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">In addition to requesting AAAA and A records, depending on which
+application is establishing the connection, clients can request
+either SVCB or HTTPS records <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span>. For applications using
+HTTP or HTTPS (including applications using WebSockets), the
+client <span class="bcp14">SHOULD</span> send a query for HTTPS records.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.1-3">All of the DNS queries <span class="bcp14">SHOULD</span> be made as soon after one another as
+possible. The order in which the queries are sent <span class="bcp14">SHOULD</span> be as
+follows (omitting any query that doesn't apply based on the
+logic described above):<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.1-4">
+<li id="section-4.1-4.1">
+            <p id="section-4.1-4.1.1">SVCB or HTTPS query<a href="#section-4.1-4.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.1-4.2">
+            <p id="section-4.1-4.2.1">AAAA query<a href="#section-4.1-4.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.1-4.3">
+            <p id="section-4.1-4.3.1">A query<a href="#section-4.1-4.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+</section>
+</div>
+<div id="handling-dns-answers-asynchronously">
+<section id="section-4.2">
+        <h3 id="name-handling-dns-answers-asynch">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-handling-dns-answers-asynch" class="section-name selfRef">Handling DNS Answers Asynchronously</a>
+        </h3>
+<p id="section-4.2-1">Once the client receives sufficient answers to its DNS queries, it can
+move onto the phases of sorting addresses (<a href="#sorting" class="auto internal xref">Section 5</a>)
+and establishing connections (<a href="#connections" class="auto internal xref">Section 6</a>).<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">Implementations <span class="bcp14">SHOULD NOT</span> wait for all answers to return
+before starting the next steps of connection establishment. If one query
+fails or takes significantly longer to return, waiting for
+those answers can significantly delay connection
+establishment that could otherwise proceed with already received answers.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">Therefore, the client <span class="bcp14">SHOULD</span> treat DNS resolution as asynchronous,
+processing different record types independently.
+Note that if the platform does not offer an asynchronous DNS API,
+this behavior can be simulated by making separate synchronous queries
+for each record type in parallel.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.2-4">The client moves onto sorting addresses and establishing connections
+once one of the following condition sets is met:<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<p id="section-4.2-5">Either:<a href="#section-4.2-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4-6.1">
-          <p id="section-4-6.1.1">If a valid AAAA record is received first, the first IPv6 connection
-attempt is immediately started.<a href="#section-4-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.2-6.1">
+            <p id="section-4.2-6.1.1">Some positive (non-empty) address answers have been received AND<a href="#section-4.2-6.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-4-6.2">
-          <p id="section-4-6.2.1">If a valid A record is received first (which might be due
-to reordering), the client <span class="bcp14">SHOULD</span> wait a short time to receive AAAA
-records to ensure that preference is given to IPv6, since
-it is common to receive AAAA records following A records by
-a few milliseconds. This delay is referred to as
-the "Resolution Delay". If a negative AAAA response (no error, no
-data) is received within the Resolution Delay period or a AAAA
-record has not been received by the end of the Resolution Delay
-period, the client <span class="bcp14">SHOULD</span> proceed to sorting addresses (see
-<a href="#sorting" class="auto internal xref">Section 5</a>) and staggered connection attempts (see <a href="#connections" class="auto internal xref">Section 6</a>) using
-any IPv4 addresses received so far.<a href="#section-4-6.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.2-6.2">
+            <p id="section-4.2-6.2.1">A postive (non-empty) or negative (empty) answer has been received
+for the preferred address family that was queried AND<a href="#section-4.2-6.2.1" class="pilcrow">¶</a></p>
 </li>
-      </ul>
-<p id="section-4-7">If the client did request SVCB records:<a href="#section-4-7" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.2-6.3">
+            <p id="section-4.2-6.3.1">SVCB/HTTPS service information has been received (or has received
+a negative response)<a href="#section-4.2-6.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.2-7">Or:<a href="#section-4.2-7" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-4-8.1">
-          <p id="section-4-8.1.1">If the client receives any valid AAAA, A, or SVCB ServiceMode records, it
-starts the Resolution Delay timer, which is run until both the AAAA and SVCB
-ServiceMode responses are received, or a SVCB response is received that also
-includes at least one address in the <code>ipv6hint</code> parameter.
-Once a SVCB response and at least one IPv6 address have been received,
-or the timer expires, the client proceeds with the process of sorting
-addresses and staggered connection attempts.<a href="#section-4-8.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4.2-8.1">
+            <p id="section-4.2-8.1.1">Some positive (non-empty) address answers have been received AND<a href="#section-4.2-8.1.1" class="pilcrow">¶</a></p>
 </li>
-      </ul>
-<p id="section-4-9">For both variations of the algorithm, the <span class="bcp14">RECOMMENDED</span> value for
-the Resolution Delay is 50 milliseconds.<a href="#section-4-9" class="pilcrow">¶</a></p>
-<p id="section-4-10">If new records arrive while connection attempts are in progress,
+          <li class="normal" id="section-4.2-8.2">
+            <p id="section-4.2-8.2.1">A resolution time delay has passed after which other answers have
+not been received<a href="#section-4.2-8.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.2-9">Positive answers can be addresses received either from AAAA or A
+records, or address hints received directly in SVCB/HTTPS records.<a href="#section-4.2-9" class="pilcrow">¶</a></p>
+<p id="section-4.2-10">Negative answers are exclusively responses to AAAA or A records
+that contain no addresses (with or without an error like NXDOMAIN).
+If all answers come back with negative answers, the
+connection establishment will fail or need to wait until other answers
+are received.<a href="#section-4.2-10" class="pilcrow">¶</a></p>
+<p id="section-4.2-11">On networks that allow connectivity on both IPv6 and IPv4, IPv6 is
+assumed to be the preferred address family. If only one of IPv6 or IPv4 offers
+connectivity, that address family should be considered the preferred address
+family for progressing the algorithm.<a href="#section-4.2-11" class="pilcrow">¶</a></p>
+<p id="section-4.2-12">The resolution time delay is a short time that provides a chance
+to receive preferred addresses (via AAAA records) along
+with service information (via SVCB/HTTPS records). This accounts
+for the case where the AAAA or SVCB/HTTPS records follow the
+A records by a few milliseconds. This delay is referred to as
+the "Resolution Delay".<a href="#section-4.2-12" class="pilcrow">¶</a></p>
+<p id="section-4.2-13">The <span class="bcp14">RECOMMENDED</span> value for the Resolution Delay is 50 milliseconds.<a href="#section-4.2-13" class="pilcrow">¶</a></p>
+<div id="resolving-svcbhttps-aliases-and-targets">
+<section id="section-4.2.1">
+          <h4 id="name-resolving-svcb-https-aliase">
+<a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-resolving-svcb-https-aliase" class="section-name selfRef">Resolving SVCB/HTTPS Aliases and Targets</a>
+          </h4>
+<p id="section-4.2.1-1">SVCB and HTTPS records describe information for network services. Individual
+records are either AliasMode or ServiceMode records, where AliasMode requires
+another SVCB/HTTPS query for the alias name. ServiceMode records either are
+associated with the original name being queried, in which case their TargetName
+is ".", or are associated with another service name (see <span><a href="https://rfc-editor.org/rfc/rfc9460#section-2.5" class="relref">Section 2.5</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>).<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-2">The algorithm in this document does not consider service information to be received
+until ServiceMode records are available.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-3">ServiceMode records can contain address hints via <code>ipv6hint</code> and <code>ipv4hint</code>
+parameters. When these are received, they <span class="bcp14">SHOULD</span> be considered as positive
+non-empty answers for the purpose of the algorithm when A and AAAA records
+corresponding to the TargetName are not available yet. Note that clients are
+still required to issue A and AAAA queries for those TargetNames if they haven't
+yet received those records. When those records are received, they replace the hints
+and update the available set of responses as new answers (see <a href="#new-answers" class="auto internal xref">Section 4.3</a>).<a href="#section-4.2.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="examples">
+<section id="section-4.2.2">
+          <h4 id="name-examples">
+<a href="#section-4.2.2" class="section-number selfRef">4.2.2. </a><a href="#name-examples" class="section-name selfRef">Examples</a>
+          </h4>
+<p id="section-4.2.2-1">TODO: Provide examples of various scenarios (simple dual stack, SVCB,
+delayed AAAA, delayed SVCB, SVCB hints providing early answers)<a href="#section-4.2.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="new-answers">
+<section id="section-4.3">
+        <h3 id="name-handling-new-answers">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-handling-new-answers" class="section-name selfRef">Handling New Answers</a>
+        </h3>
+<p id="section-4.3-1">If new records arrive while connection attempts are in progress,
 but before any connection has been established, then any newly
 received addresses are incorporated into the list of available candidate
 addresses (see <a href="#changes" class="auto internal xref">Section 7</a>) and the process of connection attempts will
 continue with the new addresses added, until one connection is
-established.<a href="#section-4-10" class="pilcrow">¶</a></p>
+established.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
 <div id="handling-multiple-dns-server-addresses">
-<section id="section-4.1">
+<section id="section-4.4">
         <h3 id="name-handling-multiple-dns-serve">
-<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-handling-multiple-dns-serve" class="section-name selfRef">Handling Multiple DNS Server Addresses</a>
+<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-handling-multiple-dns-serve" class="section-name selfRef">Handling Multiple DNS Server Addresses</a>
         </h3>
-<p id="section-4.1-1">If multiple DNS server addresses are configured for the current
+<p id="section-4.4-1">If multiple DNS server addresses are configured for the current
 network, the client may have the option of sending its DNS queries
 over IPv4 or IPv6. In keeping with the Happy Eyeballs approach,
 queries <span class="bcp14">SHOULD</span> be sent over IPv6 first (note that this is not
@@ -1449,28 +1563,28 @@ referring to the sending of AAAA or A queries, but rather the address
 of the DNS server itself and IP version used to transport DNS
 messages). If DNS queries sent to the IPv6 address do not receive
 responses, that address may be marked as penalized and queries can be
-sent to other DNS server addresses.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.1-2">As native IPv6 deployments become more prevalent and IPv4 addresses
+sent to other DNS server addresses.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.4-2">As native IPv6 deployments become more prevalent and IPv4 addresses
 are exhausted, it is expected that IPv6 connectivity will have
 preferential treatment within networks. If a DNS server is
 configured to be accessible over IPv6, IPv6 should be assumed to be
-the preferred address family.<a href="#section-4.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.1-3">Client systems <span class="bcp14">SHOULD NOT</span> have an explicit limit to the number of DNS
+the preferred address family.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
+<p id="section-4.4-3">Client systems <span class="bcp14">SHOULD NOT</span> have an explicit limit to the number of DNS
 servers that can be configured, either manually or by the network.
 If such a limit is required by hardware limitations, the client
 <span class="bcp14">SHOULD</span> use at least one address from each address family from the
-available list.<a href="#section-4.1-3" class="pilcrow">¶</a></p>
+available list.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="sorting">
 <section id="section-5">
-      <h2 id="name-sorting-addresses">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-sorting-addresses" class="section-name selfRef">Sorting Addresses</a>
+      <h2 id="name-grouping-and-sorting-addres">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-grouping-and-sorting-addres" class="section-name selfRef">Grouping and Sorting Addresses</a>
       </h2>
 <p id="section-5-1">Before attempting to connect to any of the resolved destination
-addresses, the client should define the order in which to start the
+addresses, the client defines the order in which to start the
 attempts. Once the order has been defined, the client can use a
 simple algorithm for racing each option after a short delay (see
 <a href="#connections" class="auto internal xref">Section 6</a>). It is important that the ordered list involve all
@@ -1478,27 +1592,117 @@ addresses from both families and all protocols that have been received
 by this point, as this allows the client to get the racing effect of
 Happy Eyeballs for the entire list, not just the first IPv4 and first
 IPv6 addresses.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">Note that the following sorting steps are an incremental sort, meaning
-that the client <span class="bcp14">SHOULD</span> sort within each sorted group for each
-incremental step.<a href="#section-5-2" class="pilcrow">¶</a></p>
-<p id="section-5-3">If any of the answers were from SVCB records, they <span class="bcp14">SHOULD</span> be sorted ahead
-of any answers that were not associated with a SVCB record.<a href="#section-5-3" class="pilcrow">¶</a></p>
-<p id="section-5-4">If the client supports TLS Encrypted Client Hello (ECH) discovery through
-SVCB records <span>[<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span>, depending on the
-client's preference to handle ECH, the client <span class="bcp14">SHOULD</span> sort addresses with
-ECH keys taking priority to maintain privacy when attempting connection
-establishment.<a href="#section-5-4" class="pilcrow">¶</a></p>
-<p id="section-5-5">The client then sorts the addresses received up to this point, within
-each group, by service priority if the set of addresses contain any
-answers from SVCB records. See <a href="#priority" class="auto internal xref">Section 5.1</a> for details.<a href="#section-5-5" class="pilcrow">¶</a></p>
-<p id="section-5-6">The client <span class="bcp14">SHOULD</span> also sort the addresses in protocol order, such that
-QUIC is prioritized over TCP, as it connects faster and generally
-results in a better experience once connected. For example, QUIC
-provides improved delivery and congestion control, supports connection
-migration, and provides other benefits <span>[<a href="#QUIC" class="cite xref">QUIC</a>]</span>.<a href="#section-5-6" class="pilcrow">¶</a></p>
-<p id="section-5-7">Then, within each group at equal priority, the client <span class="bcp14">MUST</span> sort the
-addresses using Destination Address Selection (<span>[<a href="#RFC6724" class="cite xref">RFC6724</a>], <a href="https://rfc-editor.org/rfc/rfc6724#section-6" class="relref">Section 6</a></span>).<a href="#section-5-7" class="pilcrow">¶</a></p>
-<p id="section-5-8">If the client is stateful and has a history of expected round-trip
+<p id="section-5-2">The client performs three levels of grouping
+and sorting of addresses based on the DNS answers received.
+Each subsequent level of sorting only changes orders and
+preferences within the previously defined groups.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5-3">
+<li id="section-5-3.1">
+          <p id="section-5-3.1.1">Grouping and sorting by application protocol and security requirements (<a href="#application-group" class="auto internal xref">Section 5.1</a>)<a href="#section-5-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-5-3.2">
+          <p id="section-5-3.2.1">Grouping and sorting by service priorities (<a href="#service-group" class="auto internal xref">Section 5.2</a>)<a href="#section-5-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-5-3.3">
+          <p id="section-5-3.3.1">Sorting by destination address preferences (<a href="#address-sorting" class="auto internal xref">Section 5.3</a>)<a href="#section-5-3.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ol>
+<div id="application-group">
+<section id="section-5.1">
+        <h3 id="name-grouping-by-application-pro">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-grouping-by-application-pro" class="section-name selfRef">Grouping By Application Protocols and Security Requirements</a>
+        </h3>
+<p id="section-5.1-1">Clients first group based on which application protocols the
+destination endpoints support and which security features
+those endpoints offer. These are based on
+information from SVCB/HTTPS records about application-layer protocols
+("alpn" values) and other parameters like TLS Encrypted Client Hello
+configuration ("ech" values, see <span>[<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span>).<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-2">For cases where the answers do not include any SVCB/HTTPS information,
+or if all of the answers are associated with the same SVCB/HTTPS record,
+this step is trivial: all answers belong to one group, and the client
+assumes they support the same protocols and security properties.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.1-3">However, the client is aware of different sets of destination endpoints
+that advertise different capabilities when it receives multiple distinct
+SVCB/HTTPS records. The client <span class="bcp14">SHOULD</span> separate these
+addresses into different groups, such that all addresses in a
+group share the same application protocols and relevant security
+properties. The specific parameters that are relevant to the client
+depend on the client implementation and application.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.1-4">Note that some destination addresses might need to be added to
+multiple groups at this stage. For example, consider the following
+HTTPS records:<a href="#section-5.1-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.1-5">
+<pre>
+ example.com. 60 IN HTTPS 1 svc1.example.com. (
+     alpn="h3,h2" ipv6hint=2001:db8::2 )
+ example.com. 60 IN HTTPS 1 svc2.example.com. (
+     alpn="h2" ipv6hint=2001:db8::4 )
+</pre><a href="#section-5.1-5" class="pilcrow">¶</a>
+</div>
+<p id="section-5.1-6">In this case, 2001:db8::2 can be used with HTTP/3 and HTTP/2,
+but 2001:db8::4 can only be used with HTTP/2. If the client
+creates a grouping for HTTP/3-capable addresses and
+HTTP/2-capable addresses, 2001:db8::2 would exist in both
+groups (assuming that all other security properties are
+the same).<a href="#section-5.1-6" class="pilcrow">¶</a></p>
+<p id="section-5.1-7">Connection racing as described in <a href="#connections" class="auto internal xref">Section 6</a> applies
+to different destination address options within one of these groups.
+The logic for prioritizing and falling back between groups
+of addresses with different security properties and protocol
+properties is implementation-defined.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="service-group">
+<section id="section-5.2">
+        <h3 id="name-grouping-by-service-priorit">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-grouping-by-service-priorit" class="section-name selfRef">Grouping By Service Priority</a>
+        </h3>
+<p id="section-5.2-1">The next step of grouping and sorting is to group across different
+services (as defined by SVCB/HTTPS records), and sort these groups
+by priority.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">This step allows server-published priorities to be reflected
+in the client connection establishment algorithm.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">SVCB <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span> records indicate a priority for each ServiceMode response.
+This priority applies to any IPv4 or IPv6 address hints in the record
+itself, as well as any addresses received on A or AAAA queries for the
+name in the ServiceMode record. The priority in a SVCB ServiceMode record is
+always greater than 0.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<p id="section-5.2-4">SVCB answers with the lowest numerical value (such as 1) are sorted
+first, and answers with higher numerical values are sorted later.<a href="#section-5.2-4" class="pilcrow">¶</a></p>
+<p id="section-5.2-5">Note that a SVCB record with the TargetName "." applies to the owner
+name in the record, and the priority of that SVCB record applies to
+any A or AAAA records for the same owner name. These answers are
+sorted according to that SVCB record's priority.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
+<p id="section-5.2-6">All addresses received from a particular SVCB service (within a group
+as defined in <a href="#application-group" class="auto internal xref">Section 5.1</a>), either by an associated AAAA
+or A record or address hints, <span class="bcp14">SHOULD</span> be separated into a group by
+the client. These service-based groups <span class="bcp14">SHOULD</span> then be sorted
+using the service priority.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
+<p id="section-5.2-7">For cases where the answers do not include any SVCB/HTTPS information,
+or if all of the answers are associated with the same SVCB/HTTPS record,
+this step is trivial: all answers belong to one group that has the same
+priority.<a href="#section-5.2-7" class="pilcrow">¶</a></p>
+<p id="section-5.2-8">When there are multiple services, and thus multiple groups, with the
+same priority, the client <span class="bcp14">SHOULD</span> shuffle these groups randomly.<a href="#section-5.2-8" class="pilcrow">¶</a></p>
+<p id="section-5.2-9">If there are some SVCB/HTTPS services received, but there are AAAA or A
+records that do not have an associated service (for example, if no
+SVCB/HTTPS record is received for the original name using the "."
+TargetName), the unassociated addresses <span class="bcp14">SHOULD</span> be put in a group
+that is prioritized at the end of the list.<a href="#section-5.2-9" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="address-sorting">
+<section id="section-5.3">
+        <h3 id="name-sorting-destination-address">
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-sorting-destination-address" class="section-name selfRef">Sorting Destination Addresses Within Groups</a>
+        </h3>
+<p id="section-5.3-1">Within each group of addresses, after grouping based on the logic
+in <a href="#application-group" class="auto internal xref">Section 5.1</a> and <a href="#service-group" class="auto internal xref">Section 5.2</a>, the client sorts
+the addresses based on preference and historical data.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-2">First, the client <span class="bcp14">MUST</span> sort the addresses using Destination Address
+Selection (<span>[<a href="#RFC6724" class="cite xref">RFC6724</a>], <a href="https://rfc-editor.org/rfc/rfc6724#section-6" class="relref">Section 6</a></span>).<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+<p id="section-5.3-3">If the client is stateful and has a history of expected round-trip
 times (RTTs) for the routes to access each address, it <span class="bcp14">SHOULD</span> add a
 Destination Address Selection rule between rules 8 and 9 that prefers
 addresses with lower RTTs. If the client keeps track of which
@@ -1509,46 +1713,24 @@ client's IP address during authentication, as is the case for TCP
 Fast Open <span>[<a href="#RFC7413" class="cite xref">RFC7413</a>]</span> and some Hypertext Transport Protocol (HTTP)
 cookies. This historical data <span class="bcp14">MUST NOT</span> be used across different
 network interfaces and <span class="bcp14">SHOULD</span> be flushed whenever a device changes
-the network to which it is attached.<a href="#section-5-8" class="pilcrow">¶</a></p>
-<p id="section-5-9">Next, the client <span class="bcp14">SHOULD</span> modify the ordered list to interleave
-protocols and address families. Whichever combination of protocol
-and address family is first in the list should be followed by an
-endpoint of the other protocol type and same address family, then an
-endpoint from the same protocol and other address family, and then an
-endpoint from the other protocol and other address family. For example,
-if the first address in the sorted list is a QUIC IPv6 address, then
-the first TCP IPv6 address should be moved up in the list to be second
-in the list, then the first QUIC IPv4 address should be moved up to be
-third in the list, and then the first TCP IPv4 address should be moved
-up to be fourth in the list. An implementation <span class="bcp14">MAY</span> choose to favor one
-protocol or address family more by allowing multiple addresses of that
-protocol or family to be attempted before trying the other combinations.
-The number of contiguous addresses of the first combination of
-properties will be referred to as the "Preferred Protocol Combination
+the network to which it is attached.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-4">Next, the client <span class="bcp14">SHOULD</span> modify the ordered list to interleave
+address families. Whichever address family is first in the list
+should be followed by an endpoint of the other address family. For example,
+if the first address in the sorted list is an IPv6 address, then
+the first IPv4 address should be moved up in the list to be second
+in the list. An implementation <span class="bcp14">MAY</span> choose to favor one
+address family more by allowing multiple addresses of that
+family to be attempted before trying the next.
+The number of contiguous addresses of the first address family of
+properties will be referred to as the "Preferred Address Family
 Count" and can be a configurable value. This avoids waiting through a
-long list of addresses from a given address family using a given
-protocol if connectivity over a protocol or an address family is
-impaired.<a href="#section-5-9" class="pilcrow">¶</a></p>
-<p id="section-5-10">Note that the address selection described in this section only
+long list of addresses from a given address family if connectivity
+over that address family is impaired.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
+<p id="section-5.3-5">Note that the address selection described in this section only
 applies to destination addresses; Source Address Selection
-(<span>[<a href="#RFC6724-UPDATE" class="cite xref">RFC6724-UPDATE</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-22#section-3.2" class="relref">Section 3.2</a></span>) is performed
-once per destination address and is out of scope of this document.<a href="#section-5-10" class="pilcrow">¶</a></p>
-<div id="priority">
-<section id="section-5.1">
-        <h3 id="name-sorting-based-on-priority">
-<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-sorting-based-on-priority" class="section-name selfRef">Sorting Based on Priority</a>
-        </h3>
-<p id="section-5.1-1">SVCB <span>[<a href="#SVCB" class="cite xref">SVCB</a>]</span> records indicate a priority for each ServiceMode response.
-This priority applies to any IPv4 or IPv6 address hints in the record
-itself, as well as any addresses received on A or AAAA queries for the
-name in the ServiceMode record. The priority in a SVCB ServiceMode record is
-always greater than 0.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.1-2">SVCB answers with the lowest numerical value (such as 1) are sorted
-first, and answers with higher numerical values are sorted later.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
-<p id="section-5.1-3">Note that a SVCB record with the TargetName "." applies to the owner
-name in the record, and the priority of that SVCB record applies to
-any A or AAAA records for the same owner name. These answers are
-sorted according to that SVCB record's priority.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+(<span>[<a href="#RFC6724-UPDATE" class="cite xref">RFC6724-UPDATE</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-25#section-3.2" class="relref">Section 3.2</a></span>) is performed
+once per destination address and is out of scope of this document.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1562,18 +1744,28 @@ sorted according to that SVCB record's priority.<a href="#section-5.1-3" class="
 constructed, the client will attempt to make connections. In order to
 avoid unreasonable network load, connection attempts <span class="bcp14">SHOULD NOT</span> be
 made simultaneously. Instead, one connection attempt to a single
-address is started first, followed by the others in the list, one at a
+address is started first, followed by the others, one at a
 time. Starting a new connection attempt does not affect previous
 attempts, as multiple connection attempts may occur in parallel.  Once
 one of the connection attempts succeeds (<a href="#success" class="auto internal xref">Section 6.1</a>), all other
 connections attempts that have not yet succeeded <span class="bcp14">SHOULD</span> be canceled.
 Any address that was not yet attempted as a connection <span class="bcp14">SHOULD</span> be
-ignored.  At that time, the asynchronous DNS query <span class="bcp14">MAY</span> be canceled as
+ignored.  At that time, any asynchronous DNS queries <span class="bcp14">MAY</span> be canceled as
 new addresses will not be used for this connection. However, the DNS
 client resolver <span class="bcp14">SHOULD</span> still process DNS replies from the network for
 a short period of time (recommended to be 1 second), as they will
 populate the DNS cache and can be used for subsequent connections.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">A simple implementation can have a fixed delay for how long to wait
+<p id="section-6-2">If grouping addresses by application or security requirements
+(<a href="#application-group" class="auto internal xref">Section 5.1</a>) produced multiple groups, the application
+<span class="bcp14">SHOULD</span> start with connection attempts to the most preferred option.
+The policy for attempting any addresses outside of the most preferred
+group is up to the client implementation and out of scope for this document.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-3">If grouping addresses by service (<a href="#service-group" class="auto internal xref">Section 5.2</a>) produced multiple
+groups, all of the addresses of the first group <span class="bcp14">SHOULD</span> be started
+before starting attempts using the next group. Attempts across service groups
+<span class="bcp14">SHOULD</span> be allowed to continue in parallel; in effect, the groups
+are flattened into a single list.<a href="#section-6-3" class="pilcrow">¶</a></p>
+<p id="section-6-4">A simple implementation can have a fixed delay for how long to wait
 before starting the next connection attempt. This delay is referred to
 as the "Connection Attempt Delay". One recommended value for a default
 delay is 250 milliseconds. A more nuanced implementation's delay
@@ -1585,8 +1777,8 @@ other connections to the same host or prefix, it can use this
 information to influence its delay. Note that this algorithm should
 only try to approximate the time of the first handshake packet
 retransmission, and not any further retransmissions that may be
-influenced by exponential timer back off.<a href="#section-6-2" class="pilcrow">¶</a></p>
-<p id="section-6-3">The Connection Attempt Delay <span class="bcp14">MUST</span> have a lower bound, especially if it
+influenced by exponential timer back off.<a href="#section-6-4" class="pilcrow">¶</a></p>
+<p id="section-6-5">The Connection Attempt Delay <span class="bcp14">MUST</span> have a lower bound, especially if it
 is computed using historical data. More specifically, a subsequent
 connection <span class="bcp14">MUST NOT</span> be started within 10 milliseconds of the previous
 attempt. The recommended minimum value is 100 milliseconds, which is
@@ -1594,16 +1786,19 @@ referred to as the "Minimum Connection Attempt Delay". This minimum
 value is required to avoid congestion collapse in the presence of high
 packet-loss rates. The Connection Attempt Delay <span class="bcp14">SHOULD</span> have an upper
 bound, referred to as the "Maximum Connection Attempt Delay". The
-current recommended value is 2 seconds.<a href="#section-6-3" class="pilcrow">¶</a></p>
+current recommended value is 2 seconds.<a href="#section-6-5" class="pilcrow">¶</a></p>
 <div id="success">
 <section id="section-6.1">
         <h3 id="name-determining-successful-conn">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-determining-successful-conn" class="section-name selfRef">Determining successful connection establishment</a>
         </h3>
 <p id="section-6.1-1">The determination of when a connection attempt has successfully
-completed (and other attempts can be cancelled) depends on the
-protocols being used to establish a connection. This can involve one
-or more protocol handshakes.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+completed (and other attempts can be cancelled) ultimately depends
+on the client application's interpretation of the connection
+state being ready to use. This will generally include at least
+the transport-level handshake with remote endpoint (such as
+the TCP or QUIC handshake), but can involve other higher-level
+handshakes or state checks as well.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <p id="section-6.1-2">Client connections that use TCP only (without TLS or another protocol
 on top, such as for unencrypted HTTP connections) will determine
 successful establishment based on completing the TCP handshake
@@ -1614,9 +1809,24 @@ attempts. This is particularly useful for networks in which a
 TCP-terminating proxy might be causing TCP handshakes to succeed
 quickly, even though end-to-end connectivity with the TLS-terminating
 server will fail. QUIC connections inherently include a secure
-handshake in their main handshakes, and thus only need to wait for a
-single handshake to complete.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
-<p id="section-6.1-3">While transport layer handshakes generally do not have restrictions on
+handshake in their main handshakes, and thus usually only need to
+wait for a single handshake to complete.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.1-3">Beyond TCP, TLS, and/or QUIC handshakes, clients may also wait for
+other requirements to be met before determining that the connection
+establishment was successful.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+<p id="section-6.1-4">In cases where the connection establishment determination goes beyond
+the initial transport handshake, the timer that is set to the
+"Connection Attempt Delay" to determine when to start the next attempt
+ought to be adjusted after the initial transport handshake is completed.
+When the connection establishment makes progress, but has not completed,
+the timer <span class="bcp14">SHOULD</span> be extended to a new value that represents an estimated
+time for the full connection establishment to complete.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
+<p id="section-6.1-5">For example, consider a case where connection establishment involves
+both a TCP handshake and a TLS handshake. If the timer is initially set
+to be roughly at the time when a TCP SYN packet would be retransmitted,
+and the TCP handshake completes before the timer fires, the timer should
+be adjusted to allow for the time the TLS handshake could complete in.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
+<p id="section-6.1-6">While transport layer handshakes generally do not have restrictions on
 attempts to establish a connection, some cryptographic handshakes may
 be dependent on SVCB ServiceMode records and could impose limitations on
 establishing a connection.  For instance, ECH-capable clients may
@@ -1625,7 +1835,7 @@ contain the "ech" SvcParamKey <span>[<a href="#SVCB-ECH" class="cite xref">SVCB-
 client is either an SVCB-reliant client or a SVCB-optional client that
 might switch to SVCB-reliant connection establishment during the
 process, the client <span class="bcp14">MUST</span> wait for SVCB records before proceeding with the
-cryptographic handshake.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+cryptographic handshake.<a href="#section-6.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="handling-application-layer-protocol-negotiation-alpn">
@@ -1685,85 +1895,116 @@ of addresses not yet attempted according to the rules above (see
 <a href="#sorting" class="auto internal xref">Section 5</a>).<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="supporting-ipv6-only-networks-with-nat64-and-dns64">
+<div id="v6only">
 <section id="section-8">
-      <h2 id="name-supporting-ipv6-only-networ">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-supporting-ipv6-only-networ" class="section-name selfRef">Supporting IPv6-Only Networks with NAT64 and DNS64</a>
+      <h2 id="name-supporting-ipv6-mostly-and-">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-supporting-ipv6-mostly-and-" class="section-name selfRef">Supporting IPv6-Mostly and IPv6-Only Networks</a>
       </h2>
 <p id="section-8-1">While many IPv6 transition protocols have been standardized and
-deployed, most are transparent to client devices. The combined use
-of NAT64 <span>[<a href="#RFC6146" class="cite xref">RFC6146</a>]</span> and DNS64 <span>[<a href="#RFC6147" class="cite xref">RFC6147</a>]</span> is a popular solution that is
-being deployed and requires changes in client devices. One possible
-way to handle these networks is for the client device networking
-stack to implement 464XLAT <span>[<a href="#RFC6877" class="cite xref">RFC6877</a>]</span>. 464XLAT has the advantage of
-not requiring changes to user space software; however, it requires
-per-packet translation if the application is using IPv4 literals and
-does not encourage client application software to support native
-IPv6. On platforms that do not support 464XLAT, the Happy Eyeballs
-engine <span class="bcp14">SHOULD</span> follow the recommendations in this section to properly
-support IPv6-only networks with NAT64 and DNS64.<a href="#section-8-1" class="pilcrow">¶</a></p>
-<p id="section-8-2">The features described in this section <span class="bcp14">SHOULD</span> only be enabled when
-the host detects one of these networks. A simple heuristic to
-achieve that is to check if the network offers routable IPv6
-addressing, does not offer routable IPv4 addressing, and offers a DNS
-resolver address.<a href="#section-8-2" class="pilcrow">¶</a></p>
+deployed, most are transparent to client devices. Supporting IPv6-only
+networks often requires specific client-side changes, especially when
+interacting with IPv4-only services. Two primary mechanisms for this
+are the combined use of NAT64 <span>[<a href="#RFC6146" class="cite xref">RFC6146</a>]</span> with DNS64 <span>[<a href="#RFC6147" class="cite xref">RFC6147</a>]</span>, or
+leveraging NAT64 with a discovered PREF64 prefix <span>[<a href="#RFC8781" class="cite xref">RFC8781</a>]</span>.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">One possible way to handle these networks is for the client device
+networking stack to implement 464XLAT <span>[<a href="#RFC6877" class="cite xref">RFC6877</a>]</span>. 464XLAT has the
+advantage of not requiring changes to user space software; however, it
+requires per-packet translation if the application is using IPv4
+literals and does not encourage client application software to support
+native IPv6. On platforms that do not support 464XLAT, the Happy
+Eyeballs engine <span class="bcp14">SHOULD</span> follow the recommendations in this section to
+properly support IPv6-mostly (<span>[<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>]</span>) and IPv6-only networks.<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3">The features described in this section <span class="bcp14">SHOULD</span> only be enabled when the
+host detects an IPv6-mostly or IPv6-only network. A simple heuristic
+to detect one of these networks is to check if the network offers
+routable IPv6 addressing, does not offer routable IPv4 addressing, and
+offers a DNS resolver address.<a href="#section-8-3" class="pilcrow">¶</a></p>
 <div id="literals">
 <section id="section-8.1">
         <h3 id="name-ipv4-address-literals">
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-ipv4-address-literals" class="section-name selfRef">IPv4 Address Literals</a>
         </h3>
 <p id="section-8.1-1">If client applications or users wish to connect to IPv4 address
-literals, the Happy Eyeballs engine will need to perform NAT64
-address synthesis for them. The solution is similar to "Bump-in-the-
-Host" <span>[<a href="#RFC6535" class="cite xref">RFC6535</a>]</span> but is implemented inside the Happy Eyeballs library.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2">Note that some IPv4 prefixes are scoped to a given host or network, such as
-0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/32, and
-therefore do not require NAT64 address synthesis.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
-<p id="section-8.1-3">When an IPv4 address is passed into the library instead of a
-hostname, the device <span class="bcp14">SHOULD</span> use PREF64s received from Router
-Advertisements <span>[<a href="#RFC8781" class="cite xref">RFC8781</a>]</span>. If the network does not provide PREF64s,
-the device <span class="bcp14">SHOULD</span> query the network for the NAT64 prefix using
-"Discovery of the IPv6 Prefix Used for IPv6 Address Synthesis"
-<span>[<a href="#RFC7050" class="cite xref">RFC7050</a>]</span>. It then synthesizes an appropriate IPv6 address (or
-several) using the encoding described in "IPv6 Addressing of IPv4/
-IPv6 Translators" <span>[<a href="#RFC6052" class="cite xref">RFC6052</a>]</span>. The synthesized addresses are then
-inserted into the list of addresses as if they were results from DNS
-queries; connection attempts follow the algorithm described above
-(see <a href="#connections" class="auto internal xref">Section 6</a>).<a href="#section-8.1-3" class="pilcrow">¶</a></p>
-<p id="section-8.1-4">Such translation also applies to any IPv4 addresses received in A
-records and IPv4 address hints received in SVCB records.<a href="#section-8.1-4" class="pilcrow">¶</a></p>
+literals, the Happy Eyeballs engine will need to perform NAT64 address
+synthesis for them. The solution is similar to "Bump-in-the-Host"
+<span>[<a href="#RFC6535" class="cite xref">RFC6535</a>]</span> but is implemented inside the Happy Eyeballs client.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">Note that some IPv4 prefixes are scoped to a given host or network,
+such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and
+255.255.255.255/32, and therefore do not require NAT64 address
+synthesis.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="pref64-detection">
+<section id="section-8.2">
+        <h3 id="name-discovering-and-utilizing-p">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-discovering-and-utilizing-p" class="section-name selfRef">Discovering and Utilizing PREF64</a>
+        </h3>
+<p id="section-8.2-1">When an IPv4 address is passed into the Happy Eyeballs implementation
+instead of a hostname, it <span class="bcp14">SHOULD</span> use PREF64s received from Router
+Advertisements <span>[<a href="#RFC8781" class="cite xref">RFC8781</a>]</span>.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.2-2">With PREF64 available, networks might choose to not deploy DNS64, as
+the latter has a number of disadvantages (see
+<span>[<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-02#section-4.3.4" class="relref">Section 4.3.4</a></span>). To ensure
+compatibility with such networks, if PREF64 is available, clients
+<span class="bcp14">SHOULD</span> send an A query in addition to an AAAA query for a given
+hostname. This allows the client to receive any existing IPv4 A
+records and perform local NAT64 address synthesis, eliminating the
+network's need to run DNS64.<a href="#section-8.2-2" class="pilcrow">¶</a></p>
+<p id="section-8.2-3">If the network does not provide PREF64s, the implementation <span class="bcp14">SHOULD</span>
+query the network for the NAT64 prefix using "Discovery of the IPv6
+Prefix Used for IPv6 Address Synthesis" <span>[<a href="#RFC7050" class="cite xref">RFC7050</a>]</span>. It then
+synthesizes an appropriate IPv6 address (or several) using the
+encoding described in "IPv6 Addressing of IPv4/ IPv6 Translators"
+<span>[<a href="#RFC6052" class="cite xref">RFC6052</a>]</span>. The synthesized addresses are then inserted into the
+list of addresses as if they were results from DNS A queries;
+connection attempts follow the algorithm described above (see
+<a href="#connections" class="auto internal xref">Section 6</a>).<a href="#section-8.2-3" class="pilcrow">¶</a></p>
+<p id="section-8.2-4">Such translation also applies to any IPv4 addresses received in A
+records and IPv4 address hints received in SVCB records.<a href="#section-8.2-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="dns64">
+<section id="section-8.3">
+        <h3 id="name-supporting-dns64">
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-supporting-dns64" class="section-name selfRef">Supporting DNS64</a>
+        </h3>
+<p id="section-8.3-1">If PREF64 is not available and the NAT64 prefix cannot be discovered,
+clients <span class="bcp14">SHOULD</span> assume the network is relying on DNS64 for IPv4-to-IPv6
+address synthesis. In this scenario, clients will typically only
+receive AAAA records from DNS queries, as DNS64 servers synthese these
+records for IPv4-only domains.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="broken">
-<section id="section-8.2">
+<section id="section-8.4">
         <h3 id="name-hostnames-with-broken-aaaa-">
-<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-hostnames-with-broken-aaaa-" class="section-name selfRef">Hostnames with Broken AAAA Records</a>
+<a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-hostnames-with-broken-aaaa-" class="section-name selfRef">Hostnames with Broken AAAA Records</a>
         </h3>
-<p id="section-8.2-1">At the time of writing, there exist a small but non-negligible number
+<p id="section-8.4-1">At the time of writing, there exist a small but non-negligible number
 of hostnames that resolve to valid A records and broken AAAA records,
 which we define as AAAA records that contain seemingly valid IPv6
 addresses but those addresses never reply when contacted on the usual
-ports. These can be, for example, caused by:<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+ports. These can be, for example, caused by:<a href="#section-8.4-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-8.2-2.1">
-            <p id="section-8.2-2.1.1">Mistyping of the IPv6 address in the DNS zone configuration<a href="#section-8.2-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-8.4-2.1">
+            <p id="section-8.4-2.1.1">Mistyping of the IPv6 address in the DNS zone configuration<a href="#section-8.4-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-8.2-2.2">
-            <p id="section-8.2-2.2.1">Routing black holes<a href="#section-8.2-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-8.4-2.2">
+            <p id="section-8.4-2.2.1">Routing black holes<a href="#section-8.4-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-8.2-2.3">
-            <p id="section-8.2-2.3.1">Service outages<a href="#section-8.2-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-8.4-2.3">
+            <p id="section-8.4-2.3.1">Service outages<a href="#section-8.4-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-8.2-3">While an algorithm complying with the other sections of this document
+<p id="section-8.4-3">While an algorithm complying with the other sections of this document
 would correctly handle such hostnames on a dual-stack network, they
 will not necessarily function correctly on IPv6-only networks with
 NAT64 and DNS64. Since DNS64 recursive resolvers rely on the
 authoritative name servers sending negative (no error, no data)
 responses for AAAA records in order to synthesize, they will not
 synthesize records for these particular hostnames and will instead
-pass through the broken AAAA record.<a href="#section-8.2-3" class="pilcrow">¶</a></p>
-<p id="section-8.2-4">In order to support these scenarios, the client device needs to query
+pass through the broken AAAA record.<a href="#section-8.4-3" class="pilcrow">¶</a></p>
+<p id="section-8.4-4">In order to support these scenarios, the client device needs to query
 the DNS for the A record and then perform local synthesis. Since
 these types of hostnames are rare and, in order to minimize load on
 DNS servers, this A query should only be performed when the client
@@ -1774,15 +2015,15 @@ The timer is started when the last connection attempt is fired. If
 no connection attempt has succeeded when this timer fires, the device
 queries the DNS for the IPv4 address and, on reception of a valid A
 record, treats it as if it were provided by the application (see
-<a href="#literals" class="auto internal xref">Section 8.1</a>).<a href="#section-8.2-4" class="pilcrow">¶</a></p>
+<a href="#literals" class="auto internal xref">Section 8.1</a>).<a href="#section-8.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="virtual-private-networks">
-<section id="section-8.3">
+<section id="section-8.5">
         <h3 id="name-virtual-private-networks">
-<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-virtual-private-networks" class="section-name selfRef">Virtual Private Networks</a>
+<a href="#section-8.5" class="section-number selfRef">8.5. </a><a href="#name-virtual-private-networks" class="section-name selfRef">Virtual Private Networks</a>
         </h3>
-<p id="section-8.3-1">Some Virtual Private Networks (VPNs) may be configured to handle DNS
+<p id="section-8.5-1">Some Virtual Private Networks (VPNs) may be configured to handle DNS
 queries from the device. The configuration could encompass all
 queries or a subset such as "*.internal.example.com". These VPNs can
 also be configured to only route part of the IPv4 address space, such
@@ -1800,7 +2041,7 @@ resolver does not know the company's internal addresses, so it cannot
 resolve the hostname. Because of this, the client device needs to
 resolve the A record using the company's resolver and then locally
 synthesize an IPv6 address, as if the resolved IPv4 address were
-provided by the application (<a href="#literals" class="auto internal xref">Section 8.1</a>).<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+provided by the application (<a href="#literals" class="auto internal xref">Section 8.1</a>).<a href="#section-8.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1814,14 +2055,13 @@ provided by the application (<a href="#literals" class="auto internal xref">Sect
 Happy Eyeballs are as follows:<a href="#section-9-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-9-2.1">
-          <p id="section-9-2.1.1">Resolution Delay (<a href="#query" class="auto internal xref">Section 4</a>): The time to wait for a AAAA record
+          <p id="section-9-2.1.1">Resolution Delay (<a href="#resolution" class="auto internal xref">Section 4</a>): The time to wait for a AAAA record
 after receiving an A record. Recommended to be 50 milliseconds.<a href="#section-9-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-9-2.2">
-          <p id="section-9-2.2.1">Preferred Protocol Combination Count (<a href="#sorting" class="auto internal xref">Section 5</a>): The number of
-addresses belonging to the preferred address family (such as IPv6) using
-the preferred protocol (such as QUIC) that should be attempted before
-attempting the next combination of address family and protocol.
+          <p id="section-9-2.2.1">Preferred Address Family Count (<a href="#sorting" class="auto internal xref">Section 5</a>): The number of
+addresses belonging to the preferred address family (such as IPv6)
+that should be attempted before attempting the next address family.
 Recommended to be 1; 2 may be used to more aggressively favor a
 particular combination of address family and protocol.<a href="#section-9-2.2.1" class="pilcrow">¶</a></p>
 </li>
@@ -1840,7 +2080,7 @@ milliseconds. <span class="bcp14">MUST NOT</span> be less than 10 milliseconds.<
 wait between connection attempts. Recommended to be 2 seconds.<a href="#section-9-2.5.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-9-2.6">
-          <p id="section-9-2.6.1">Last Resort Local Synthesis Delay (<a href="#broken" class="auto internal xref">Section 8.2</a>): The time to wait
+          <p id="section-9-2.6.1">Last Resort Local Synthesis Delay (<a href="#broken" class="auto internal xref">Section 8.4</a>): The time to wait
 after starting the last IPv6 attempt and before sending the A
 query. Recommended to be 2 seconds.<a href="#section-9-2.6.1" class="pilcrow">¶</a></p>
 </li>
@@ -1975,7 +2215,7 @@ addresses.<a href="#section-11-1" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="RFC6724-UPDATE">[RFC6724-UPDATE]</dt>
         <dd>
-<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Chown, T.</span>, and <span class="refAuthor">J. Duncan</span>, <span class="refTitle">"Prioritizing known-local IPv6 ULAs through address selection policy"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-6man-rfc6724-update-22</span>, <time datetime="2025-06-24" class="refDate">24 June 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-22">https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-22</a>&gt;</span>. </dd>
+<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Chown, T.</span>, and <span class="refAuthor">J. Duncan</span>, <span class="refTitle">"Prioritizing known-local IPv6 ULAs through address selection policy"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-6man-rfc6724-update-25</span>, <time datetime="2025-08-11" class="refDate">11 August 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-25">https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-25</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7050">[RFC7050]</dt>
         <dd>
@@ -2047,8 +2287,12 @@ addresses.<a href="#section-11-1" class="pilcrow">¶</a></p>
 <span class="refAuthor">Pusateri, T.</span> and <span class="refAuthor">S. Cheshire</span>, <span class="refTitle">"DNS Push Notifications"</span>, <span class="seriesInfo">RFC 8765</span>, <span class="seriesInfo">DOI 10.17487/RFC8765</span>, <time datetime="2020-06" class="refDate">June 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8765">https://www.rfc-editor.org/rfc/rfc8765</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9002">[RFC9002]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">I. Swett, Ed.</span>, <span class="refTitle">"QUIC Loss Detection and Congestion Control"</span>, <span class="seriesInfo">RFC 9002</span>, <span class="seriesInfo">DOI 10.17487/RFC9002</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9002">https://www.rfc-editor.org/rfc/rfc9002</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="V6-MOSTLY">[V6-MOSTLY]</dt>
+      <dd>
+<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-Mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-02</span>, <time datetime="2025-08-26" class="refDate">26 August 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-02">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
