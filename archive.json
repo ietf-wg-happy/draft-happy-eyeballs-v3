@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-09-04T01:40:13.228629+00:00",
+  "timestamp": "2025-10-16T01:44:59.717669+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -272,12 +272,14 @@
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
-        "bashi"
+        "bashi",
+        "tfpauly",
+        "nidhijaju"
       ],
       "labels": [],
       "body": "ECH use can make the client be SVCB-reliant instead of SVCB-optional. At the very least, the algorithm will be impacted by being SVCB-reliant.",
       "createdAt": "2023-09-05T22:07:35Z",
-      "updatedAt": "2023-10-31T18:01:21Z",
+      "updatedAt": "2025-10-14T22:20:47Z",
       "closedAt": null,
       "comments": [
         {
@@ -335,6 +337,13 @@
           "body": "Is the context of this discussion this part of draft-ietf-dnsop-svcb-https-12.html#section-3.1:\r\n\r\n> If DNS responses are cryptographically protected (e.g. using DNSSEC or TLS [[DoT](https://www.ietf.org/archive/id/draft-ietf-dnsop-svcb-https-12.html#DoT)][[DoH](https://www.ietf.org/archive/id/draft-ietf-dnsop-svcb-https-12.html#DoH)]), and SVCB resolution fails due to an authentication error, SERVFAIL response, transport error, or timeout, the client SHOULD abandon its attempt to reach the service, even if the client is SVCB-optional. Otherwise, an active attacker could mount a downgrade attack by denying the user access to the SvcParams.\r\n\r\n???\r\n\r\nFor further context, the specific downgrade attack we were worried about when drafting that paragraph is that a network-level attacker could using timing/size analysis to figure out which QUIC packets contained the HTTPS response and block just those while allowing A/AAAA through.  The client would then get A and AAAA, but HTTPS would either be blackholed or return one of the errors listed above, depending on how and where the attacker blocks the HTTPS packets.\r\n\r\nSo if the client then proceeds to attempt connection past the point where ECH could have been used, it means you've given attackers the ability to block ECH without piercing the encrypted DoH connection.  So we're not just talking a privacy loss of sometimes missing out on ECH when the response doesn't arrive in time.  We're talking a security compromise scenario where the attacker can completely and deliberately prevent ECH from ever being used.\r\n\r\n@davidben Since I believe he was also in many of those conversations and might have thoughts.",
           "createdAt": "2023-10-31T18:01:21Z",
           "updatedAt": "2023-10-31T18:01:21Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "IETF 123:\n- Only applies to secure DNS (since otherwise trivial to drop ECHConfig). If you see packets going by and drop 1/3 of them, you have a 33% chance of dropping the ECHConfig enough for the client to get started without it.\n- Proposal: If using secure DNS, require HTTPS response before proceeding.\n- Alternative: Introduce a longer timer.\n    - Attackers may be willing to wait and slow you down, so a longer timeout makes the user experience slower but doesn't provide meaningfully greater protection.\n    - EK: What if you waited long enough that any packets being persistently dropped would cause the DoH connection to close?\n- Desire to find a way to mitigate the attack, rather than waiting as long as possible. \n    - One approach: include both queries and responses in the same packet. You have to coalesce _all_ the queries & responses. Can't necessarily guarantee that DoH resolver is going to coalesce, since it should answer what it can promptly. Also puts additional requirements on the resolver that only apply to encrypted transports, which may be hard to get implemented.\n- RFC 9460 currently requires the wait-for-HTTPS-response behavior.",
+          "createdAt": "2025-10-14T03:37:20Z",
+          "updatedAt": "2025-10-14T03:37:20Z"
         }
       ]
     },
@@ -546,13 +555,23 @@
       "state": "OPEN",
       "author": "ericorth",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "nidhijaju"
+      ],
       "labels": [],
       "body": "Similarly to #6, need a discussion on using A/AAAA without waiting for HTTPS when the HTTPS record could have forced upgrade to https://.  Clients need to be aware of the potential tradeoffs of that functionality potentially getting skipped.",
       "createdAt": "2023-10-31T18:27:46Z",
-      "updatedAt": "2023-10-31T18:27:46Z",
+      "updatedAt": "2025-10-14T04:07:02Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "See IETF 123 discussion in https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/6#issuecomment-3399987304",
+          "createdAt": "2025-10-14T03:37:48Z",
+          "updatedAt": "2025-10-14T03:37:48Z"
+        }
+      ]
     },
     {
       "number": 30,
@@ -1184,11 +1203,13 @@
       "state": "OPEN",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "tfpauly"
+      ],
       "labels": [],
       "body": "Clients can remember expired DNS answers (also called \"optimistic DNS\"), and try expired answers in parallel with requesting new DNS answers. This needs to be folded into the happy eyeballs algorithm.",
       "createdAt": "2024-11-06T14:55:08Z",
-      "updatedAt": "2025-07-19T11:00:10Z",
+      "updatedAt": "2025-10-14T22:24:01Z",
       "closedAt": null,
       "comments": [
         {
@@ -1205,15 +1226,15 @@
       "id": "I_kwDOKH7CuM6eX8hV",
       "title": "SvcPriority and complex clients",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/69",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bemasc",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "The SVCB SvcPriority was designed to guide a simple client that is connecting \"from scratch\", with no further information about the service or the network. In that context, the function of SvcPriority is fairly clear.\r\n\r\nFor clients with a memory of prior connection attempts, the function of SvcPriority is less clear.  If the most preferred endpoint failed recently, can the client skip it the next time?\r\n\r\nAnd what about highly optimized clients that are racing multiple connections?  Can they race connections across multiple SvcPriorities, or should they wait until all the priority 1 endpoints fail?\r\n\r\nEven in the simple case, the definition of \"failure\" is somewhat nebulous.  TCP (and QUIC) connection initiation generally relies on exponential backoff that may not give up until multiple minutes have passed.  Surely we don't want clients to wait 100+ seconds before trying the priority 2 endpoint...\r\n\r\nThese questions are obviously relevant to mobile- and browser-like clients.  They're also increasingly relevant to DNS servers, as the DELEG group is considering SVCB-based definitions of DNS delegation.  DNS resolvers already use complex heuristics to estimate the latency and reliability of each nameserver, in order to select the best one (while still monitoring the others).\r\n\r\n@enygren @mikebishop",
       "createdAt": "2024-11-13T23:16:35Z",
-      "updatedAt": "2025-07-24T09:08:08Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-14T22:22:07Z",
+      "closedAt": "2025-10-14T22:22:07Z",
       "comments": [
         {
           "author": "MikeBishop",
@@ -1249,6 +1270,20 @@
           "body": "IETF 123: \n- If you have 1 thing in the top priority and it's not responsive, then you did that to yourself\n- There should be a strong bias towards higher priority options, but not required to wait for full failure\n\n- Not necessary to be super strict to priorities if you have better information, but try to avoid being permanently stuck because of a small number of bad measurements",
           "createdAt": "2025-07-24T09:05:29Z",
           "updatedAt": "2025-07-24T09:08:08Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Based on the discussion at IETF 123, the proposal is to close this with no action: a strong bias towards higher priority options exists, and the draft does not currently require clients to wait for a full failure before proceeding to subsequent attempts.",
+          "createdAt": "2025-10-14T03:58:06Z",
+          "updatedAt": "2025-10-14T03:58:06Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Sounds good \u2014 closing in that case",
+          "createdAt": "2025-10-14T22:22:07Z",
+          "updatedAt": "2025-10-14T22:22:07Z"
         }
       ]
     },
@@ -1284,13 +1319,23 @@
       "state": "OPEN",
       "author": "bemasc",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "tfpauly"
+      ],
       "labels": [],
       "body": "The current draft says\n\n> If the client supports TLS Encrypted Client Hello (ECH) discovery through SVCB records {{!SVCB-ECH=I-D.ietf-tls-svcb-ech}}, depending on the client's preference to handle ECH, the client SHOULD sort addresses with ECH keys taking priority to maintain privacy when attempting connection establishment.\n\nECH-SVCB says\n\n> A SVCB RRSet containing some RRs with \"ech\" and some without is vulnerable to a downgrade attack ... This configuration is NOT RECOMMENDED. Zone owners who do use such a mixed configuration SHOULD mark the RRs with \"ech\" as more preferred (i.e. lower SvcPriority value) than those without, in order to maximize the likelihood that ECH will be used in the absence of an active adversary.\n\nIn essence, there is a discrepancy as to whose responsibility it is to prioritize ECH.\n\nI think the ECH-SVCB view should probably prevail.\n\nPhilosophically, the client cannot make the service more secure than the operator intends it to be.\n\nOperationally, it seems valuable to be able to test ECH by placing it on a less-used, lower-priority endpoint, and it would be very surprising to discover that this effectively inverts the stated priority for some (large?) segment of clients.",
       "createdAt": "2025-01-17T16:14:21Z",
-      "updatedAt": "2025-01-17T16:14:21Z",
+      "updatedAt": "2025-10-14T22:20:32Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "IETF 123:\n- Do we want protocol/security requirements to take precedence?\n    - Allowing clients to prefer ECH or particular ALPNs makes it so that priorities are most effective between identically configured backends (instead of primary/backup).\n    - Primaries and backups that don't offer similar capabilities aren't particularly effective backups.\n    - From a server perspective, a more advanced third party backend could suddenly start getting lots of traffic the moment it turns on a new feature that clients prefer.\n\n- We know that we can't stop clients from having their own priorities.\n- Once you publish it, people can use it.\n- Do we prefer security over protocols or vice versa?",
+          "createdAt": "2025-10-14T03:22:06Z",
+          "updatedAt": "2025-10-14T03:22:06Z"
+        }
+      ]
     },
     {
       "number": 74,
@@ -1391,11 +1436,13 @@
       "state": "OPEN",
       "author": "philsbln",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "tfpauly"
+      ],
       "labels": [],
       "body": "There might be use cases when applications want to override what [successful connection establishment](https://www.ietf.org/archive/id/draft-ietf-happy-happyeyeballs-v3-01.html#name-determining-successful-conn) means. \nAs a concrete example, an application may want to treat certain applications layer errors as failed connection attempt to retry with a less preferable protocol or address family to work around buggy intermediaries or customers who don\u2019t get their ip-level allow lists updated for IPv6.\nShould we mention this in the text?",
       "createdAt": "2025-07-19T16:14:37Z",
-      "updatedAt": "2025-07-19T16:15:56Z",
+      "updatedAt": "2025-10-14T22:23:41Z",
       "closedAt": null,
       "comments": []
     },
@@ -1423,11 +1470,13 @@
       "state": "OPEN",
       "author": "bemasc",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "nidhijaju"
+      ],
       "labels": [],
       "body": "If HE remembers the fastest (or workingest) IP address for each domain, this creates a supercookie.  A website could send subresource fetches to a few dozen domains, each with 2 IPv6 addresses (all pointed to the same server), and clients would \"stick\" to one or the other at random, resulting in 1 bit of identification entropy per domain.\n\nTo fix this, all HE connectivity history needs to be wiped when cookies (etc.) are cleared.",
       "createdAt": "2025-07-24T10:00:55Z",
-      "updatedAt": "2025-07-24T12:49:10Z",
+      "updatedAt": "2025-10-14T04:06:46Z",
       "closedAt": null,
       "comments": [
         {
@@ -1472,10 +1521,12 @@
       "author": "oskar456",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "editorial"
+      ],
       "body": "The document mentions \"IPv4 connectivity\" and \"IPv6 connectivity\" in various places without defining what is considered having connectivity.\n\nIn Section 4.1:\n > When a client has both IPv4 and IPv6 connectivity, it needs to send out queries for both AAAA and A records. On a network with only IPv4 connectivity, it will send a query for A records. On a network with only IPv6 connectivity, the client will either send out queries for both AAAA and A records, or only a query for AAAA records, depending on the network configuration.\n\nHere, the connectivity should be considered present if there is at least one route in the routing table towards a non-link-local destination. It should not be necessary to have the default route to consider connectivity to be present. This is particularly important for split-mode VPNs that push only some IPv6 routes to otherwise IPv4-only host.\n\nIn Section 4.2:\n> On networks that allow connectivity on both IPv6 and IPv4, IPv6 is assumed to be the preferred address family. If only one of IPv6 or IPv4 offers connectivity, that address family should be considered the preferred address family for progressing the algorithm.\n\nHere, it would be appropriate to only consider IPv6 default route, that is: \"If host has IPv6 default route, then IPv6 is assumed to be the preferred address family. Otherwise, IPv4 should be the preferred address family.\"\nThe reason for this is that if there is not IPv6 default route, it is safe to assume that most attempts to connect over IPv6 would not succeed. Considering IPv6 in that case the preferred address family would lead to unnecessary excessive usage of \"resolution time delay\".",
       "createdAt": "2025-07-24T17:51:16Z",
-      "updatedAt": "2025-07-24T17:51:16Z",
+      "updatedAt": "2025-10-14T02:33:25Z",
       "closedAt": null,
       "comments": []
     },
@@ -1487,13 +1538,25 @@
       "state": "OPEN",
       "author": "kvkln",
       "authorAssociation": "NONE",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [
+        "editorial"
+      ],
       "body": "The document is not clear in this regard, in my opinion. If a client performs address sorting only on the remaining addresses (not those already attempted), it can easily create a situation in which HE doesn't behave as expected.\n\nExample:\nThe client receives a negative HTTPS response and a AAAA response containing two IPv6 addresses 2001:db8::2 and 2001:db8::4.\nThis is sufficient to skip the Resolution Delay, so the client continues to address sorting and then starts a connection attempt to let's say 2001:db8::2.\nThen, the response to the A query arrives, containing an IPv4 address 192.0.2.1.\nIf we now perform the address grouping and sorting algorithm only on the remaining addresses (2001:db8::4 and 192.0.2.1), 2001:db8::4 would be sorted before 192.0.2.1.\nThis means that the IPv4 address will be attempted third, not second as intended. For more complex scenarios, the result might be worse.\n\nFurther, I think that already attempted addresses should always be sorted at the beginning of the list, even if they are less preferred than the newly added addresses. I don't have an easy example for this, but if a later arriving DNS response contains an IPv6 address that has higher priority than the previously attempted IPv6 address, it might result in the same situation as the example above.",
       "createdAt": "2025-09-03T09:52:49Z",
-      "updatedAt": "2025-09-03T09:52:49Z",
+      "updatedAt": "2025-10-14T22:23:15Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, I think we should clarify this and have an example!",
+          "createdAt": "2025-10-14T22:23:15Z",
+          "updatedAt": "2025-10-14T22:23:15Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -6134,7 +6197,7 @@
       "labels": [],
       "body": "This simplifies the section about IPv6-only networks while hopefully addressing comments from #91:\r\n\r\n - Remove mentions of IPv6-mostly, since the host where Happy Eyeballs runs will never be IPv6-mostly, it would be either Dual-stack or IPv6-only.\r\n - Use the presence of PREF64 as the only detection mechanism of NAT64\r\n - Note that RFC 7050 should be used, but only when RFC 8781 failed\r\n - Prescribe handling of IPv4 addresses by first looking up the routing table (needed for VPNs) and then synthesizing IPv6. This already covers the former text on IPv4 literals, broken AAAA records and VPN case\r\n - Add section on dealing with DNS64: basically detect and undo since it is not needed for HE.\r\n - Removed the `Last Resort Local Synthesis Delay` configurable variable. If we want HE to function properly without DNS64, every IPv4-only destination looks exactly like \"Broken AAAA record\" case and we definitely don't want 2 second delay every single time.",
       "createdAt": "2025-07-29T21:43:48Z",
-      "updatedAt": "2025-07-30T08:40:04Z",
+      "updatedAt": "2025-10-14T04:10:42Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
@@ -6145,7 +6208,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@furry13 @lcolitti Could you please take a look at this as well?",
+          "createdAt": "2025-10-14T04:10:42Z",
+          "updatedAt": "2025-10-14T04:10:42Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOKH7CuM62_u64",
@@ -6222,6 +6293,61 @@
               "body": "I am less pessimistic here\u2026 All host based CLAT Implementations i know use a source address from 192.0.0.0/29, as recommended by [draft-ietf-v6ops-claton/](https://datatracker.ietf.org/doc/draft-ietf-v6ops-claton/), so you can check the source address (which is the only way to query the routing table anyway) and have a clear signal. ",
               "createdAt": "2025-07-30T08:40:04Z",
               "updatedAt": "2025-07-30T08:40:04Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 96,
+      "id": "PR_kwDOKH7CuM6tycZL",
+      "title": "Generalize connection establishment, explain extending timer",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/96",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [],
+      "body": "Closes #88",
+      "createdAt": "2025-10-15T03:32:27Z",
+      "updatedAt": "2025-10-16T00:39:03Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfpauly-patch-7",
+      "headRefOid": "889e16474a777e883b392cd7693fa0d745f734e4",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7HPdQL",
+          "commit": {
+            "abbreviatedOid": "889e164"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Overall I like this direction, but see comment about \"the timer\"",
+          "createdAt": "2025-10-16T00:34:34Z",
+          "updatedAt": "2025-10-16T00:39:03Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "```suggestion\nestablishment was successful. For example, clients generally validate that\nthe server's certificate provided via TLS is trusted, and that operation can\nbe asynchronous.\n```",
+              "createdAt": "2025-10-16T00:34:34Z",
+              "updatedAt": "2025-10-16T00:39:04Z"
+            },
+            {
+              "originalPosition": 30,
+              "body": "This is the first mention of \"the timer\" in the spec. The previous section talks about connection attempts, and mentions timers at other levels (like the TCP retransmission timer) - but this sentence seems to indicate that there exists a timer to start the connection attempt. Obviously, that timer does exist, but I think we need to properly define it, otherwise it's confusing. I would recommend giving it a name (maybe \"next connection attempt timer\") and defining it in the `{{connections}}` section above. Then we can reference it here, and then talk about how that timer sometimes needs to be extended.",
+              "createdAt": "2025-10-16T00:38:32Z",
+              "updatedAt": "2025-10-16T00:39:04Z"
             }
           ]
         }
