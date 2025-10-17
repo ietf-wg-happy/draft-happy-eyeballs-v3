@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 18 April 2026                                           N. Jaju
+Expires: 20 April 2026                                           N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                         15 October 2025
+                                                         17 October 2025
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 April 2026.
+   This Internet-Draft will expire on 20 April 2026.
 
 Copyright Notice
 
@@ -578,7 +578,9 @@ Table of Contents
 
    Beyond TCP, TLS, and/or QUIC handshakes, clients may also wait for
    other requirements to be met before determining that the connection
-   establishment was successful.
+   establishment was successful.  For example, clients generally
+   validate that the server's certificate provided via TLS is trusted,
+   and that operation can be asynchronous.
 
    In cases where the connection establishment determination goes beyond
    the initial transport handshake, the timer that is set to the
