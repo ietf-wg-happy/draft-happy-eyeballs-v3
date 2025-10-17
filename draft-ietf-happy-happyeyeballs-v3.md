@@ -786,11 +786,27 @@ monitoring to ensure functionality of all address families.
 
 # Security Considerations
 
-Note that applications should not rely upon a stable hostname-to-
-address mapping to ensure any security properties, since DNS results
-may change between queries. Happy Eyeballs may make it more likely
-that subsequent connections to a single hostname use different IP
-addresses.
+Note that applications should not rely upon a stable
+hostname-to-address mapping to ensure any security properties, since
+DNS results may change between queries. Happy Eyeballs may make it
+more likely that subsequent connections to a single hostname use
+different IP addresses.
+
+When using HTTP, HTTPS resource records indicate that clients should
+require HTTPS when connecting to an origin (see {{Section 9.5 of
+!RFC9460}}), so an active attacker can attempt a downgrade attack by
+interfering with the successful delivery of HTTPS resource records.
+When clients use insecure DNS mechanisms, any on-path attacker can
+simply drop HTTPS resource records, so clients cannot tell the
+difference between an attack and a resolver that fails to respond to
+HTTPS queries.
+
+However, when using cryptographically protected DNS mechanisms, as
+described in {{Section 3.1 of !RFC9460}}, both SVCB-reliant and
+SVCB-optional clients MUST NOT send any unencrypted data after the TCP
+handshake completes unless they have received a valid HTTPS response.
+Those clients need to complete a TLS handshake before proceeding if
+that response is non-negative.
 
 # IANA Considerations
 
