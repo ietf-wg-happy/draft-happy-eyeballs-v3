@@ -1787,6 +1787,14 @@ value is required to avoid congestion collapse in the presence of high
 packet-loss rates. The Connection Attempt Delay <span class="bcp14">SHOULD</span> have an upper
 bound, referred to as the "Maximum Connection Attempt Delay". The
 current recommended value is 2 seconds.<a href="#section-6-5" class="pilcrow">¶</a></p>
+<p id="section-6-6">The Connection Attempt Delay is used to set a timer, referred to as
+the "Next Connection Attempt Timer". Whenever this timer fires and
+a connection has not been successfully established, the next
+connection attempt starts, and the timer either is reset to a new
+delay value or, in the case of the end of the list being reached,
+is cancelled. Note that the delay value can be different for each
+connection attempt (depending on the protocol being used and
+the estimated RTT).<a href="#section-6-6" class="pilcrow">¶</a></p>
 <div id="success">
 <section id="section-6.1">
         <h3 id="name-determining-successful-conn">
@@ -1817,8 +1825,7 @@ establishment was successful. For example, clients generally validate that
 the server's certificate provided via TLS is trusted, and that operation can
 be asynchronous.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
 <p id="section-6.1-4">In cases where the connection establishment determination goes beyond
-the initial transport handshake, the timer that is set to the
-"Connection Attempt Delay" to determine when to start the next attempt
+the initial transport handshake, the Next Connection Attempt Timer
 ought to be adjusted after the initial transport handshake is completed.
 When the connection establishment makes progress, but has not completed,
 the timer <span class="bcp14">SHOULD</span> be extended to a new value that represents an estimated
