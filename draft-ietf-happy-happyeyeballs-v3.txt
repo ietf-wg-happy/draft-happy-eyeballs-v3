@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 16 January 2026                                         N. Jaju
+Expires: 20 April 2026                                           N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                            15 July 2025
+                                                         17 October 2025
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 January 2026.
+   This Internet-Draft will expire on 20 April 2026.
 
 Copyright Notice
 
@@ -476,9 +476,14 @@ Table of Contents
    used addresses over unused ones.  This helps servers that use the
    client's IP address during authentication, as is the case for TCP
    Fast Open [RFC7413] and some Hypertext Transport Protocol (HTTP)
-   cookies.  This historical data MUST NOT be used across different
-   network interfaces and SHOULD be flushed whenever a device changes
-   the network to which it is attached.
+   cookies.  This historical data MUST be partitioned using the same
+   boundaries used for privacy-sensitive information specific to that
+   endpoint, and MUST NOT be used across different network interfaces.
+   The data SHOULD be flushed whenever a device changes the network to
+   which it is attached.  Clients that use historical data MUST ensure
+   that clients with different historical data will eventually converge
+   toward the same behaviors.  For example, clients can periodically
+   ignore historical data to ensure that fresh addresses are attempted.
 
    Next, the client SHOULD modify the ordered list to interleave address
    families.  Whichever address family is first in the list should be
@@ -902,9 +907,9 @@ Table of Contents
               Buraglio, N., Chown, T., and J. Duncan, "Prioritizing
               known-local IPv6 ULAs through address selection policy",
               Work in Progress, Internet-Draft, draft-ietf-6man-rfc6724-
-              update-23, 7 July 2025,
+              update-25, 11 August 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-6man-
-              rfc6724-update-23>.
+              rfc6724-update-25>.
 
    [RFC7050]  Savolainen, T., Korhonen, J., and D. Wing, "Discovery of
               the IPv6 Prefix Used for IPv6 Address Synthesis",
@@ -983,9 +988,9 @@ Table of Contents
    [V6-MOSTLY]
               Buraglio, N., Caletka, O., and J. Linkova, "IPv6-Mostly
               Networks: Deployment and Operations Considerations", Work
-              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-01, 3
-              March 2025, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-v6ops-6mops-01>.
+              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-02, 26
+              August 2025, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-v6ops-6mops-02>.
 
 Acknowledgments
 

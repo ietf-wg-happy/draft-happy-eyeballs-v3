@@ -21,7 +21,7 @@ requirements for algorithms that reduce this user-visible delay and
 provides an example algorithm, referred to as "Happy Eyeballs". This
 document updates the algorithm description in RFC 8305. 
     ' name="description">
-<meta content="xml2rfc 3.29.0" name="generator">
+<meta content="xml2rfc 3.30.2" name="generator">
 <meta content="ipv6" name="keyword">
 <meta content="ipv4" name="keyword">
 <meta content="racing" name="keyword">
@@ -31,19 +31,19 @@ document updates the algorithm description in RFC 8305.
 <meta content="ech" name="keyword">
 <meta content="draft-ietf-happy-happyeyeballs-v3-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.29.0
+  xml2rfc 3.30.2
     Python 3.12.11
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.3.8
+    platformdirs 4.4.0
     pycountry 24.6.1
     PyYAML 6.0.2
-    requests 2.32.4
+    requests 2.32.5
     setuptools 80.9.0
-    wcwidth 0.2.13
+    wcwidth 0.2.14
 -->
 <link href="draft-ietf-happy-happyeyeballs-v3.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1062,11 +1062,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Happy Eyeballs v3</td>
-<td class="right">July 2025</td>
+<td class="right">October 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 16 January 2026</td>
+<td class="center">Expires 20 April 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1079,12 +1079,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-happy-happyeyeballs-v3-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-07-15" class="published">15 July 2025</time>
+<time datetime="2025-10-17" class="published">17 October 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-01-16">16 January 2026</time></dd>
+<dd class="expires"><time datetime="2026-04-20">20 April 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1155,7 +1155,7 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 16 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1711,9 +1711,14 @@ Address Selection rule between the RTT rule and rule 9, which prefers
 used addresses over unused ones. This helps servers that use the
 client's IP address during authentication, as is the case for TCP
 Fast Open <span>[<a href="#RFC7413" class="cite xref">RFC7413</a>]</span> and some Hypertext Transport Protocol (HTTP)
-cookies. This historical data <span class="bcp14">MUST NOT</span> be used across different
-network interfaces and <span class="bcp14">SHOULD</span> be flushed whenever a device changes
-the network to which it is attached.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+cookies. This historical data <span class="bcp14">MUST</span> be partitioned using the same
+boundaries used for privacy-sensitive information specific to that endpoint,
+and <span class="bcp14">MUST NOT</span> be used across different network interfaces. The data <span class="bcp14">SHOULD</span>
+be flushed whenever a device changes the network to which it is attached.
+Clients that use historical data <span class="bcp14">MUST</span> ensure that clients with different
+historical data will eventually converge toward the same behaviors. For
+example, clients can periodically ignore historical data to ensure that
+fresh addresses are attempted.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 <p id="section-5.3-4">Next, the client <span class="bcp14">SHOULD</span> modify the ordered list to interleave
 address families. Whichever address family is first in the list
 should be followed by an endpoint of the other address family. For example,
@@ -1729,7 +1734,7 @@ long list of addresses from a given address family if connectivity
 over that address family is impaired.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
 <p id="section-5.3-5">Note that the address selection described in this section only
 applies to destination addresses; Source Address Selection
-(<span>[<a href="#RFC6724-UPDATE" class="cite xref">RFC6724-UPDATE</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-23#section-3.2" class="relref">Section 3.2</a></span>) is performed
+(<span>[<a href="#RFC6724-UPDATE" class="cite xref">RFC6724-UPDATE</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-25#section-3.2" class="relref">Section 3.2</a></span>) is performed
 once per destination address and is out of scope of this document.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1926,7 +1931,7 @@ instead of a hostname, it <span class="bcp14">SHOULD</span> use PREF64s received
 Advertisements <span>[<a href="#RFC8781" class="cite xref">RFC8781</a>]</span>.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <p id="section-8.2-2">With PREF64 available, networks might choose to not deploy DNS64, as
 the latter has a number of disadvantages (see
-<span>[<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-01#section-4.3.4" class="relref">Section 4.3.4</a></span>). To ensure
+<span>[<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-02#section-4.3.4" class="relref">Section 4.3.4</a></span>). To ensure
 compatibility with such networks, if PREF64 is available, clients
 <span class="bcp14">SHOULD</span> send an A query in addition to an AAAA query for a given
 hostname. This allows the client to receive any existing IPv4 A
@@ -2197,7 +2202,7 @@ addresses.<a href="#section-11-1" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="RFC6724-UPDATE">[RFC6724-UPDATE]</dt>
         <dd>
-<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Chown, T.</span>, and <span class="refAuthor">J. Duncan</span>, <span class="refTitle">"Prioritizing known-local IPv6 ULAs through address selection policy"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-6man-rfc6724-update-23</span>, <time datetime="2025-07-07" class="refDate">7 July 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-23">https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-23</a>&gt;</span>. </dd>
+<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Chown, T.</span>, and <span class="refAuthor">J. Duncan</span>, <span class="refTitle">"Prioritizing known-local IPv6 ULAs through address selection policy"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-6man-rfc6724-update-25</span>, <time datetime="2025-08-11" class="refDate">11 August 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-25">https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-25</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7050">[RFC7050]</dt>
         <dd>
@@ -2274,7 +2279,7 @@ addresses.<a href="#section-11-1" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="V6-MOSTLY">[V6-MOSTLY]</dt>
       <dd>
-<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-Mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-01</span>, <time datetime="2025-03-03" class="refDate">3 March 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-01">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-01</a>&gt;</span>. </dd>
+<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-Mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-02</span>, <time datetime="2025-08-26" class="refDate">26 August 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-02">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
