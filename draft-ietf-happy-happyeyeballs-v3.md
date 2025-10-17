@@ -518,7 +518,9 @@ wait for a single handshake to complete.
 
 Beyond TCP, TLS, and/or QUIC handshakes, clients may also wait for
 other requirements to be met before determining that the connection
-establishment was successful.
+establishment was successful. For example, clients generally validate that
+the server's certificate provided via TLS is trusted, and that operation can
+be asynchronous.
 
 In cases where the connection establishment determination goes beyond
 the initial transport handshake, the timer that is set to the
