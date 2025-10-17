@@ -493,6 +493,15 @@ packet-loss rates. The Connection Attempt Delay SHOULD have an upper
 bound, referred to as the "Maximum Connection Attempt Delay". The
 current recommended value is 2 seconds.
 
+The Connection Attempt Delay is used to set a timer, referred to as
+the "Next Connection Attempt Timer". Whenever this timer fires and
+a connection has not been successfully established, the next
+connection attempt starts, and the timer either is reset to a new
+delay value or, in the case of the end of the list being reached,
+is cancelled. Note that the delay value can be different for each
+connection attempt (depending on the protocol being used and
+the estimated RTT).
+
 ## Determining successful connection establishment {#success}
 
 The determination of when a connection attempt has successfully
@@ -523,8 +532,7 @@ the server's certificate provided via TLS is trusted, and that operation can
 be asynchronous.
 
 In cases where the connection establishment determination goes beyond
-the initial transport handshake, the timer that is set to the
-"Connection Attempt Delay" to determine when to start the next attempt
+the initial transport handshake, the Next Connection Attempt Timer
 ought to be adjusted after the initial transport handshake is completed.
 When the connection establishment makes progress, but has not completed,
 the timer SHOULD be extended to a new value that represents an estimated
