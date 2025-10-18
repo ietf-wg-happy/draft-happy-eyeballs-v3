@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 20 April 2026                                           N. Jaju
+Expires: 21 April 2026                                           N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                         17 October 2025
+                                                         18 October 2025
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 April 2026.
+   This Internet-Draft will expire on 21 April 2026.
 
 Copyright Notice
 
@@ -567,7 +567,7 @@ Table of Contents
    completed (and other attempts can be cancelled) ultimately depends on
    the client application's interpretation of the connection state being
    ready to use.  This will generally include at least the transport-
-   level handshake with remote endpoint (such as the TCP or QUIC
+   level handshake with the remote endpoint (such as the TCP or QUIC
    handshake), but can involve other higher-level handshakes or state
    checks as well.
 
