@@ -21,7 +21,7 @@ requirements for algorithms that reduce this user-visible delay and
 provides an example algorithm, referred to as "Happy Eyeballs". This
 document updates the algorithm description in RFC 8305. 
     ' name="description">
-<meta content="xml2rfc 3.30.2" name="generator">
+<meta content="xml2rfc 3.31.0" name="generator">
 <meta content="ipv6" name="keyword">
 <meta content="ipv4" name="keyword">
 <meta content="racing" name="keyword">
@@ -31,18 +31,17 @@ document updates the algorithm description in RFC 8305.
 <meta content="ech" name="keyword">
 <meta content="draft-ietf-happy-happyeyeballs-v3-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.30.2
-    Python 3.12.11
+  xml2rfc 3.31.0
+    Python 3.12.12
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.4.0
+    platformdirs 4.5.0
     pycountry 24.6.1
     PyYAML 6.0.2
     requests 2.32.5
-    setuptools 80.9.0
     wcwidth 0.2.14
 -->
 <link href="draft-ietf-happy-happyeyeballs-v3.xml" rel="alternate" type="application/rfc+xml">
@@ -1066,7 +1065,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 20 April 2026</td>
+<td class="center">Expires 21 April 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1079,12 +1078,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-happy-happyeyeballs-v3-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-10-17" class="published">17 October 2025</time>
+<time datetime="2025-10-18" class="published">18 October 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-04-20">20 April 2026</time></dd>
+<dd class="expires"><time datetime="2026-04-21">21 April 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1155,7 +1154,7 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 20 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1792,15 +1791,26 @@ value is required to avoid congestion collapse in the presence of high
 packet-loss rates. The Connection Attempt Delay <span class="bcp14">SHOULD</span> have an upper
 bound, referred to as the "Maximum Connection Attempt Delay". The
 current recommended value is 2 seconds.<a href="#section-6-5" class="pilcrow">¶</a></p>
+<p id="section-6-6">The Connection Attempt Delay is used to set a timer, referred to as
+the "Next Connection Attempt Timer". Whenever this timer fires and
+a connection has not been successfully established, the next
+connection attempt starts, and the timer either is reset to a new
+delay value or, in the case of the end of the list being reached,
+is cancelled. Note that the delay value can be different for each
+connection attempt (depending on the protocol being used and
+the estimated RTT).<a href="#section-6-6" class="pilcrow">¶</a></p>
 <div id="success">
 <section id="section-6.1">
         <h3 id="name-determining-successful-conn">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-determining-successful-conn" class="section-name selfRef">Determining successful connection establishment</a>
         </h3>
 <p id="section-6.1-1">The determination of when a connection attempt has successfully
-completed (and other attempts can be cancelled) depends on the
-protocols being used to establish a connection. This can involve one
-or more protocol handshakes.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+completed (and other attempts can be cancelled) ultimately depends
+on the client application's interpretation of the connection
+state being ready to use. This will generally include at least
+the transport-level handshake with the remote endpoint (such as
+the TCP or QUIC handshake), but can involve other higher-level
+handshakes or state checks as well.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <p id="section-6.1-2">Client connections that use TCP only (without TLS or another protocol
 on top, such as for unencrypted HTTP connections) will determine
 successful establishment based on completing the TCP handshake
@@ -1811,9 +1821,25 @@ attempts. This is particularly useful for networks in which a
 TCP-terminating proxy might be causing TCP handshakes to succeed
 quickly, even though end-to-end connectivity with the TLS-terminating
 server will fail. QUIC connections inherently include a secure
-handshake in their main handshakes, and thus only need to wait for a
-single handshake to complete.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
-<p id="section-6.1-3">While transport layer handshakes generally do not have restrictions on
+handshake in their main handshakes, and thus usually only need to
+wait for a single handshake to complete.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.1-3">Beyond TCP, TLS, and/or QUIC handshakes, clients may also wait for
+other requirements to be met before determining that the connection
+establishment was successful. For example, clients generally validate that
+the server's certificate provided via TLS is trusted, and that operation can
+be asynchronous.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+<p id="section-6.1-4">In cases where the connection establishment determination goes beyond
+the initial transport handshake, the Next Connection Attempt Timer
+ought to be adjusted after the initial transport handshake is completed.
+When the connection establishment makes progress, but has not completed,
+the timer <span class="bcp14">SHOULD</span> be extended to a new value that represents an estimated
+time for the full connection establishment to complete.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
+<p id="section-6.1-5">For example, consider a case where connection establishment involves
+both a TCP handshake and a TLS handshake. If the timer is initially set
+to be roughly at the time when a TCP SYN packet would be retransmitted,
+and the TCP handshake completes before the timer fires, the timer should
+be adjusted to allow for the time in which the TLS handshake could complete.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
+<p id="section-6.1-6">While transport layer handshakes generally do not have restrictions on
 attempts to establish a connection, some cryptographic handshakes may
 be dependent on SVCB ServiceMode records and could impose limitations on
 establishing a connection.  For instance, ECH-capable clients may
@@ -1822,7 +1848,7 @@ contain the "ech" SvcParamKey <span>[<a href="#SVCB-ECH" class="cite xref">SVCB-
 client is either an SVCB-reliant client or a SVCB-optional client that
 might switch to SVCB-reliant connection establishment during the
 process, the client <span class="bcp14">MUST</span> wait for SVCB records before proceeding with the
-cryptographic handshake.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+cryptographic handshake.<a href="#section-6.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="handling-application-layer-protocol-negotiation-alpn">

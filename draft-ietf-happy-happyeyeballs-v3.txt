@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 20 April 2026                                           N. Jaju
+Expires: 21 April 2026                                           N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                         17 October 2025
+                                                         18 October 2025
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 April 2026.
+   This Internet-Draft will expire on 21 April 2026.
 
 Copyright Notice
 
@@ -558,12 +558,23 @@ Table of Contents
    Connection Attempt Delay".  The current recommended value is 2
    seconds.
 
+   The Connection Attempt Delay is used to set a timer, referred to as
+   the "Next Connection Attempt Timer".  Whenever this timer fires and a
+   connection has not been successfully established, the next connection
+   attempt starts, and the timer either is reset to a new delay value
+   or, in the case of the end of the list being reached, is cancelled.
+   Note that the delay value can be different for each connection
+   attempt (depending on the protocol being used and the estimated RTT).
+
 6.1.  Determining successful connection establishment
 
    The determination of when a connection attempt has successfully
-   completed (and other attempts can be cancelled) depends on the
-   protocols being used to establish a connection.  This can involve one
-   or more protocol handshakes.
+   completed (and other attempts can be cancelled) ultimately depends on
+   the client application's interpretation of the connection state being
+   ready to use.  This will generally include at least the transport-
+   level handshake with the remote endpoint (such as the TCP or QUIC
+   handshake), but can involve other higher-level handshakes or state
+   checks as well.
 
    Client connections that use TCP only (without TLS or another protocol
    on top, such as for unencrypted HTTP connections) will determine
@@ -575,8 +586,29 @@ Table of Contents
    proxy might be causing TCP handshakes to succeed quickly, even though
    end-to-end connectivity with the TLS-terminating server will fail.
    QUIC connections inherently include a secure handshake in their main
-   handshakes, and thus only need to wait for a single handshake to
+   handshakes, and thus usually only need to wait for a single handshake
+   to complete.
+
+   Beyond TCP, TLS, and/or QUIC handshakes, clients may also wait for
+   other requirements to be met before determining that the connection
+   establishment was successful.  For example, clients generally
+   validate that the server's certificate provided via TLS is trusted,
+   and that operation can be asynchronous.
+
+   In cases where the connection establishment determination goes beyond
+   the initial transport handshake, the Next Connection Attempt Timer
+   ought to be adjusted after the initial transport handshake is
+   completed.  When the connection establishment makes progress, but has
+   not completed, the timer SHOULD be extended to a new value that
+   represents an estimated time for the full connection establishment to
    complete.
+
+   For example, consider a case where connection establishment involves
+   both a TCP handshake and a TLS handshake.  If the timer is initially
+   set to be roughly at the time when a TCP SYN packet would be
+   retransmitted, and the TCP handshake completes before the timer
+   fires, the timer should be adjusted to allow for the time in which
+   the TLS handshake could complete.
 
    While transport layer handshakes generally do not have restrictions
    on attempts to establish a connection, some cryptographic handshakes
