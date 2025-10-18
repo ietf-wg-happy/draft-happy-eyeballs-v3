@@ -542,7 +542,7 @@ For example, consider a case where connection establishment involves
 both a TCP handshake and a TLS handshake. If the timer is initially set
 to be roughly at the time when a TCP SYN packet would be retransmitted,
 and the TCP handshake completes before the timer fires, the timer should
-be adjusted to allow for the time the TLS handshake could complete in.
+be adjusted to allow for the time in which the TLS handshake could complete.
 
 While transport layer handshakes generally do not have restrictions on
 attempts to establish a connection, some cryptographic handshakes may
