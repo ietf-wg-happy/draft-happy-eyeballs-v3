@@ -149,14 +149,21 @@ and asynchronously handles the answers.
 ## Sending DNS Queries
 
 Clients first need to determine which DNS resource records
-they will include in queries for a named host. When a client
-has both IPv4 and IPv6 connectivity, it needs to send out queries for
-both AAAA and A records. On a network with only IPv4 connectivity,
-it will send a query for A records. On a network with only IPv6
-connectivity, the client will either send out queries for both AAAA
-and A records, or only a query for AAAA records, depending on
-the network configuration. See {{v6only}} for more discussion of
-handling IPv6-mostly and IPv6-only networks.
+they will include in queries for a named host.
+
+This decision is based on if client has "connectivity" using IPv4 and IPv6.
+In this case, "connectivity" for an address family is defined
+as having at least one local address of the family from which
+to send packets, and at least one non-link local route for
+the address family. 
+
+When a client has both IPv4 and IPv6 connectivity, it needs to
+send out queries for both AAAA and A records. On a network with
+only IPv4 connectivity, it will send a query for A records. On a
+network with only IPv6 connectivity, the client will either send
+out queries for both AAAA and A records, or only a query for AAAA
+records, depending on the network configuration. See {{v6only}}
+for more discussion of handling IPv6-mostly and IPv6-only networks.
 
 In addition to requesting AAAA and A records, depending on which
 application is establishing the connection, clients can request
@@ -217,9 +224,9 @@ If all answers come back with negative answers, the
 connection establishment will fail or need to wait until other answers
 are received.
 
-On networks that allow connectivity on both IPv6 and IPv4, IPv6 is
-assumed to be the preferred address family. If only one of IPv6 or IPv4 offers
-connectivity, that address family should be considered the preferred address
+On networks that have both default routes for IPv6 and IPv4, IPv6 is
+assumed to be the preferred address family. If only one of IPv6 or IPv4 has
+a default route, that address family should be considered the preferred address
 family for progressing the algorithm.
 
 The resolution time delay is a short time that provides a chance
