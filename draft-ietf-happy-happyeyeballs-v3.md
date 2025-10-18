@@ -508,7 +508,7 @@ The determination of when a connection attempt has successfully
 completed (and other attempts can be cancelled) ultimately depends
 on the client application's interpretation of the connection
 state being ready to use. This will generally include at least
-the transport-level handshake with remote endpoint (such as
+the transport-level handshake with the remote endpoint (such as
 the TCP or QUIC handshake), but can involve other higher-level
 handshakes or state checks as well.
 
