@@ -2164,11 +2164,24 @@ monitoring to ensure functionality of all address families.<a href="#section-10.
       <h2 id="name-security-considerations">
 <a href="#section-11" class="section-number selfRef">11. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-11-1">Note that applications should not rely upon a stable hostname-to-
-address mapping to ensure any security properties, since DNS results
-may change between queries. Happy Eyeballs may make it more likely
-that subsequent connections to a single hostname use different IP
-addresses.<a href="#section-11-1" class="pilcrow">¶</a></p>
+<p id="section-11-1">Note that applications should not rely upon a stable
+hostname-to-address mapping to ensure any security properties, since
+DNS results may change between queries. Happy Eyeballs may make it
+more likely that subsequent connections to a single hostname use
+different IP addresses.<a href="#section-11-1" class="pilcrow">¶</a></p>
+<p id="section-11-2">When using HTTP, HTTPS resource records indicate that clients should
+require HTTPS when connecting to an origin (see <span><a href="https://rfc-editor.org/rfc/rfc9460#section-9.5" class="relref">Section 9.5</a> of [<a href="#RFC9460" class="cite xref">RFC9460</a>]</span>), so an active attacker can attempt a downgrade attack by
+interfering with the successful delivery of HTTPS resource records.
+When clients use insecure DNS mechanisms, any on-path attacker can
+simply drop HTTPS resource records, so clients cannot tell the
+difference between an attack and a resolver that fails to respond to
+HTTPS queries.<a href="#section-11-2" class="pilcrow">¶</a></p>
+<p id="section-11-3">However, when using cryptographically protected DNS mechanisms, as
+described in <span><a href="https://rfc-editor.org/rfc/rfc9460#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC9460" class="cite xref">RFC9460</a>]</span>, both SVCB-reliant and
+SVCB-optional clients <span class="bcp14">MUST NOT</span> send any unencrypted data after the TCP
+handshake completes unless they have received a valid HTTPS response.
+Those clients need to complete a TLS handshake before proceeding if
+that response is non-negative.<a href="#section-11-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -2245,6 +2258,10 @@ addresses.<a href="#section-11-1" class="pilcrow">¶</a></p>
 <dt id="RFC9000">[RFC9000]</dt>
         <dd>
 <span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">M. Thomson, Ed.</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="seriesInfo">RFC 9000</span>, <span class="seriesInfo">DOI 10.17487/RFC9000</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9000">https://www.rfc-editor.org/rfc/rfc9000</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9460">[RFC9460]</dt>
+        <dd>
+<span class="refAuthor">Schwartz, B.</span>, <span class="refAuthor">Bishop, M.</span>, and <span class="refAuthor">E. Nygren</span>, <span class="refTitle">"Service Binding and Parameter Specification via the DNS (SVCB and HTTPS Resource Records)"</span>, <span class="seriesInfo">RFC 9460</span>, <span class="seriesInfo">DOI 10.17487/RFC9460</span>, <time datetime="2023-11" class="refDate">November 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9460">https://www.rfc-editor.org/rfc/rfc9460</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="SVCB">[SVCB]</dt>
         <dd>
