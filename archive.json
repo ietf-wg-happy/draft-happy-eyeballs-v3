@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-16T01:44:59.717669+00:00",
+  "timestamp": "2025-10-19T01:55:26.545173+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -273,13 +273,12 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [
         "bashi",
-        "tfpauly",
-        "nidhijaju"
+        "tfpauly"
       ],
       "labels": [],
       "body": "ECH use can make the client be SVCB-reliant instead of SVCB-optional. At the very least, the algorithm will be impacted by being SVCB-reliant.",
       "createdAt": "2023-09-05T22:07:35Z",
-      "updatedAt": "2025-10-14T22:20:47Z",
+      "updatedAt": "2025-10-17T08:57:03Z",
       "closedAt": null,
       "comments": [
         {
@@ -552,7 +551,7 @@
       "id": "I_kwDOKH7CuM51fEqU",
       "title": "Discuss impact on DNS-based http->https upgrade",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/24",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ericorth",
       "authorAssociation": "NONE",
       "assignees": [
@@ -561,8 +560,8 @@
       "labels": [],
       "body": "Similarly to #6, need a discussion on using A/AAAA without waiting for HTTPS when the HTTPS record could have forced upgrade to https://.  Clients need to be aware of the potential tradeoffs of that functionality potentially getting skipped.",
       "createdAt": "2023-10-31T18:27:46Z",
-      "updatedAt": "2025-10-14T04:07:02Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-18T03:19:47Z",
+      "closedAt": "2025-10-18T03:19:47Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -1325,7 +1324,7 @@
       "labels": [],
       "body": "The current draft says\n\n> If the client supports TLS Encrypted Client Hello (ECH) discovery through SVCB records {{!SVCB-ECH=I-D.ietf-tls-svcb-ech}}, depending on the client's preference to handle ECH, the client SHOULD sort addresses with ECH keys taking priority to maintain privacy when attempting connection establishment.\n\nECH-SVCB says\n\n> A SVCB RRSet containing some RRs with \"ech\" and some without is vulnerable to a downgrade attack ... This configuration is NOT RECOMMENDED. Zone owners who do use such a mixed configuration SHOULD mark the RRs with \"ech\" as more preferred (i.e. lower SvcPriority value) than those without, in order to maximize the likelihood that ECH will be used in the absence of an active adversary.\n\nIn essence, there is a discrepancy as to whose responsibility it is to prioritize ECH.\n\nI think the ECH-SVCB view should probably prevail.\n\nPhilosophically, the client cannot make the service more secure than the operator intends it to be.\n\nOperationally, it seems valuable to be able to test ECH by placing it on a less-used, lower-priority endpoint, and it would be very surprising to discover that this effectively inverts the stated priority for some (large?) segment of clients.",
       "createdAt": "2025-01-17T16:14:21Z",
-      "updatedAt": "2025-10-14T22:20:32Z",
+      "updatedAt": "2025-10-18T03:57:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -1334,6 +1333,20 @@
           "body": "IETF 123:\n- Do we want protocol/security requirements to take precedence?\n    - Allowing clients to prefer ECH or particular ALPNs makes it so that priorities are most effective between identically configured backends (instead of primary/backup).\n    - Primaries and backups that don't offer similar capabilities aren't particularly effective backups.\n    - From a server perspective, a more advanced third party backend could suddenly start getting lots of traffic the moment it turns on a new feature that clients prefer.\n\n- We know that we can't stop clients from having their own priorities.\n- Once you publish it, people can use it.\n- Do we prefer security over protocols or vice versa?",
           "createdAt": "2025-10-14T03:22:06Z",
           "updatedAt": "2025-10-14T03:22:06Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we can consider three kinds of clients. This applies to ECH, but also any other application protocol property:\n\n- ignoring clients; they don't support ECH, and don't differentiate the options based on that feature. \n- opportunistic clients; they support ECH, and will use it when available, but don't change sorting or preferences based on it.\n- strict clients; they support ECH and will use it whenever available.\n\nIf a client strictly prefers a feature, a server cannot stop the client from using it. However, it might be that the strict clients would not ever choose to use the non-ECH answers if ECH was available, so it's less about a \"race\" and more about filtering.\n\nAll three cases are possible. We may do best by describing these stances, since we cannot prevent them.  ",
+          "createdAt": "2025-10-18T03:52:34Z",
+          "updatedAt": "2025-10-18T03:52:34Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "These categories may also affect what policy a client has for waiting for the SVCB record. If you won't change behavior, you don't need to block or wait. ",
+          "createdAt": "2025-10-18T03:57:19Z",
+          "updatedAt": "2025-10-18T03:57:19Z"
         }
       ]
     },
@@ -1384,7 +1397,7 @@
       "id": "I_kwDOKH7CuM6uhWGY",
       "title": "Target fixation",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/77",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinthomson",
       "authorAssociation": "NONE",
       "assignees": [
@@ -1393,8 +1406,8 @@
       "labels": [],
       "body": "> it SHOULD add another Destination Address Selection rule between the RTT rule and rule 9, which prefers used addresses over unused ones\n\nFor as long as you retain that information, this rule will mean that clients are sticky.  That has some interesting implications for server operators who might find it is difficult to shift load away from a server instance that is under duress as a result, for instance.  Obviously, a server that is sufficiently stressed will likely be slower, but the attempt pacing might be long enough that you would need to be under a lot of load for that to happen.\n\nShould this instead de-emphasize \"used successfully\", except for when there are no higher order decision factors.",
       "createdAt": "2025-03-18T10:33:20Z",
-      "updatedAt": "2025-07-24T10:33:29Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-17T02:39:34Z",
+      "closedAt": "2025-10-17T02:39:34Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -1433,7 +1446,7 @@
       "id": "I_kwDOKH7CuM7BcS7y",
       "title": "Generalizing successful connection establishment",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/88",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "philsbln",
       "authorAssociation": "NONE",
       "assignees": [
@@ -1442,8 +1455,8 @@
       "labels": [],
       "body": "There might be use cases when applications want to override what [successful connection establishment](https://www.ietf.org/archive/id/draft-ietf-happy-happyeyeballs-v3-01.html#name-determining-successful-conn) means. \nAs a concrete example, an application may want to treat certain applications layer errors as failed connection attempt to retry with a less preferable protocol or address family to work around buggy intermediaries or customers who don\u2019t get their ip-level allow lists updated for IPv6.\nShould we mention this in the text?",
       "createdAt": "2025-07-19T16:14:37Z",
-      "updatedAt": "2025-10-14T22:23:41Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-18T03:18:27Z",
+      "closedAt": "2025-10-18T03:18:27Z",
       "comments": []
     },
     {
@@ -1458,16 +1471,24 @@
       "labels": [],
       "body": "Currently, HEv3 is defined as a procedure that produces a single connection as its output.  This does not model the actual behavior of optimized HTTP clients, which continue to race QUIC and TCP even after TCP \"wins\" and the first HTTP request is sent, so that the QUIC connection can be used for the next HTTP request.\n\nI would like to see a mode of HE that is a \"connection escalator\": its output is an asynchronous finite sequence of connections, each more preferred than the last.\n\nThe charter requires that HEv3 \"ends with a single established connection to a server\".  Like the current specification, this is true of a connection escalator: less preferred connections are closed in favor of more-preferred connections as they become available.",
       "createdAt": "2025-07-24T08:48:54Z",
-      "updatedAt": "2025-07-24T08:48:54Z",
+      "updatedAt": "2025-10-18T03:32:13Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we could describe this as a case where some earlier attempts are not cancelled, but instead are kept around to replace an attempt that was started later but succeeded first. \n\nHowever, I'm not certain this case actually makes sense in many cases at the happy eyeballs level. If the client knows about both QUIC and TCP support, and prefers QUIC, it will attempt QUIC establishment first. One reason to prefer QUIC is that it should establish more quickly. If it loses the race to TLS+TCP, that means it lost by around 3 RTT at least. In that case, I'm not sure if QUIC should be used even if it connects later (say after 4 or 5 RTT). It could be slow due to bad UDP handling on the network, etc. \"Escalating\" to QUIC may harm performance, as would trying to use a v6 connection that was much slower than a v4 connection. ",
+          "createdAt": "2025-10-18T03:32:13Z",
+          "updatedAt": "2025-10-18T03:32:13Z"
+        }
+      ]
     },
     {
       "number": 90,
       "id": "I_kwDOKH7CuM7CRPbe",
       "title": "IP Memory Supercookie",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/90",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bemasc",
       "authorAssociation": "NONE",
       "assignees": [
@@ -1476,8 +1497,8 @@
       "labels": [],
       "body": "If HE remembers the fastest (or workingest) IP address for each domain, this creates a supercookie.  A website could send subresource fetches to a few dozen domains, each with 2 IPv6 addresses (all pointed to the same server), and clients would \"stick\" to one or the other at random, resulting in 1 bit of identification entropy per domain.\n\nTo fix this, all HE connectivity history needs to be wiped when cookies (etc.) are cleared.",
       "createdAt": "2025-07-24T10:00:55Z",
-      "updatedAt": "2025-10-14T04:06:46Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-17T02:39:35Z",
+      "closedAt": "2025-10-17T02:39:35Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -6303,7 +6324,7 @@
       "id": "PR_kwDOKH7CuM6tycZL",
       "title": "Generalize connection establishment, explain extending timer",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/96",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -6312,17 +6333,19 @@
       "labels": [],
       "body": "Closes #88",
       "createdAt": "2025-10-15T03:32:27Z",
-      "updatedAt": "2025-10-16T00:39:03Z",
+      "updatedAt": "2025-10-18T03:18:26Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfpauly-patch-7",
-      "headRefOid": "889e16474a777e883b392cd7693fa0d745f734e4",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "1f6e42bef7e9e9b718487efe6850e35384cc8d36",
+      "closedAt": "2025-10-18T03:18:26Z",
+      "mergedAt": "2025-10-18T03:18:26Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "34bbde6530265376e6c8e38e57e7c4a7e9840ce1"
+      },
       "comments": [],
       "reviews": [
         {
@@ -6350,8 +6373,177 @@
               "updatedAt": "2025-10-16T00:39:04Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Hir53",
+          "commit": {
+            "abbreviatedOid": "889e164"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-17T02:42:55Z",
+          "updatedAt": "2025-10-17T02:42:55Z",
+          "comments": [
+            {
+              "originalPosition": 30,
+              "body": "@DavidSchinazi updated, please check!",
+              "createdAt": "2025-10-17T02:42:55Z",
+              "updatedAt": "2025-10-17T02:42:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7HnnKO",
+          "commit": {
+            "abbreviatedOid": "5424f09"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "lgtm % minor nits",
+          "createdAt": "2025-10-17T09:15:47Z",
+          "updatedAt": "2025-10-17T09:18:51Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "```suggestion\r\nthe transport-level handshake with the remote endpoint (such as\r\n```",
+              "createdAt": "2025-10-17T09:15:47Z",
+              "updatedAt": "2025-10-17T09:18:52Z"
+            },
+            {
+              "originalPosition": 54,
+              "body": "```suggestion\r\nbe adjusted to allow for the time in which the TLS handshake could complete.\r\n```",
+              "createdAt": "2025-10-17T09:18:36Z",
+              "updatedAt": "2025-10-17T09:18:52Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 97,
+      "id": "PR_kwDOKH7CuM6uBxB5",
+      "title": "Add more text about using historical data",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/97",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #77.\r\nFixes #90.",
+      "createdAt": "2025-10-16T07:59:43Z",
+      "updatedAt": "2025-10-17T02:39:35Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "convergence",
+      "headRefOid": "558cff7cf319e6bd83c01675f1fefbdff38d32a3",
+      "closedAt": "2025-10-17T02:39:33Z",
+      "mergedAt": "2025-10-17T02:39:33Z",
+      "mergedBy": "nidhijaju",
+      "mergeCommit": {
+        "oid": "cffbfc6ccc452d87aa229672478cd960f11532f9"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7HbLEh",
+          "commit": {
+            "abbreviatedOid": "558cff7"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-16T16:19:31Z",
+          "updatedAt": "2025-10-16T16:19:31Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Hiop_",
+          "commit": {
+            "abbreviatedOid": "558cff7"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-17T02:36:53Z",
+          "updatedAt": "2025-10-17T02:36:53Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 98,
+      "id": "PR_kwDOKH7CuM6uQx8M",
+      "title": "Add security considerations about https->http downgrade attack",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/98",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #24.",
+      "createdAt": "2025-10-17T09:13:10Z",
+      "updatedAt": "2025-10-18T03:19:46Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "cffbfc6ccc452d87aa229672478cd960f11532f9",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "dns-downgrade-attacks",
+      "headRefOid": "bbb248d774e4b898a5163d03a13280de4a3727e8",
+      "closedAt": "2025-10-18T03:19:46Z",
+      "mergedAt": "2025-10-18T03:19:46Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7H0ym9",
+          "commit": {
+            "abbreviatedOid": "bbb248d"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-18T03:19:34Z",
+          "updatedAt": "2025-10-18T03:19:34Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 99,
+      "id": "PR_kwDOKH7CuM6uaSWp",
+      "title": "Explain v4/v6 \u201cconnectivity\u201d",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/99",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #92",
+      "createdAt": "2025-10-18T03:43:32Z",
+      "updatedAt": "2025-10-18T03:43:46Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfpauly-patch-8",
+      "headRefOid": "21bcc0f357b485bcbdc5a2a5c492eabcd27b6702",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
