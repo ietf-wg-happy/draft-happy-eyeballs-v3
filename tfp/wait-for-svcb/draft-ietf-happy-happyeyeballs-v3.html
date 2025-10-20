@@ -1898,7 +1898,7 @@ resolution failures when responses are "cryptographically protected"
 using DNSSEC <span>[<a href="#DNSSEC" class="cite xref">DNSSEC</a>]</span> or encrypted DNS (<span>[<a href="#DOT" class="cite xref">DOT</a>]</span>,
 <span>[<a href="#DOH" class="cite xref">DOH</a>]</span>, or <span>[<a href="#DOQ" class="cite xref">DOQ</a>]</span>, for example). If SVCB
 resolution fails when using cryptographic protection, clients
-<span class="bcp14">SHOULD</span> abandon connection attempts to the altogether to avoid
+<span class="bcp14">SHOULD</span> abandon connection attempts altogether to avoid
 downgrade attacks.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
 <p id="section-6.3-3">Use of cryptographic protection in DNS can influence other
 parts of Happy Eyeballs connection establishment, as well.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
@@ -1906,11 +1906,11 @@ parts of Happy Eyeballs connection establishment, as well.<a href="#section-6.3-
 to be blocked or modified, so security properties derived from
 SVCB records are opportunistic only. However, when DNS is cryptographically
 protected, clients can be stricter about relying on the properties
-in SVCB records.<a href="#section-6.3-4" class="pilcrow">¶</a></p>
+from SVCB records.<a href="#section-6.3-4" class="pilcrow">¶</a></p>
 <p id="section-6.3-5"><span><a href="https://rfc-editor.org/rfc/rfc9460#section-5.1" class="relref">Section 5.1</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span> explains that clients "<span class="bcp14">MUST NOT</span> transmit any
 information that could be altered by the SVCB response until it arrives",
-and specifically points about properties that affect the TLS ClientHello.
-This restriction specifically apply when a client's behavior will
+and specifically mentions properties that affect the TLS ClientHello.
+This restriction specifically applies when a client's behavior will
 be altered by the SVCB response, which depends both on the client
 implementation's ability to support a particular feature, as well
 as the client implementation's willingness to rely on the SVCB
@@ -1923,14 +1923,14 @@ defined in <a href="#resolution" class="auto internal xref">Section 4</a> has be
 <ol start="1" type="1" class="normal type-1" id="section-6.3-7">
 <li id="section-6.3-7.1">
             <p id="section-6.3-7.1.1">DNS responses are cryptographically protected with DNSSEC or
-encrypted DNS. (If unencrypted and unsigned DNS is used, SVCB
+encrypted DNS. Note that, if unencrypted and unsigned DNS is used, SVCB
 information is opportunistic; clients <span class="bcp14">MAY</span> wait for SVCB responses
-but do not need to.)<a href="#section-6.3-7.1.1" class="pilcrow">¶</a></p>
+but do not need to.<a href="#section-6.3-7.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-6.3-7.2">
-            <p id="section-6.3-7.2.1">The client implementation supports parsing a particular
-security-related SVCB parameter (such as the "ech" SvcParamKey
-<span>[<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span>) and supports using that parameter. (In contrast,
+            <p id="section-6.3-7.2.1">The client implementation supports parsing and using a particular
+security-related SVCB parameter, such as the "ech" SvcParamKey
+<span>[<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span>. (In contrast,
 implementations that do not support actively using ECH do
 not need to wait for SVCB resolution if that is the only
 reason to do so).<a href="#section-6.3-7.2.1" class="pilcrow">¶</a></p>
@@ -1942,7 +1942,7 @@ For example, if a connection attempt would normally be
 using cleartext HTTP unless an HTTPS DNS record would
 cause the client to upgrade, the client needs to
 wait for the record; however, if the client already
-would be using HTTP over TLS, the it is not relying
+would be using HTTP over TLS, then it is not relying
 on that signal from SVCB. As another example, some SVCB
 properties can affect the TLS ClientHello in ways that optimize
 performance (like <code>tls-supported-groups</code> <span>[<a href="#I-D.ietf-tls-key-share-prediction" class="cite xref">I-D.ietf-tls-key-share-prediction</a>]</span>)
