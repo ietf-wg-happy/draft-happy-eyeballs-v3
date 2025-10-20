@@ -1245,6 +1245,9 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
                 <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-handling-application-layer-" class="internal xref">Handling Application Layer Protocol Negotiation (ALPN)</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
+                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="auto internal xref">6.3</a>.  <a href="#name-dropping-or-pending-connect" class="internal xref">Dropping or Pending Connection Attempts</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
@@ -1926,6 +1929,74 @@ that connection attempts are consistent with both the Alt-Svc
 parameters and the SVCB ALPN set, as specified in <span><a href="https://rfc-editor.org/rfc/rfc9460#section-9.3" class="relref">Section 9.3</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>.<a href="#section-6.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="dropping-or-pending-connection-attempts">
+<section id="section-6.3">
+        <h3 id="name-dropping-or-pending-connect">
+<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-dropping-or-pending-connect" class="section-name selfRef">Dropping or Pending Connection Attempts</a>
+        </h3>
+<p id="section-6.3-1">Some situations related to handling SVCB responses can
+require connection attempts to be dropped, or pended until
+SVCB responses return.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-2"><span><a href="https://rfc-editor.org/rfc/rfc9460#section-3.1" class="relref">Section 3.1</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span> describes client behavior for handling
+resolution failures when responses are "cryptographically protected"
+using DNSSEC <span>[<a href="#DNSSEC" class="cite xref">DNSSEC</a>]</span> or encrypted DNS (<span>[<a href="#DOT" class="cite xref">DOT</a>]</span>,
+<span>[<a href="#DOH" class="cite xref">DOH</a>]</span>, or <span>[<a href="#DOQ" class="cite xref">DOQ</a>]</span>, for example). If SVCB
+resolution fails when using cryptographic protection, clients
+<span class="bcp14">SHOULD</span> abandon connection attempts altogether to avoid
+downgrade attacks.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
+<p id="section-6.3-3">Use of cryptographic protection in DNS can influence other
+parts of Happy Eyeballs connection establishment, as well.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
+<p id="section-6.3-4">Situations in which DNS is not protected allow for any records
+to be blocked or modified, so security properties derived from
+SVCB records are opportunistic only. However, when DNS is cryptographically
+protected, clients can be stricter about relying on the properties
+from SVCB records.<a href="#section-6.3-4" class="pilcrow">¶</a></p>
+<p id="section-6.3-5"><span><a href="https://rfc-editor.org/rfc/rfc9460#section-5.1" class="relref">Section 5.1</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span> explains that clients "<span class="bcp14">MUST NOT</span> transmit any
+information that could be altered by the SVCB response until it arrives",
+and specifically mentions properties that affect the TLS ClientHello.
+This restriction specifically applies when a client's behavior will
+be altered by the SVCB response, which depends both on the client
+implementation's ability to support a particular feature, as well
+as the client implementation's willingness to rely on the SVCB
+response to enable a particular feature.<a href="#section-6.3-5" class="pilcrow">¶</a></p>
+<p id="section-6.3-6">Based on this, clients in some scenarios <span class="bcp14">MUST</span> pend starting
+a TLS handshake (either after TCP or as part of QUIC) until SVCB
+responses have been received, even after the "Resolution Delay"
+defined in <a href="#resolution" class="auto internal xref">Section 4</a> has been reached. Specifically, clients
+<span class="bcp14">MUST</span> pend starting handshakes if <em>all</em> of the following are true:<a href="#section-6.3-6" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-6.3-7">
+<li id="section-6.3-7.1">
+            <p id="section-6.3-7.1.1">DNS responses are cryptographically protected with DNSSEC or
+encrypted DNS. Note that, if unencrypted and unsigned DNS is used, SVCB
+information is opportunistic; clients <span class="bcp14">MAY</span> wait for SVCB responses
+but do not need to.<a href="#section-6.3-7.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-6.3-7.2">
+            <p id="section-6.3-7.2.1">The client implementation supports parsing and using a particular
+security-related SVCB parameter, such as the "ech" SvcParamKey
+<span>[<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span>. (In contrast,
+implementations that do not support actively using ECH do
+not need to wait for SVCB resolution if that is the only
+reason to do so).<a href="#section-6.3-7.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-6.3-7.3">
+            <p id="section-6.3-7.3.1">The client relies on the presence of the particular
+SVCB-related parameter to enable the relevant protocol feature.
+For example, if a connection attempt would normally be
+using cleartext HTTP unless an HTTPS DNS record would
+cause the client to upgrade, the client needs to
+wait for the record; however, if the client already
+would be using HTTP over TLS, then it is not relying
+on that signal from SVCB. As another example, some SVCB
+properties can affect the TLS ClientHello in ways that optimize
+performance (like <code>tls-supported-groups</code> <span>[<a href="#I-D.ietf-tls-key-share-prediction" class="cite xref">I-D.ietf-tls-key-share-prediction</a>]</span>)
+but only aim to save round trips. The other TLS groups
+can be discovered through the TLS handshake itself, instead
+of SVCB, and thus do not require waiting for SVCB responses.<a href="#section-6.3-7.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+</section>
+</div>
 </section>
 </div>
 <div id="changes">
@@ -2001,7 +2072,7 @@ instead of a hostname, it <span class="bcp14">SHOULD</span> use PREF64s received
 Advertisements <span>[<a href="#RFC8781" class="cite xref">RFC8781</a>]</span>.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <p id="section-8.2-2">With PREF64 available, networks might choose to not deploy DNS64, as
 the latter has a number of disadvantages (see
-<span>[<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-03#section-4.3.4" class="relref">Section 4.3.4</a></span>). To ensure
+<span>[<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-04#section-4.3.4" class="relref">Section 4.3.4</a></span>). To ensure
 compatibility with such networks, if PREF64 is available, clients
 <span class="bcp14">SHOULD</span> send an A query in addition to an AAAA query for a given
 hostname. This allows the client to receive any existing IPv4 A
@@ -2328,6 +2399,22 @@ that response is non-negative.<a href="#section-11-3" class="pilcrow">¶</a></p>
         <dd>
 <span class="refAuthor">Nottingham, M.</span>, <span class="refAuthor">McManus, P.</span>, and <span class="refAuthor">J. Reschke</span>, <span class="refTitle">"HTTP Alternative Services"</span>, <span class="seriesInfo">RFC 7838</span>, <span class="seriesInfo">DOI 10.17487/RFC7838</span>, <time datetime="2016-04" class="refDate">April 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7838">https://www.rfc-editor.org/rfc/rfc7838</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="DNSSEC">[DNSSEC]</dt>
+        <dd>
+<span class="refAuthor">Hoffman, P.</span>, <span class="refTitle">"DNS Security Extensions (DNSSEC)"</span>, <span class="seriesInfo">BCP 237</span>, <span class="seriesInfo">RFC 9364</span>, <span class="seriesInfo">DOI 10.17487/RFC9364</span>, <time datetime="2023-02" class="refDate">February 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9364">https://www.rfc-editor.org/rfc/rfc9364</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="DOH">[DOH]</dt>
+        <dd>
+<span class="refAuthor">Hoffman, P.</span> and <span class="refAuthor">P. McManus</span>, <span class="refTitle">"DNS Queries over HTTPS (DoH)"</span>, <span class="seriesInfo">RFC 8484</span>, <span class="seriesInfo">DOI 10.17487/RFC8484</span>, <time datetime="2018-10" class="refDate">October 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8484">https://www.rfc-editor.org/rfc/rfc8484</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="DOQ">[DOQ]</dt>
+        <dd>
+<span class="refAuthor">Huitema, C.</span>, <span class="refAuthor">Dickinson, S.</span>, and <span class="refAuthor">A. Mankin</span>, <span class="refTitle">"DNS over Dedicated QUIC Connections"</span>, <span class="seriesInfo">RFC 9250</span>, <span class="seriesInfo">DOI 10.17487/RFC9250</span>, <time datetime="2022-05" class="refDate">May 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9250">https://www.rfc-editor.org/rfc/rfc9250</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="DOT">[DOT]</dt>
+        <dd>
+<span class="refAuthor">Hu, Z.</span>, <span class="refAuthor">Zhu, L.</span>, <span class="refAuthor">Heidemann, J.</span>, <span class="refAuthor">Mankin, A.</span>, <span class="refAuthor">Wessels, D.</span>, and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Specification for DNS over Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 7858</span>, <span class="seriesInfo">DOI 10.17487/RFC7858</span>, <time datetime="2016-05" class="refDate">May 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7858">https://www.rfc-editor.org/rfc/rfc7858</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="HEV2">[HEV2]</dt>
         <dd>
 <span class="refAuthor">Schinazi, D.</span> and <span class="refAuthor">T. Pauly</span>, <span class="refTitle">"Happy Eyeballs Version 2: Better Connectivity Using Concurrency"</span>, <span class="seriesInfo">RFC 8305</span>, <span class="seriesInfo">DOI 10.17487/RFC8305</span>, <time datetime="2017-12" class="refDate">December 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8305">https://www.rfc-editor.org/rfc/rfc8305</a>&gt;</span>. </dd>
@@ -2335,6 +2422,10 @@ that response is non-negative.<a href="#section-11-3" class="pilcrow">¶</a></p>
 <dt id="HTTP3">[HTTP3]</dt>
         <dd>
 <span class="refAuthor">Bishop, M., Ed.</span>, <span class="refTitle">"HTTP/3"</span>, <span class="seriesInfo">RFC 9114</span>, <span class="seriesInfo">DOI 10.17487/RFC9114</span>, <time datetime="2022-06" class="refDate">June 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9114">https://www.rfc-editor.org/rfc/rfc9114</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-tls-key-share-prediction">[I-D.ietf-tls-key-share-prediction]</dt>
+        <dd>
+<span class="refAuthor">Benjamin, D.</span>, <span class="refTitle">"TLS Key Share Prediction"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-key-share-prediction-03</span>, <time datetime="2025-08-29" class="refDate">29 August 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-key-share-prediction-03">https://datatracker.ietf.org/doc/html/draft-ietf-tls-key-share-prediction-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="IPV6">[IPV6]</dt>
         <dd>
@@ -2366,7 +2457,7 @@ that response is non-negative.<a href="#section-11-3" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="V6-MOSTLY">[V6-MOSTLY]</dt>
       <dd>
-<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-Mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-03</span>, <time datetime="2025-10-18" class="refDate">18 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-03">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-03</a>&gt;</span>. </dd>
+<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-Mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-04</span>, <time datetime="2025-10-20" class="refDate">20 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-04">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-04</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>

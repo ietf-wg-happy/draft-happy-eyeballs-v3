@@ -95,6 +95,7 @@ Table of Contents
    6.  Connection Attempts
      6.1.  Determining successful connection establishment
      6.2.  Handling Application Layer Protocol Negotiation (ALPN)
+     6.3.  Dropping or Pending Connection Attempts
    7.  DNS Answer Changes During Happy Eyeballs Connection Setup
    8.  Supporting IPv6-Mostly and IPv6-Only Networks
      8.1.  IPv4 Address Literals
@@ -690,6 +691,67 @@ Table of Contents
    attempts are consistent with both the Alt-Svc parameters and the SVCB
    ALPN set, as specified in Section 9.3 of [SVCB].
 
+6.3.  Dropping or Pending Connection Attempts
+
+   Some situations related to handling SVCB responses can require
+   connection attempts to be dropped, or pended until SVCB responses
+   return.
+
+   Section 3.1 of [SVCB] describes client behavior for handling
+   resolution failures when responses are "cryptographically protected"
+   using DNSSEC [DNSSEC] or encrypted DNS ([DOT], [DOH], or [DOQ], for
+   example).  If SVCB resolution fails when using cryptographic
+   protection, clients SHOULD abandon connection attempts altogether to
+   avoid downgrade attacks.
+
+   Use of cryptographic protection in DNS can influence other parts of
+   Happy Eyeballs connection establishment, as well.
+
+   Situations in which DNS is not protected allow for any records to be
+   blocked or modified, so security properties derived from SVCB records
+   are opportunistic only.  However, when DNS is cryptographically
+   protected, clients can be stricter about relying on the properties
+   from SVCB records.
+
+   Section 5.1 of [SVCB] explains that clients "MUST NOT transmit any
+   information that could be altered by the SVCB response until it
+   arrives", and specifically mentions properties that affect the TLS
+   ClientHello.  This restriction specifically applies when a client's
+   behavior will be altered by the SVCB response, which depends both on
+   the client implementation's ability to support a particular feature,
+   as well as the client implementation's willingness to rely on the
+   SVCB response to enable a particular feature.
+
+   Based on this, clients in some scenarios MUST pend starting a TLS
+   handshake (either after TCP or as part of QUIC) until SVCB responses
+   have been received, even after the "Resolution Delay" defined in
+   Section 4 has been reached.  Specifically, clients MUST pend starting
+   handshakes if _all_ of the following are true:
+
+   1.  DNS responses are cryptographically protected with DNSSEC or
+       encrypted DNS.  Note that, if unencrypted and unsigned DNS is
+       used, SVCB information is opportunistic; clients MAY wait for
+       SVCB responses but do not need to.
+
+   2.  The client implementation supports parsing and using a particular
+       security-related SVCB parameter, such as the "ech" SvcParamKey
+       [SVCB-ECH].  (In contrast, implementations that do not support
+       actively using ECH do not need to wait for SVCB resolution if
+       that is the only reason to do so).
+
+   3.  The client relies on the presence of the particular SVCB-related
+       parameter to enable the relevant protocol feature.  For example,
+       if a connection attempt would normally be using cleartext HTTP
+       unless an HTTPS DNS record would cause the client to upgrade, the
+       client needs to wait for the record; however, if the client
+       already would be using HTTP over TLS, then it is not relying on
+       that signal from SVCB.  As another example, some SVCB properties
+       can affect the TLS ClientHello in ways that optimize performance
+       (like tls-supported-groups [I-D.ietf-tls-key-share-prediction])
+       but only aim to save round trips.  The other TLS groups can be
+       discovered through the TLS handshake itself, instead of SVCB, and
+       thus do not require waiting for SVCB responses.
+
 7.  DNS Answer Changes During Happy Eyeballs Connection Setup
 
    If, during the course of connection establishment, the DNS answers
@@ -1041,6 +1103,24 @@ Table of Contents
               Alternative Services", RFC 7838, DOI 10.17487/RFC7838,
               April 2016, <https://www.rfc-editor.org/rfc/rfc7838>.
 
+   [DNSSEC]   Hoffman, P., "DNS Security Extensions (DNSSEC)", BCP 237,
+              RFC 9364, DOI 10.17487/RFC9364, February 2023,
+              <https://www.rfc-editor.org/rfc/rfc9364>.
+
+   [DOH]      Hoffman, P. and P. McManus, "DNS Queries over HTTPS
+              (DoH)", RFC 8484, DOI 10.17487/RFC8484, October 2018,
+              <https://www.rfc-editor.org/rfc/rfc8484>.
+
+   [DOQ]      Huitema, C., Dickinson, S., and A. Mankin, "DNS over
+              Dedicated QUIC Connections", RFC 9250,
+              DOI 10.17487/RFC9250, May 2022,
+              <https://www.rfc-editor.org/rfc/rfc9250>.
+
+   [DOT]      Hu, Z., Zhu, L., Heidemann, J., Mankin, A., Wessels, D.,
+              and P. Hoffman, "Specification for DNS over Transport
+              Layer Security (TLS)", RFC 7858, DOI 10.17487/RFC7858, May
+              2016, <https://www.rfc-editor.org/rfc/rfc7858>.
+
    [HEV2]     Schinazi, D. and T. Pauly, "Happy Eyeballs Version 2:
               Better Connectivity Using Concurrency", RFC 8305,
               DOI 10.17487/RFC8305, December 2017,
@@ -1048,6 +1128,13 @@ Table of Contents
 
    [HTTP3]    Bishop, M., Ed., "HTTP/3", RFC 9114, DOI 10.17487/RFC9114,
               June 2022, <https://www.rfc-editor.org/rfc/rfc9114>.
+
+   [I-D.ietf-tls-key-share-prediction]
+              Benjamin, D., "TLS Key Share Prediction", Work in
+              Progress, Internet-Draft, draft-ietf-tls-key-share-
+              prediction-03, 29 August 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-key-
+              share-prediction-03>.
 
    [IPV6]     Deering, S. and R. Hinden, "Internet Protocol, Version 6
               (IPv6) Specification", STD 86, RFC 8200,
@@ -1083,9 +1170,9 @@ Table of Contents
    [V6-MOSTLY]
               Buraglio, N., Caletka, O., and J. Linkova, "IPv6-Mostly
               Networks: Deployment and Operations Considerations", Work
-              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-03, 18
+              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-04, 20
               October 2025, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-v6ops-6mops-03>.
+              draft-ietf-v6ops-6mops-04>.
 
 Acknowledgments
 
