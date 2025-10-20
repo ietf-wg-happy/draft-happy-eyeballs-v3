@@ -601,7 +601,7 @@ resolution failures when responses are "cryptographically protected"
 using DNSSEC {{?DNSSEC=RFC9364}} or encrypted DNS ({{?DOT=RFC7858}},
 {{?DOH=RFC8484}}, or {{?DOQ=RFC9250}}, for example). If SVCB
 resolution fails when using cryptographic protection, clients
-SHOULD abandon connection attempts to the altogether to avoid
+SHOULD abandon connection attempts altogether to avoid
 downgrade attacks.
 
 Use of cryptographic protection in DNS can influence other
@@ -611,12 +611,12 @@ Situations in which DNS is not protected allow for any records
 to be blocked or modified, so security properties derived from
 SVCB records are opportunistic only. However, when DNS is cryptographically
 protected, clients can be stricter about relying on the properties
-in SVCB records.
+from SVCB records.
 
 {{Section 5.1 of SVCB}} explains that clients "MUST NOT transmit any
 information that could be altered by the SVCB response until it arrives",
-and specifically points about properties that affect the TLS ClientHello.
-This restriction specifically apply when a client's behavior will
+and specifically mentions properties that affect the TLS ClientHello.
+This restriction specifically applies when a client's behavior will
 be altered by the SVCB response, which depends both on the client
 implementation's ability to support a particular feature, as well
 as the client implementation's willingness to rely on the SVCB
@@ -629,13 +629,13 @@ defined in {{resolution}} has been reached. Specifically, clients
 MUST pend starting handshakes if *all* of the following are true:
 
 1. DNS responses are cryptographically protected with DNSSEC or
-encrypted DNS. (If unencrypted and unsigned DNS is used, SVCB
+encrypted DNS. Note that, if unencrypted and unsigned DNS is used, SVCB
 information is opportunistic; clients MAY wait for SVCB responses
-but do not need to.)
+but do not need to.
 
-1. The client implementation supports parsing a particular
-security-related SVCB parameter (such as the "ech" SvcParamKey
-{{SVCB-ECH}}) and supports using that parameter. (In contrast,
+1. The client implementation supports parsing and using a particular
+security-related SVCB parameter, such as the "ech" SvcParamKey
+{{SVCB-ECH}}. (In contrast,
 implementations that do not support actively using ECH do
 not need to wait for SVCB resolution if that is the only
 reason to do so).
@@ -646,7 +646,7 @@ For example, if a connection attempt would normally be
 using cleartext HTTP unless an HTTPS DNS record would
 cause the client to upgrade, the client needs to
 wait for the record; however, if the client already
-would be using HTTP over TLS, the it is not relying
+would be using HTTP over TLS, then it is not relying
 on that signal from SVCB. As another example, some SVCB
 properties can affect the TLS ClientHello in ways that optimize
 performance (like `tls-supported-groups` {{?I-D.ietf-tls-key-share-prediction}})
