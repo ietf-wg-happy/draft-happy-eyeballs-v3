@@ -1065,7 +1065,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 21 April 2026</td>
+<td class="center">Expires 23 April 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1078,12 +1078,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-happy-happyeyeballs-v3-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-10-18" class="published">18 October 2025</time>
+<time datetime="2025-10-20" class="published">20 October 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-04-21">21 April 2026</time></dd>
+<dd class="expires"><time datetime="2026-04-23">23 April 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1154,7 +1154,7 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 23 April 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1222,6 +1222,11 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
                 <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-grouping-by-application-pro" class="internal xref">Grouping By Application Protocols and Security Requirements</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.1">
+                    <p id="section-toc.1-1.5.2.1.2.1.1"><a href="#section-5.1.1" class="auto internal xref">5.1.1</a>.  <a href="#name-when-to-apply-application-p" class="internal xref">When to Apply Application Preferences</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
                 <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-grouping-by-service-priorit" class="internal xref">Grouping By Service Priority</a></p>
@@ -1650,6 +1655,40 @@ to different destination address options within one of these groups.
 The logic for prioritizing and falling back between groups
 of addresses with different security properties and protocol
 properties is implementation-defined.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
+<div id="when-to-apply-application-preferences">
+<section id="section-5.1.1">
+          <h4 id="name-when-to-apply-application-p">
+<a href="#section-5.1.1" class="section-number selfRef">5.1.1. </a><a href="#name-when-to-apply-application-p" class="section-name selfRef">When to Apply Application Preferences</a>
+          </h4>
+<p id="section-5.1.1-1">Whether or not specific application protocols or security features
+are grouped separately is a client application decision. Clients
+<span class="bcp14">SHOULD</span> avoid grouping and sorting separately in cases where their
+use of an application protocol or feature is non-critical.<a href="#section-5.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-2">For example, an HTTP client loading a simple webpage may not see a large
+difference between using HTTP/3 or HTTP/2, and thus can group the ALPNs together
+to respect service-determined priorities where HTTP/3 might be
+prioritized behind HTTP/2. However, another client might see significant
+performance improvements by using HTTP/3's ability to send unreliable
+frames for its application use-case and will group HTTP/3 before HTTP/2.<a href="#section-5.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-3">Similarly, a particular application might require or strongly prefer the
+use of TLS ECH for privacy-sensitive traffic, while others might
+support ECH opportunistically.<a href="#section-5.1.1-3" class="pilcrow">¶</a></p>
+<p id="section-5.1.1-4"><span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-svcb-ech-08#section-8" class="relref">Section 8</a> of [<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span> recommends against SVCB record sets that contain
+some answers that include ECH configuration and some that don't, but notes
+that such cases are possible. It is possible that services only include
+ECH configurations on SVCB answers that are prioritized behind others
+that don't include ECH configurations; for example, this might be
+used as an experimenation or roll-out strategy. Due to such cases, clients
+ought to not arbitrarily group ECH-containing answers and sort them
+first if they won't use the ECH information, or if the connection would
+not benefit from the use of ECH. However, for cases where there is a
+reason for an application preference for ECH, the client <span class="bcp14">MAY</span> group
+and prioritize those answers separately. Even though this might conflict
+with the published service record priorities, any answers published
+by the service are eligible to be used by clients, and clients can
+choose to use them.<a href="#section-5.1.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="service-group">
@@ -1957,7 +1996,7 @@ instead of a hostname, it <span class="bcp14">SHOULD</span> use PREF64s received
 Advertisements <span>[<a href="#RFC8781" class="cite xref">RFC8781</a>]</span>.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 <p id="section-8.2-2">With PREF64 available, networks might choose to not deploy DNS64, as
 the latter has a number of disadvantages (see
-<span>[<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-02#section-4.3.4" class="relref">Section 4.3.4</a></span>). To ensure
+<span>[<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-03#section-4.3.4" class="relref">Section 4.3.4</a></span>). To ensure
 compatibility with such networks, if PREF64 is available, clients
 <span class="bcp14">SHOULD</span> send an A query in addition to an AAAA query for a given
 hostname. This allows the client to receive any existing IPv4 A
@@ -2322,7 +2361,7 @@ that response is non-negative.<a href="#section-11-3" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="V6-MOSTLY">[V6-MOSTLY]</dt>
       <dd>
-<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-Mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-02</span>, <time datetime="2025-08-26" class="refDate">26 August 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-02">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-02</a>&gt;</span>. </dd>
+<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-Mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-03</span>, <time datetime="2025-10-18" class="refDate">18 October 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-03">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
