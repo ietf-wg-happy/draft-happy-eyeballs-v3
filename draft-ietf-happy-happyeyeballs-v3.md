@@ -264,6 +264,55 @@ addresses (see {{changes}}) and the process of connection attempts will
 continue with the new addresses added, until one connection is
 established.
 
+## Using Expired Answers Optimistically
+
+A technique for reducing latency when waiting for DNS answers is
+for the DNS cache to retain expired DNS answers (answers for which
+the Time-To-Live has passed), and allow applications using the
+Happy Eyeballs algorithm to incorporate those old answers into
+the set of options. This approach is sometimes called "optimistic DNS",
+since it optimistically uses expired answers while waiting for
+non-expired answers. Clients implementing Happy Eyeballs MAY
+use optimistic DNS.
+
+Expired answers SHOULD only be cached for the same DNS resolver
+configuration. When the client changes networks and has a new
+DNS resolver configuration, expired answers might not be relevant.
+
+In order to use optimistic DNS, the client performs the following
+steps:
+
+- Check the DNS cache for the desired record (A, AAAA, SVCB/HTTPS).
+If there is a cached answer that is not expired, use it
+immediately.
+- If there is only a cached answer that is expired, issue a new
+query.
+- While waiting for the answer to the query, use the expired
+answer, acting as if it is valid, but remembering that
+any addresses or service values for those answers are expired.
+- When the new answer is available, remove all expired candidate
+addresses that have not yet been attempted. This is similar
+to the logic for handling new answers (see {{new-answers}}),
+but explicitly removes any answers that were not yet used.
+
+The rationale for using expired answers is that an implementation
+that performs Happy Eyeballs is able to handle multiple address
+options, and tolerate cases where a particular address is no
+longer functional. In such cases where a server is no longer
+available on a particular address, the client will use the new
+addresses when available. But, in the common case where expired
+address answers are still pointing to valid addresses, the clients
+can connect more quickly.
+
+The cached and expired answers also allow the client to remember
+whether a server had positive (non-empty) answers for A, AAAA,
+or SVCB/HTTPS queries. In cases where clients choose not to
+use optimistic DNS answers, they can still use the hints about
+support to influence the value of the Resolution Delay. For
+example, a client that knows that a service previously had
+returned positive AAAA answers might be willing to wait longer
+for an updated record than the default value.
+
 ## Handling Multiple DNS Server Addresses
 
 If multiple DNS server addresses are configured for the current
