@@ -155,7 +155,7 @@ This decision is based on if client has "connectivity" using IPv4 and IPv6.
 In this case, "connectivity" for an address family is defined
 as having at least one local address of the family from which
 to send packets, and at least one non-link local route for
-the address family. 
+the address family.
 
 When a client has both IPv4 and IPv6 connectivity, it needs to
 send out queries for both AAAA and A records. On a network with
