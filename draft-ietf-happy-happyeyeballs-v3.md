@@ -367,9 +367,9 @@ difference between using HTTP/3 or HTTP/2, and thus can group the ALPNs together
 to respect service-determined priorities where HTTP/3 might be
 prioritized behind HTTP/2. However, another client might see significant
 performance improvements by using HTTP/3's ability to send unreliable
-frames for its application use-case, and will group HTTP/3 before HTTP/2.
+frames for its application use-case and will group HTTP/3 before HTTP/2.
 
-Similarly, a particular application might require or strongly preference
+Similarly, a particular application might require or strongly prefer the
 use of TLS ECH for privacy-sensitive traffic, while others might
 support ECH opportunistically.
 
