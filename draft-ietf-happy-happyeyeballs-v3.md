@@ -355,6 +355,39 @@ The logic for prioritizing and falling back between groups
 of addresses with different security properties and protocol
 properties is implementation-defined.
 
+### When to Apply Application Preferences
+
+Whether or not specific application protocols or security features
+are grouped separately is a client application decision. Clients
+SHOULD avoid grouping and sorting separately in cases where their
+use of an application protocol or feature is non-critical.
+
+For example, an HTTP client loading a simple webpage may not see a large
+difference between using HTTP/3 or HTTP/2, and thus can group the ALPNs together
+to respect service-determined priorities where HTTP/3 might be
+prioritized behind HTTP/2. However, another client might see significant
+performance improvements by using HTTP/3's ability to send unreliable
+frames for its application use-case, and will group HTTP/3 before HTTP/2.
+
+Similarly, a particular application might require or strongly preference
+use of TLS ECH for privacy-sensitive traffic, while others might
+support ECH opportunistically.
+
+{{Section 8 of SVCB-ECH}} recommends against SVCB record sets that contain
+some answers that include ECH configuration and some that don't, but notes
+that such cases are possible. It is possible that services only include
+ECH configurations on SVCB answers that are prioritized behind others
+that don't include ECH configurations; for example, this might be
+used as an experimenation or roll-out strategy. Due to such cases, clients
+ought to not arbitrarily group ECH-containing answers and sort them
+first if they won't use the ECH information, or if the connection would
+not benefit from the use of ECH. However, for cases where there is a
+reason for an application preference for ECH, the client MAY group
+and prioritize those answers separately. Even though this might conflict
+with the published service record priorities, any answers published
+by the service are eligible to be used by clients, and clients can
+choose to use them.
+
 ## Grouping By Service Priority {#service-group}
 
 The next step of grouping and sorting is to group across different
