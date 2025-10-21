@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-19T01:55:26.545173+00:00",
+  "timestamp": "2025-10-21T01:46:56.013395+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1315,7 +1315,7 @@
       "id": "I_kwDOKH7CuM6mpPpQ",
       "title": "ECH guidance conflicts with ECH-SVCB",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/71",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bemasc",
       "authorAssociation": "NONE",
       "assignees": [
@@ -1324,8 +1324,8 @@
       "labels": [],
       "body": "The current draft says\n\n> If the client supports TLS Encrypted Client Hello (ECH) discovery through SVCB records {{!SVCB-ECH=I-D.ietf-tls-svcb-ech}}, depending on the client's preference to handle ECH, the client SHOULD sort addresses with ECH keys taking priority to maintain privacy when attempting connection establishment.\n\nECH-SVCB says\n\n> A SVCB RRSet containing some RRs with \"ech\" and some without is vulnerable to a downgrade attack ... This configuration is NOT RECOMMENDED. Zone owners who do use such a mixed configuration SHOULD mark the RRs with \"ech\" as more preferred (i.e. lower SvcPriority value) than those without, in order to maximize the likelihood that ECH will be used in the absence of an active adversary.\n\nIn essence, there is a discrepancy as to whose responsibility it is to prioritize ECH.\n\nI think the ECH-SVCB view should probably prevail.\n\nPhilosophically, the client cannot make the service more secure than the operator intends it to be.\n\nOperationally, it seems valuable to be able to test ECH by placing it on a less-used, lower-priority endpoint, and it would be very surprising to discover that this effectively inverts the stated priority for some (large?) segment of clients.",
       "createdAt": "2025-01-17T16:14:21Z",
-      "updatedAt": "2025-10-18T03:57:19Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-20T15:34:50Z",
+      "closedAt": "2025-10-20T15:34:50Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -1538,7 +1538,7 @@
       "id": "I_kwDOKH7CuM7CWr49",
       "title": "Define connectivity properly",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/92",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "oskar456",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -1547,8 +1547,8 @@
       ],
       "body": "The document mentions \"IPv4 connectivity\" and \"IPv6 connectivity\" in various places without defining what is considered having connectivity.\n\nIn Section 4.1:\n > When a client has both IPv4 and IPv6 connectivity, it needs to send out queries for both AAAA and A records. On a network with only IPv4 connectivity, it will send a query for A records. On a network with only IPv6 connectivity, the client will either send out queries for both AAAA and A records, or only a query for AAAA records, depending on the network configuration.\n\nHere, the connectivity should be considered present if there is at least one route in the routing table towards a non-link-local destination. It should not be necessary to have the default route to consider connectivity to be present. This is particularly important for split-mode VPNs that push only some IPv6 routes to otherwise IPv4-only host.\n\nIn Section 4.2:\n> On networks that allow connectivity on both IPv6 and IPv4, IPv6 is assumed to be the preferred address family. If only one of IPv6 or IPv4 offers connectivity, that address family should be considered the preferred address family for progressing the algorithm.\n\nHere, it would be appropriate to only consider IPv6 default route, that is: \"If host has IPv6 default route, then IPv6 is assumed to be the preferred address family. Otherwise, IPv4 should be the preferred address family.\"\nThe reason for this is that if there is not IPv6 default route, it is safe to assume that most attempts to connect over IPv6 would not succeed. Considering IPv6 in that case the preferred address family would lead to unnecessary excessive usage of \"resolution time delay\".",
       "createdAt": "2025-07-24T17:51:16Z",
-      "updatedAt": "2025-10-14T02:33:25Z",
-      "closedAt": null,
+      "updatedAt": "2025-10-20T15:35:24Z",
+      "closedAt": "2025-10-20T15:35:24Z",
       "comments": []
     },
     {
@@ -6524,26 +6524,383 @@
       "id": "PR_kwDOKH7CuM6uaSWp",
       "title": "Explain v4/v6 \u201cconnectivity\u201d",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/99",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "tfpauly"
+      ],
       "labels": [],
       "body": "Closes #92",
       "createdAt": "2025-10-18T03:43:32Z",
-      "updatedAt": "2025-10-18T03:43:46Z",
+      "updatedAt": "2025-10-20T15:35:23Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfpauly-patch-8",
-      "headRefOid": "21bcc0f357b485bcbdc5a2a5c492eabcd27b6702",
+      "headRefOid": "02e19c3867a03a0814894f69c3a606deb04eeb9e",
+      "closedAt": "2025-10-20T15:35:23Z",
+      "mergedAt": "2025-10-20T15:35:23Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "6cfa153731f49d82a819777345e93e00d75d6ffb"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7H-CfZ",
+          "commit": {
+            "abbreviatedOid": "21bcc0f"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-20T03:15:53Z",
+          "updatedAt": "2025-10-20T03:15:53Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "```suggestion\r\nthe address family.\r\n```",
+              "createdAt": "2025-10-20T03:15:53Z",
+              "updatedAt": "2025-10-20T03:15:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7IEOe1",
+          "commit": {
+            "abbreviatedOid": "02e19c3"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Overall lgtm",
+          "createdAt": "2025-10-20T13:49:52Z",
+          "updatedAt": "2025-10-20T13:50:49Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "Is there somewhere that we could reference for this definition? Or is this wholly new to Happy Eyeballs?",
+              "createdAt": "2025-10-20T13:49:52Z",
+              "updatedAt": "2025-10-20T13:50:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7IFo5k",
+          "commit": {
+            "abbreviatedOid": "02e19c3"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-20T15:27:51Z",
+          "updatedAt": "2025-10-20T15:27:51Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "I think it was implied but under-specified? I'm not aware of a good reference, but if we can find one, we should add it!",
+              "createdAt": "2025-10-20T15:27:51Z",
+              "updatedAt": "2025-10-20T15:27:52Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 100,
+      "id": "PR_kwDOKH7CuM6ujZBI",
+      "title": "Describe optimistic DNS",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/100",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [
+        "discuss"
+      ],
+      "body": "Closes #64 ",
+      "createdAt": "2025-10-20T03:57:38Z",
+      "updatedAt": "2025-10-20T20:31:13Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfp/optimistic-dns",
+      "headRefOid": "b4d57ada5db230ae0361f940d5095df5a7f28070",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7IESbw",
+          "commit": {
+            "abbreviatedOid": "b4d57ad"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-20T13:53:13Z",
+          "updatedAt": "2025-10-20T14:00:35Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "```suggestion\r\nthe Time-To-Live has passed) and to allow applications using the\r\n```",
+              "createdAt": "2025-10-20T13:53:13Z",
+              "updatedAt": "2025-10-20T14:00:35Z"
+            },
+            {
+              "originalPosition": 10,
+              "body": "Is there a better phrasing than \"the set of options\"? Perhaps something like \"the set of candidate addresses for \" (reference to sorting section)?",
+              "createdAt": "2025-10-20T13:54:13Z",
+              "updatedAt": "2025-10-20T14:00:35Z"
+            },
+            {
+              "originalPosition": 51,
+              "body": "Perhaps worth some discussion of a few key points:\r\n\r\n- What should a client do if it gets back a negative answer for a record type that it's currently in the middle of trying to connect to? (e.g. AAAA comes back negative, but the client has an expired AAAA record that it just sent a Client Initial to)\r\n  - How about if the client hasn't started yet? Probably still remove them in that case.\r\n- Recommendations for what servers should do in this case. For example, replying with a TCP RST or QUIC Stateless Reset is better than accepting the connection and then refusing to handle requests.\r\n  - What should a server do if it doesn't know if it can service the request yet?\r\n  - Should clients continue to race idempotent requests up through the request in this case? Probably not, since that happening more often may break some mistaken assumptions, although worth noting that many user agents will retry failed GET requests, etc.",
+              "createdAt": "2025-10-20T13:58:27Z",
+              "updatedAt": "2025-10-20T14:00:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7IEcDk",
+          "commit": {
+            "abbreviatedOid": "b4d57ad"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Generally like the direction of this text, but we probably shouldn't merge this without further discussion in the WG.",
+          "createdAt": "2025-10-20T14:03:09Z",
+          "updatedAt": "2025-10-20T14:03:09Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 101,
+      "id": "PR_kwDOKH7CuM6ujzBJ",
+      "title": "Explain cases to wait for SVCB",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/101",
+      "state": "MERGED",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [],
+      "body": "Addresses aspects (but probably not all) of #6 ",
+      "createdAt": "2025-10-20T05:08:57Z",
+      "updatedAt": "2025-10-20T23:12:11Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfp/wait-for-svcb",
+      "headRefOid": "24efe70a6f21a3de381cc6045c35407008e5cf80",
+      "closedAt": "2025-10-20T23:12:11Z",
+      "mergedAt": "2025-10-20T23:12:11Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "f4fd153f7c9b0c517af21dbde61f32d9b2fdc45c"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7IEk7M",
+          "commit": {
+            "abbreviatedOid": "55bbf73"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-20T14:12:22Z",
+          "updatedAt": "2025-10-20T14:30:32Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "```suggestion\r\nSHOULD abandon connection attempts altogether to avoid\r\n```",
+              "createdAt": "2025-10-20T14:12:22Z",
+              "updatedAt": "2025-10-20T14:30:32Z"
+            },
+            {
+              "originalPosition": 25,
+              "body": "```suggestion\r\nderived from SVCB records.\r\n```\r\nor \r\n\r\n```suggestion\r\nfrom SVCB records.\r\n```",
+              "createdAt": "2025-10-20T14:12:41Z",
+              "updatedAt": "2025-10-20T14:30:32Z"
+            },
+            {
+              "originalPosition": 29,
+              "body": "```suggestion\r\nand specifically mentions properties that affect the TLS ClientHello.\r\n```",
+              "createdAt": "2025-10-20T14:15:44Z",
+              "updatedAt": "2025-10-20T14:30:32Z"
+            },
+            {
+              "originalPosition": 30,
+              "body": "```suggestion\r\nThis restriction specifically applies when a client's behavior will\r\n```",
+              "createdAt": "2025-10-20T14:16:01Z",
+              "updatedAt": "2025-10-20T14:30:32Z"
+            },
+            {
+              "originalPosition": 45,
+              "body": "Trying to reduce parenthesis in this section:\r\n```suggestion\r\nencrypted DNS. Note that, if unencrypted and unsigned DNS is used, SVCB\r\ninformation is opportunistic; clients MAY wait for SVCB responses\r\nbut do not need to.\r\n```",
+              "createdAt": "2025-10-20T14:18:00Z",
+              "updatedAt": "2025-10-20T14:30:32Z"
+            },
+            {
+              "originalPosition": 49,
+              "body": "```suggestion\r\n1. The client implementation supports parsing and using a particular\r\nsecurity-related SVCB parameter, such as the \"ech\" SvcParamKey\r\n{{SVCB-ECH}}. (In contrast,\r\n```",
+              "createdAt": "2025-10-20T14:19:22Z",
+              "updatedAt": "2025-10-20T14:30:32Z"
+            },
+            {
+              "originalPosition": 60,
+              "body": "```suggestion\r\nwould be using HTTP over TLS, then it is not relying\r\n```",
+              "createdAt": "2025-10-20T14:19:51Z",
+              "updatedAt": "2025-10-20T14:30:32Z"
+            },
+            {
+              "originalPosition": 66,
+              "body": "> thus do not require waiting for SVCB responses.\r\n\r\nBut perhaps do motivate waiting longer than clients would otherwise?\r\n\r\nI like the framing here, maybe this is a place to more explicitly call it out as a \"security critical, MAY wait\" and \"performance improving, MAY wait\" distinction?",
+              "createdAt": "2025-10-20T14:23:19Z",
+              "updatedAt": "2025-10-20T14:30:32Z"
+            },
+            {
+              "originalPosition": 52,
+              "body": "This strategy makes sense: Only wait for something that you're going to use.\r\nHow do we write text here that can cope with additional features? Should we make a distinction between \"security sensitive\" features and ones that aren't?\r\n\r\nFor example, security sensitive:\r\n- ECHConfig\r\n- For HTTP clients, presence of HTTPS record\r\n\r\nNon-security sensitive (for now):\r\n- QUIC support\r\n\r\nNoting that ALPN information in general may be security sensitive the moment that we have a more secure ALPN (e.g. HTTP/4 relying on TLS 1.4 only might be more secure than HTTP/3 relying on TLS 1.3).",
+              "createdAt": "2025-10-20T14:29:56Z",
+              "updatedAt": "2025-10-20T14:30:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7IFthq",
+          "commit": {
+            "abbreviatedOid": "24efe70"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-20T15:32:26Z",
+          "updatedAt": "2025-10-20T15:32:26Z",
+          "comments": [
+            {
+              "originalPosition": 52,
+              "body": "I'm not sure it's necessary to make a distinction between something that is clearly a security property (ECH) and something that is less clear (QUIC support -- still a bit security, but less direct). I tent to think that the next bullet covers that; since you can learn about H3 support other ways (probing, Alt-Svc, etc), then SVCB isn't the only source of the information.",
+              "createdAt": "2025-10-20T15:32:26Z",
+              "updatedAt": "2025-10-20T15:32:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7IFucG",
+          "commit": {
+            "abbreviatedOid": "24efe70"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-20T15:33:40Z",
+          "updatedAt": "2025-10-20T15:33:40Z",
+          "comments": [
+            {
+              "originalPosition": 66,
+              "body": "Again, I think it's a little bit less \"security is special\" and more \"SVCB is the only way I get this end functionality\" or not. Using better TLS groups is a security feature, but the hint in SVCB isn't required to get the security properties.",
+              "createdAt": "2025-10-20T15:33:40Z",
+              "updatedAt": "2025-10-20T15:33:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7IKeAO",
+          "commit": {
+            "abbreviatedOid": "24efe70"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-20T23:10:32Z",
+          "updatedAt": "2025-10-20T23:10:39Z",
+          "comments": [
+            {
+              "originalPosition": 66,
+              "body": "The downgrade attack seems most harmful when it has security implications, even if it wasn\u2019t the only way that you could have found out that information.\r\nLet\u2019s merge this for now and continue to iterate.",
+              "createdAt": "2025-10-20T23:10:33Z",
+              "updatedAt": "2025-10-20T23:10:39Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 102,
+      "id": "PR_kwDOKH7CuM6uj8Va",
+      "title": "Describe when to sort ECH/ALPN ahead",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/102",
+      "state": "MERGED",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [],
+      "body": "Attempts to close #71 ",
+      "createdAt": "2025-10-20T05:34:01Z",
+      "updatedAt": "2025-10-20T15:34:49Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfp/ech-sorting",
+      "headRefOid": "0283ceb251e5d0eeda9ff1a4382e74bcd535a5e0",
+      "closedAt": "2025-10-20T15:34:49Z",
+      "mergedAt": "2025-10-20T15:34:49Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "b75008282ece37300c4a628b67afd373385e4f18"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7IEfCp",
+          "commit": {
+            "abbreviatedOid": "41cae97"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-10-20T14:06:17Z",
+          "updatedAt": "2025-10-20T14:11:35Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nframes for its application use-case and will group HTTP/3 before HTTP/2.\r\n```",
+              "createdAt": "2025-10-20T14:06:17Z",
+              "updatedAt": "2025-10-20T14:11:35Z"
+            },
+            {
+              "originalPosition": 18,
+              "body": "```suggestion\r\nSimilarly, a particular application might require or strongly prefer the\r\n```",
+              "createdAt": "2025-10-20T14:07:52Z",
+              "updatedAt": "2025-10-20T14:11:35Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
