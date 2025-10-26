@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-21T01:46:56.013395+00:00",
+  "timestamp": "2025-10-26T01:51:50.343091+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1471,7 +1471,7 @@
       "labels": [],
       "body": "Currently, HEv3 is defined as a procedure that produces a single connection as its output.  This does not model the actual behavior of optimized HTTP clients, which continue to race QUIC and TCP even after TCP \"wins\" and the first HTTP request is sent, so that the QUIC connection can be used for the next HTTP request.\n\nI would like to see a mode of HE that is a \"connection escalator\": its output is an asynchronous finite sequence of connections, each more preferred than the last.\n\nThe charter requires that HEv3 \"ends with a single established connection to a server\".  Like the current specification, this is true of a connection escalator: less preferred connections are closed in favor of more-preferred connections as they become available.",
       "createdAt": "2025-07-24T08:48:54Z",
-      "updatedAt": "2025-10-18T03:32:13Z",
+      "updatedAt": "2025-10-23T14:55:30Z",
       "closedAt": null,
       "comments": [
         {
@@ -1480,6 +1480,13 @@
           "body": "I think we could describe this as a case where some earlier attempts are not cancelled, but instead are kept around to replace an attempt that was started later but succeeded first. \n\nHowever, I'm not certain this case actually makes sense in many cases at the happy eyeballs level. If the client knows about both QUIC and TCP support, and prefers QUIC, it will attempt QUIC establishment first. One reason to prefer QUIC is that it should establish more quickly. If it loses the race to TLS+TCP, that means it lost by around 3 RTT at least. In that case, I'm not sure if QUIC should be used even if it connects later (say after 4 or 5 RTT). It could be slow due to bad UDP handling on the network, etc. \"Escalating\" to QUIC may harm performance, as would trying to use a v6 connection that was much slower than a v4 connection. ",
           "createdAt": "2025-10-18T03:32:13Z",
           "updatedAt": "2025-10-18T03:32:13Z"
+        },
+        {
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "body": "I understand the situation you're highlighting.  However, preferring QUIC in this case performs better on average in our data.",
+          "createdAt": "2025-10-23T14:55:30Z",
+          "updatedAt": "2025-10-23T14:55:30Z"
         }
       ]
     },
@@ -6434,7 +6441,7 @@
       "labels": [],
       "body": "Fixes #77.\r\nFixes #90.",
       "createdAt": "2025-10-16T07:59:43Z",
-      "updatedAt": "2025-10-17T02:39:35Z",
+      "updatedAt": "2025-10-23T22:29:46Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
@@ -6474,6 +6481,26 @@
           "createdAt": "2025-10-17T02:36:53Z",
           "updatedAt": "2025-10-17T02:36:53Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7JDTrz",
+          "commit": {
+            "abbreviatedOid": "558cff7"
+          },
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-23T22:29:45Z",
+          "updatedAt": "2025-10-23T22:29:46Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "This flush behavior would make history virtually useless on many mobile devices.  It also seems to be unnecessary for the privacy goal.  Can we remove this recommendation?",
+              "createdAt": "2025-10-23T22:29:45Z",
+              "updatedAt": "2025-10-23T22:29:46Z"
+            }
+          ]
         }
       ]
     },
@@ -6859,7 +6886,7 @@
       "labels": [],
       "body": "Attempts to close #71 ",
       "createdAt": "2025-10-20T05:34:01Z",
-      "updatedAt": "2025-10-20T15:34:49Z",
+      "updatedAt": "2025-10-23T14:05:00Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
@@ -6897,6 +6924,44 @@
               "body": "```suggestion\r\nSimilarly, a particular application might require or strongly prefer the\r\n```",
               "createdAt": "2025-10-20T14:07:52Z",
               "updatedAt": "2025-10-20T14:11:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7I34z6",
+          "commit": {
+            "abbreviatedOid": "0283ceb"
+          },
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-10-23T13:56:16Z",
+          "updatedAt": "2025-10-23T14:05:00Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "I find the use of \"grouping\" and \"sorting\" hard to understand here.",
+              "createdAt": "2025-10-23T13:56:16Z",
+              "updatedAt": "2025-10-23T14:05:00Z"
+            },
+            {
+              "originalPosition": 16,
+              "body": "But it is the server, not the client (esp. a web browser), that knows what kind of application or page is served by each origin.",
+              "createdAt": "2025-10-23T13:57:28Z",
+              "updatedAt": "2025-10-23T14:05:00Z"
+            },
+            {
+              "originalPosition": 19,
+              "body": "The use of \"application\" here is confusing, as it sometimes refers to the server and sometimes to the client.\r\n\r\nRegardless, nothing in this draft anticipates clients that \"require\" ECH (\"ECH-only\"), and if such clients were to exist, it would not affect the question of respecting SvcPriority.  An ECH-only client would exclude all [incompatible](https://datatracker.ietf.org/doc/html/rfc9460#name-servicemode-rr-compatibilit\r\n) SVCB records and respect priority among the remainder.\r\n\r\n\"Strongly prefer\" is the interesting case here.",
+              "createdAt": "2025-10-23T14:00:54Z",
+              "updatedAt": "2025-10-23T14:05:00Z"
+            },
+            {
+              "originalPosition": 32,
+              "body": "I would instead say:\r\n\r\n\"Client software SHOULD NOT override the indicated SvcPriority unless the user has specifically chosen a non-default configuration or the client has a private arrangement with the server operator.\"",
+              "createdAt": "2025-10-23T14:04:56Z",
+              "updatedAt": "2025-10-23T14:05:00Z"
             }
           ]
         }
