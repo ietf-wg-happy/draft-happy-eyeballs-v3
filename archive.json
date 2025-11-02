@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-10-26T01:51:50.343091+00:00",
+  "timestamp": "2025-11-02T01:54:30.190202+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1585,6 +1585,22 @@
           "updatedAt": "2025-10-14T22:23:15Z"
         }
       ]
+    },
+    {
+      "number": 103,
+      "id": "I_kwDOKH7CuM7VSA_D",
+      "title": "Flushing historical data on network changes",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/103",
+      "state": "OPEN",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "\"This historical data ... MUST NOT be used across different network interfaces. The data SHOULD\r\nbe flushed whenever a device changes the network to which it is attached.\"\r\n\r\nThis flush behavior would make history virtually useless on many mobile devices.  It also seems to be unnecessary for the privacy goal.  Can we remove this recommendation?\r\n\r\n_Originally posted by @bemasc in https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/97#discussion_r2457659509_\r\n            ",
+      "createdAt": "2025-11-01T18:07:50Z",
+      "updatedAt": "2025-11-01T18:07:50Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -6441,7 +6457,7 @@
       "labels": [],
       "body": "Fixes #77.\r\nFixes #90.",
       "createdAt": "2025-10-16T07:59:43Z",
-      "updatedAt": "2025-10-23T22:29:46Z",
+      "updatedAt": "2025-11-01T18:08:32Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
@@ -6499,6 +6515,26 @@
               "body": "This flush behavior would make history virtually useless on many mobile devices.  It also seems to be unnecessary for the privacy goal.  Can we remove this recommendation?",
               "createdAt": "2025-10-23T22:29:45Z",
               "updatedAt": "2025-10-23T22:29:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7LHCrZ",
+          "commit": {
+            "abbreviatedOid": "558cff7"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-01T18:08:32Z",
+          "updatedAt": "2025-11-01T18:08:32Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "This was pre-existing text, so opened a new issue for this (#103).",
+              "createdAt": "2025-11-01T18:08:32Z",
+              "updatedAt": "2025-11-01T18:08:32Z"
             }
           ]
         }
