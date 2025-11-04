@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-02T01:54:30.190202+00:00",
+  "timestamp": "2025-11-04T01:49:12.228425+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1599,6 +1599,22 @@
       "body": "\"This historical data ... MUST NOT be used across different network interfaces. The data SHOULD\r\nbe flushed whenever a device changes the network to which it is attached.\"\r\n\r\nThis flush behavior would make history virtually useless on many mobile devices.  It also seems to be unnecessary for the privacy goal.  Can we remove this recommendation?\r\n\r\n_Originally posted by @bemasc in https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/97#discussion_r2457659509_\r\n            ",
       "createdAt": "2025-11-01T18:07:50Z",
       "updatedAt": "2025-11-01T18:07:50Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 104,
+      "id": "I_kwDOKH7CuM7VntBp",
+      "title": "nit: client SHOULD choose to wait for the TLS handshake",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/104",
+      "state": "OPEN",
+      "author": "mxinden",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "[Current wording](https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/blob/f4fd153f7c9b0c517af21dbde61f32d9b2fdc45c/draft-ietf-happy-happyeyeballs-v3.md?plain=1#L563-L566):\n\n> When TLS is used on top of of TCP (such as for encrypted HTTP connections), clients **MAY** choose to wait for the TLS handshake to successfully complete before cancelling other connection attempts.\n\nHow about replacing the _MAY_ with a _SHOULD_?\n\nAs the two paragraphs below reason, this is actually the recommended (as in _SHOULD_) option of the draft:\n- > This is particularly useful for networks in which a TCP-terminating proxy might be causing TCP handshakes to succeed quickly, even though end-to-end connectivity with the TLS-terminating server will fail.\n- > QUIC connections inherently include a secure handshake in their main handshakes, and thus usually only need to wait for a single handshake to complete.\n\n\nhttps://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/blob/f4fd153f7c9b0c517af21dbde61f32d9b2fdc45c/draft-ietf-happy-happyeyeballs-v3.md?plain=1#L563-L571",
+      "createdAt": "2025-11-03T22:20:24Z",
+      "updatedAt": "2025-11-03T22:20:24Z",
       "closedAt": null,
       "comments": []
     }
@@ -6689,7 +6705,7 @@
       ],
       "body": "Closes #64 ",
       "createdAt": "2025-10-20T03:57:38Z",
-      "updatedAt": "2025-10-20T20:31:13Z",
+      "updatedAt": "2025-11-03T02:49:25Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
@@ -6922,7 +6938,7 @@
       "labels": [],
       "body": "Attempts to close #71 ",
       "createdAt": "2025-10-20T05:34:01Z",
-      "updatedAt": "2025-10-23T14:05:00Z",
+      "updatedAt": "2025-11-03T03:18:30Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
@@ -6998,6 +7014,26 @@
               "body": "I would instead say:\r\n\r\n\"Client software SHOULD NOT override the indicated SvcPriority unless the user has specifically chosen a non-default configuration or the client has a private arrangement with the server operator.\"",
               "createdAt": "2025-10-23T14:04:56Z",
               "updatedAt": "2025-10-23T14:05:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7LNXR9",
+          "commit": {
+            "abbreviatedOid": "0283ceb"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-03T03:18:30Z",
+          "updatedAt": "2025-11-03T03:18:30Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "My use of \"application\" was meant to be \"client application\" here.",
+              "createdAt": "2025-11-03T03:18:30Z",
+              "updatedAt": "2025-11-03T03:18:30Z"
             }
           ]
         }
