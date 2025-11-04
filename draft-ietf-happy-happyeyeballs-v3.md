@@ -576,18 +576,28 @@ If an address is added to the list, it should be sorted into the list
 of addresses not yet attempted according to the rules above (see
 {{sorting}}).
 
-# Supporting IPv6-Only Networks with NAT64 {#v6only}
+# Supporting IPv6-Only and IPv6-Mostly Networks with NAT64 {#v6only}
 
 While many IPv6 transition mechanisms have been standardized and
 deployed, most are transparent to client devices. Supporting IPv6-only
 networks often requires specific client-side changes for
 interacting with IPv4-only services. The exception is NAT64 {{!RFC6146}},
 which allows interacting with IPv4-only services by sending ordinary IPv6
-packets towards the NAT64 translation prefix (PREF64).
+packets towards the NAT64 translation prefix.
 
-NAT64 is often used together with DNS64 {{!RFC6147}}, making connection to
-IPv4-only services almost transparent to the IPv6-only host, or as a part of
-464XLAT {{?RFC6877}}. 464XLAT has the
+IPv6-Mostly networks {{!RFC8925}} allow hosts to work either in legacy
+dual-stack mode or in IPv6-only mode, based on the behavior of the DHCP client.
+In the former case, no special handling is required by the Happy Eyeballs. In
+the latter case, the handling described in this section applies.
+
+Historically, NAT64 is often deployed together with DNS64 {{!RFC6147}}, making
+connection to IPv4-only services almost transparent to IPv6-capable
+applications. However DNS64 has a number of disadvantages (see Section 6.2 of
+{{?RFC6147}}). IPv6-capable applications can avoid relying on DNS64 by
+discovering the NAT64 prefix used in the network {{?RFC9872}} and performing
+local synthesis. To allow applications which do not support IPv6 or have IPv4
+dependencies to operate on IPv6-only hosts, 464XLAT {{?RFC6877}} is used.
+464XLAT has the
 advantage of not requiring changes to user space software; however, it requires
 per-packet translation and does not encourage client application software to
 support native IPv6. On platforms that do not support 464XLAT, the Happy
@@ -597,49 +607,46 @@ more efficient than generating IPv4 packets that would get translated into IPv6
 in the host, the Happy Eyeballs mechanism MAY choose to avoid sending IPv4
 packets via 464XLAT and produce native IPv6 packets instead.
 
-## Discovering and Utilizing PREF64 {#pref64-detection}
+## Discovering and Utilizing NAT64 Prefix {#pref64-detection}
 
 In order support special handling of IPv6-only networks with NAT64,
 the Happy Eyeballs mechanism needs to discover the presence of NAT64 by
-discovering prefix used by it (PREF64). This can be done by:
+discovering prefix used by it. This can be done by:
 
  - PREF64 option in Router Advertisement {{!RFC8781}}
  - Using the algorithm described in {{!RFC7050}} if the network supports DNS64
 
-The Happy Eyeballs SHOULD support both ways of PREF64 discovery in order to
-maximize compatibility with different networks. The algorithm decribed in
-{{!RFC7050}} should be used only if there was no PREF64 option in the Router
-Advertisement.
+The Happy Eyeballs SHOULD follow recommendations defined in {{?RFC9872}}.
 
 ## Handling of IPv4 connections {#ipv4}
 
-When PREF64 is discovered, dual-stack connectivity can be assumed and the Happy Eyeballs engine should query DNS for AAAA and A records.
+When NAT64 prefix is discovered, dual-stack connectivity can be assumed and the Happy Eyeballs engine should query DNS for AAAA and A records.
 
 All IPv4 based candidates, independent whether they came from an IPv4 address literal,
 hint in SVCB record, or were result of a query for A records, should be pre-processed in the following way:
 
   1. Consult IPv4 routing table. If there is a valid route towards requested
      destination, send native IPv4 data.
-  2. If the destination IPv4 address is unreachable, combine the discovered
-     PREF64 with the destination IPv4 address to create destination IPv6 address
+  2. If there is no route to the destination IPv4 address, combine the discovered
+     NAT64 prefix with the destination IPv4 address to create destination IPv6 address
      to be used instead.
 
 During the first step, the Happy Eyeballs MAY choose to ignore the IPv4 default
 route if such a route leads to the CLAT translator. The IPv6 addresses created
-by combining the PREF64 with IPv4 address are for the purposes of ordering still
+by combining the NAT64 prefix with IPv4 address are for the purposes of ordering still
 considered IPv4 addresses.
 
 ## Handling of DNS64 responses {#dns64}
 
 The Happy Eyeballs algorithm is fully functional on an IPv6-only network with
-NAT64 without DNS64, providing that the PREF64 can be detected.
+NAT64 without DNS64, providing that the NAT64 prefix can be detected.
 If there is DNS64 deployed in the network, the Happy Eyeballs mechanism will
 receive a positive answer to an AAAA query even for an IPv4-only destination. Since
 such synthesized IPv6 addresses actually represent IPv4 destinations, they
 should be treated as IPv4 addresses.
 
 Synthesized AAAA responses can be detected by comparing the IPv6 address with
-the PREF64. If synthesized AAAA response is detected, the host SHOULD:
+the NAT64 prefix. If synthesized AAAA response is detected, the host SHOULD:
 
   1. Abort ongoing A query for the same host name.
   2. Extract IPv4 addresses from the synthesized responses and consider them the
