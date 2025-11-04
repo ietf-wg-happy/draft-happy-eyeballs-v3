@@ -626,7 +626,7 @@ All IPv4 based candidates, independent whether they came from an IPv4 address li
 hint in SVCB record, or were result of a query for A records, should be pre-processed in the following way:
 
   1. Consult IPv4 routing table. If there is a valid route towards requested
-     destination, send native IPv4 data.
+     destination, use that IPv4 address as it is.
   2. If there is no route to the destination IPv4 address, combine the discovered
      NAT64 prefix with the destination IPv4 address to create destination IPv6 address
      to be used instead.
