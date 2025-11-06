@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-04T01:49:12.228425+00:00",
+  "timestamp": "2025-11-06T01:50:39.949580+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1614,9 +1614,24 @@
       "labels": [],
       "body": "[Current wording](https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/blob/f4fd153f7c9b0c517af21dbde61f32d9b2fdc45c/draft-ietf-happy-happyeyeballs-v3.md?plain=1#L563-L566):\n\n> When TLS is used on top of of TCP (such as for encrypted HTTP connections), clients **MAY** choose to wait for the TLS handshake to successfully complete before cancelling other connection attempts.\n\nHow about replacing the _MAY_ with a _SHOULD_?\n\nAs the two paragraphs below reason, this is actually the recommended (as in _SHOULD_) option of the draft:\n- > This is particularly useful for networks in which a TCP-terminating proxy might be causing TCP handshakes to succeed quickly, even though end-to-end connectivity with the TLS-terminating server will fail.\n- > QUIC connections inherently include a secure handshake in their main handshakes, and thus usually only need to wait for a single handshake to complete.\n\n\nhttps://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/blob/f4fd153f7c9b0c517af21dbde61f32d9b2fdc45c/draft-ietf-happy-happyeyeballs-v3.md?plain=1#L563-L571",
       "createdAt": "2025-11-03T22:20:24Z",
-      "updatedAt": "2025-11-03T22:20:24Z",
+      "updatedAt": "2025-11-05T05:55:04Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'd be fine with moving this to a SHOULD, personally.",
+          "createdAt": "2025-11-04T04:09:39Z",
+          "updatedAt": "2025-11-04T04:09:39Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "(As an individual)\n\nThis seems reasonable to me. Especially in a world with QUIC, where there's no difference, the real goal is to wait up until the point that you're going to send application data.",
+          "createdAt": "2025-11-05T05:55:04Z",
+          "updatedAt": "2025-11-05T05:55:04Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -6209,21 +6224,21 @@
       "id": "PR_kwDOKH7CuM6go6LF",
       "title": "Try of minor rewrite of Transition Technology section",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/93",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "philsbln",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "This tries to address issues #42 #87 #91\r\n\r\nIt is merely meant as a discussion starter and my open more questions than it answers,\r\nbut should reflect the discussions @oskar456 and I had.\r\n\r\nBasic assumptions:\r\n - We want to treat synthesized NAT64 address as IPv4\r\n - NAT64 address synthesis makes sense when knowing the NAT64 prefix\r\n - If we have PREF64 and DNS64, that's kind of double and we want to adjust for that\r\n ",
       "createdAt": "2025-07-25T14:10:03Z",
-      "updatedAt": "2025-07-29T21:47:45Z",
+      "updatedAt": "2025-11-04T17:03:58Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
       "headRepository": "philsbln/draft-happy-eyeballs-v3",
       "headRefName": "philsbln-trans46-minor-rewrite",
       "headRefOid": "84cd60845856fddad2951faa2733c4bc0c2a4573",
-      "closedAt": null,
+      "closedAt": "2025-11-04T17:03:58Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -6241,6 +6256,13 @@
           "body": "> Hey @philsbln, thank you for this PR. I think it goes in the right direction but it still keep some issues mentioned in #91 open. I am trying now to rephrase section 8 in a more dramatic way. I will come back soon with a competing PR.\r\n\r\nThe competing PR is #94. ",
           "createdAt": "2025-07-29T21:47:45Z",
           "updatedAt": "2025-07-29T21:47:45Z"
+        },
+        {
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "body": "I think we should bring #94 forward \u2013 this one was a great preparation I guess, so closing it.",
+          "createdAt": "2025-11-04T17:03:58Z",
+          "updatedAt": "2025-11-04T17:03:58Z"
         }
       ],
       "reviews": []
@@ -6257,13 +6279,13 @@
       "labels": [],
       "body": "This simplifies the section about IPv6-only networks while hopefully addressing comments from #91:\r\n\r\n - Remove mentions of IPv6-mostly, since the host where Happy Eyeballs runs will never be IPv6-mostly, it would be either Dual-stack or IPv6-only.\r\n - Use the presence of PREF64 as the only detection mechanism of NAT64\r\n - Note that RFC 7050 should be used, but only when RFC 8781 failed\r\n - Prescribe handling of IPv4 addresses by first looking up the routing table (needed for VPNs) and then synthesizing IPv6. This already covers the former text on IPv4 literals, broken AAAA records and VPN case\r\n - Add section on dealing with DNS64: basically detect and undo since it is not needed for HE.\r\n - Removed the `Last Resort Local Synthesis Delay` configurable variable. If we want HE to function properly without DNS64, every IPv4-only destination looks exactly like \"Broken AAAA record\" case and we definitely don't want 2 second delay every single time.",
       "createdAt": "2025-07-29T21:43:48Z",
-      "updatedAt": "2025-10-14T04:10:42Z",
+      "updatedAt": "2025-11-04T22:43:48Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
       "headRepository": "oskar456/draft-happy-eyeballs-v3",
       "headRefName": "oc-fix-section8",
-      "headRefOid": "e7512aa5f77f2476d581287caecf9b0d9585ac7b",
+      "headRefOid": "45bd512c74cc82ec99c4227ad7f7879901592685",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -6353,6 +6375,399 @@
               "body": "I am less pessimistic here\u2026 All host based CLAT Implementations i know use a source address from 192.0.0.0/29, as recommended by [draft-ietf-v6ops-claton/](https://datatracker.ietf.org/doc/draft-ietf-v6ops-claton/), so you can check the source address (which is the only way to query the routing table anyway) and have a clear signal. ",
               "createdAt": "2025-07-30T08:40:04Z",
               "updatedAt": "2025-07-30T08:40:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Le5ny",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T03:53:35Z",
+          "updatedAt": "2025-11-04T03:53:35Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "I don't know if we want to say \"NAT64 works if you either do DNS64 or 464XLAT\". Just doing NAT64 and PREF64 is sufficient, and doesn't strictly need 464XLAT.",
+              "createdAt": "2025-11-04T03:53:35Z",
+              "updatedAt": "2025-11-04T03:53:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Le6nK",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T03:57:13Z",
+          "updatedAt": "2025-11-04T03:57:13Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "The rationale for mentioning IPv6-mostly was that the *network* was set up as IPv6-mostly, even if the client gets only IPv6 addresses. ",
+              "createdAt": "2025-11-04T03:57:13Z",
+              "updatedAt": "2025-11-04T03:57:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Le7n-",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T04:00:52Z",
+          "updatedAt": "2025-11-04T04:00:53Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "I agree with @oskar456 that trying to detect CLAT is a complexity we don't necessarily want to add as a step in the spec. It is possible depending on the support in the routing lookup. Maybe we can mention that we can filter out CLAT if possible?",
+              "createdAt": "2025-11-04T04:00:53Z",
+              "updatedAt": "2025-11-04T04:00:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Le8q-",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T04:04:36Z",
+          "updatedAt": "2025-11-04T04:04:37Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "Since this includes RFC7050, should the title be just about getting the NAT64 prefix?",
+              "createdAt": "2025-11-04T04:04:37Z",
+              "updatedAt": "2025-11-04T04:04:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7LnsG2",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "furry13",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T12:22:45Z",
+          "updatedAt": "2025-11-04T12:22:46Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "```suggestion\r\nHistorically, NAT64 is often deployed together with DNS64 {{!RFC6147}}, making connection to\r\nIPv4-only services almost transparent to IPv6-capable applications. However DNS64 has a number of disadvantages (see Section 6.2 of {{?RFC6147}}. IPv6-capable applications can avoid relying on DNS64 by performing by discovering the NAT64 prefix used in the network {{?RFC9872}} and performing local synthesis. To allow applications which do not support IPv6 or have IPv4 dependencies to operate on IPv6-only hosts, 464XLAT {{?RFC6877}} is used. 464XLAT has the\r\n```",
+              "createdAt": "2025-11-04T12:22:45Z",
+              "updatedAt": "2025-11-04T12:22:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7LnvFU",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "furry13",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T12:24:17Z",
+          "updatedAt": "2025-11-04T12:24:17Z",
+          "comments": [
+            {
+              "originalPosition": 65,
+              "body": "```suggestion\r\nThe Happy Eyeballs SHOULD follow recommendations defined in {{?RFC9872}}. \r\n```",
+              "createdAt": "2025-11-04T12:24:17Z",
+              "updatedAt": "2025-11-04T12:24:18Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Lnv1V",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "furry13",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T12:24:50Z",
+          "updatedAt": "2025-11-04T12:24:50Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "```suggestion\r\n## Discovering and Utilizing NAT64 Prefix {#pref64-detection}\r\n```",
+              "createdAt": "2025-11-04T12:24:50Z",
+              "updatedAt": "2025-11-04T12:24:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7LqbYQ",
+          "commit": {
+            "abbreviatedOid": "d7a9b63"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T14:54:12Z",
+          "updatedAt": "2025-11-04T14:54:12Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "I believe this is what my current text says:\r\n\r\n> During the first step, the Happy Eyeballs MAY choose to ignore the IPv4 default route if such a route leads to the CLAT translator.\r\n\r\nI am not sure whether this needs to be more specific or so. I would rather not go into: \"If source address lies in 192.0.0.0/29, assume it is CLAT and ignore that route.\" That seem to be too fragile for something as generic as HE algorithm. ",
+              "createdAt": "2025-11-04T14:54:12Z",
+              "updatedAt": "2025-11-04T14:54:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Lqefl",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T14:56:30Z",
+          "updatedAt": "2025-11-04T14:56:30Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "I applied the suggestion from Jen below. I think it also covers the case of local synthesis and therefore no reliance on DNS64.",
+              "createdAt": "2025-11-04T14:56:30Z",
+              "updatedAt": "2025-11-04T14:56:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Lqf2j",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T14:57:21Z",
+          "updatedAt": "2025-11-04T14:57:22Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "I added this back and also added a small explainer:\r\n\r\n> IPv6-Mostly networks [[RFC8925](https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/94#RFC8925)] allow hosts to work either in legacy dual-stack mode or in IPv6-only mode, based on the behavior of the DHCP client. In the former case, no special handling is required by the Happy Eyeballs. In the latter case, the handling described in this section applies.",
+              "createdAt": "2025-11-04T14:57:21Z",
+              "updatedAt": "2025-11-04T14:57:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Lqg3b",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T14:58:02Z",
+          "updatedAt": "2025-11-04T14:58:03Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "Good point. I changed all occurencies of PREF64 to NAT64 prefix.",
+              "createdAt": "2025-11-04T14:58:03Z",
+              "updatedAt": "2025-11-04T14:58:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Lqhbl",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T14:58:21Z",
+          "updatedAt": "2025-11-04T14:58:21Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "Applied, thanks!",
+              "createdAt": "2025-11-04T14:58:21Z",
+              "updatedAt": "2025-11-04T14:58:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Lqh1z",
+          "commit": {
+            "abbreviatedOid": "e7512aa"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T14:58:40Z",
+          "updatedAt": "2025-11-04T14:58:40Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "Applied, thanks!",
+              "createdAt": "2025-11-04T14:58:40Z",
+              "updatedAt": "2025-11-04T14:58:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7LrIL0",
+          "commit": {
+            "abbreviatedOid": "8c4279d"
+          },
+          "author": "furry13",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T15:24:16Z",
+          "updatedAt": "2025-11-04T15:24:16Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "  >send native IPv4 data\r\n\r\nIs any data being sent at this stage? I'd assume it's more about \"use that IPv4 address as it is\"?",
+              "createdAt": "2025-11-04T15:24:16Z",
+              "updatedAt": "2025-11-04T15:24:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7LsNVe",
+          "commit": {
+            "abbreviatedOid": "8c4279d"
+          },
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T16:14:44Z",
+          "updatedAt": "2025-11-04T16:14:44Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "Rethinking it, detecting CLAT defies the purpose of being able to fall back to IPv4 upstream.",
+              "createdAt": "2025-11-04T16:14:44Z",
+              "updatedAt": "2025-11-04T16:14:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7LsQLy",
+          "commit": {
+            "abbreviatedOid": "8c4279d"
+          },
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T16:16:36Z",
+          "updatedAt": "2025-11-04T16:16:36Z",
+          "comments": [
+            {
+              "originalPosition": 175,
+              "body": "I still thing that sentence should be removed. As state above, this defies the purpose of being able to fall back to IPv4 upstream.",
+              "createdAt": "2025-11-04T16:16:36Z",
+              "updatedAt": "2025-11-04T16:16:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7LsScZ",
+          "commit": {
+            "abbreviatedOid": "8c4279d"
+          },
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "I think it is ready, but still think the sentence abut ignoring CLAT should be removed. ",
+          "createdAt": "2025-11-04T16:18:05Z",
+          "updatedAt": "2025-11-04T16:18:05Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Lx12M",
+          "commit": {
+            "abbreviatedOid": "d7a9b63"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T22:32:19Z",
+          "updatedAt": "2025-11-04T22:32:19Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "> > send native IPv4 data\r\n> \r\n> Is any data being sent at this stage? I'd assume it's more about \"use that IPv4 address as it is\"?\r\n\r\nGood point!",
+              "createdAt": "2025-11-04T22:32:19Z",
+              "updatedAt": "2025-11-04T22:32:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Lx5Da",
+          "commit": {
+            "abbreviatedOid": "d7a9b63"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T22:38:56Z",
+          "updatedAt": "2025-11-04T22:38:56Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "> Rethinking it, detecting CLAT defies the purpose of being able to fall back to IPv4 upstream.\r\n\r\nI don't think so. Falling back to IPv4 upstream happens in that case in step number 2 - that is by synthesising IPv6 address with NAT64 prefix and destination IPv4 address. It is only the matter of efficiency. If CLAT route cannot be avoided, step number one will always succeed (since CLAT would provide a default route) and step 2 would be never reached. But that is suboptimal. Ignoring CLAT routes in step 1 and generating native IPv6 towards NAT64 in step 2 is more efficient.\r\n",
+              "createdAt": "2025-11-04T22:38:56Z",
+              "updatedAt": "2025-11-04T22:38:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7Lx6Fb",
+          "commit": {
+            "abbreviatedOid": "d7a9b63"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-04T22:41:03Z",
+          "updatedAt": "2025-11-04T22:41:03Z",
+          "comments": [
+            {
+              "originalPosition": 175,
+              "body": "I am actually thinking of changing this to SHOULD:\r\n\r\n> During the first step, the Happy Eyeballs SHOULD ignore the IPv4 default route if such a route leads to the CLAT translator and such detection is feasible.",
+              "createdAt": "2025-11-04T22:41:03Z",
+              "updatedAt": "2025-11-04T22:41:04Z"
             }
           ]
         }
