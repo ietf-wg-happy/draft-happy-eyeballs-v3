@@ -561,7 +561,7 @@ Client connections that use TCP only (without TLS or another protocol
 on top, such as for unencrypted HTTP connections) will determine
 successful establishment based on completing the TCP handshake
 only. When TLS is used on top of of TCP (such as for encrypted HTTP
-connections), clients MAY choose to wait for the TLS handshake to
+connections), clients SHOULD wait for the TLS handshake to
 successfully complete before cancelling other connection
 attempts. This is particularly useful for networks in which a
 TCP-terminating proxy might be causing TCP handshakes to succeed
