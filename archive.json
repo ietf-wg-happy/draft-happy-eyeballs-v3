@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-06T01:50:39.949580+00:00",
+  "timestamp": "2025-11-09T01:53:43.918124+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1471,7 +1471,7 @@
       "labels": [],
       "body": "Currently, HEv3 is defined as a procedure that produces a single connection as its output.  This does not model the actual behavior of optimized HTTP clients, which continue to race QUIC and TCP even after TCP \"wins\" and the first HTTP request is sent, so that the QUIC connection can be used for the next HTTP request.\n\nI would like to see a mode of HE that is a \"connection escalator\": its output is an asynchronous finite sequence of connections, each more preferred than the last.\n\nThe charter requires that HEv3 \"ends with a single established connection to a server\".  Like the current specification, this is true of a connection escalator: less preferred connections are closed in favor of more-preferred connections as they become available.",
       "createdAt": "2025-07-24T08:48:54Z",
-      "updatedAt": "2025-10-23T14:55:30Z",
+      "updatedAt": "2025-11-06T20:41:54Z",
       "closedAt": null,
       "comments": [
         {
@@ -1487,6 +1487,13 @@
           "body": "I understand the situation you're highlighting.  However, preferring QUIC in this case performs better on average in our data.",
           "createdAt": "2025-10-23T14:55:30Z",
           "updatedAt": "2025-10-23T14:55:30Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "(chair hat on)\nThere is a charter question about this, but I think it's worth having the discussion in the context of allowing attempts to \"escape\" the race and be usable later, as well as what you should do when you race and have an existing connection.\n\n(switching to notetaker hat)\nDiscussed at IETF 124: \n\n- What if QUIC is slower later? Faster later? Lots of things to discuss.\n- Suggestion to SHOULD cancel, unless you know better. With an explanation of why you should cancel.",
+          "createdAt": "2025-11-06T20:41:54Z",
+          "updatedAt": "2025-11-06T20:41:54Z"
         }
       ]
     },
@@ -1614,7 +1621,7 @@
       "labels": [],
       "body": "[Current wording](https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/blob/f4fd153f7c9b0c517af21dbde61f32d9b2fdc45c/draft-ietf-happy-happyeyeballs-v3.md?plain=1#L563-L566):\n\n> When TLS is used on top of of TCP (such as for encrypted HTTP connections), clients **MAY** choose to wait for the TLS handshake to successfully complete before cancelling other connection attempts.\n\nHow about replacing the _MAY_ with a _SHOULD_?\n\nAs the two paragraphs below reason, this is actually the recommended (as in _SHOULD_) option of the draft:\n- > This is particularly useful for networks in which a TCP-terminating proxy might be causing TCP handshakes to succeed quickly, even though end-to-end connectivity with the TLS-terminating server will fail.\n- > QUIC connections inherently include a secure handshake in their main handshakes, and thus usually only need to wait for a single handshake to complete.\n\n\nhttps://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/blob/f4fd153f7c9b0c517af21dbde61f32d9b2fdc45c/draft-ietf-happy-happyeyeballs-v3.md?plain=1#L563-L571",
       "createdAt": "2025-11-03T22:20:24Z",
-      "updatedAt": "2025-11-05T05:55:04Z",
+      "updatedAt": "2025-11-06T20:16:34Z",
       "closedAt": null,
       "comments": [
         {
@@ -1630,8 +1637,79 @@
           "body": "(As an individual)\n\nThis seems reasonable to me. Especially in a world with QUIC, where there's no difference, the real goal is to wait up until the point that you're going to send application data.",
           "createdAt": "2025-11-05T05:55:04Z",
           "updatedAt": "2025-11-05T05:55:04Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Discussed at IETF 124: \n- Why would you ever use a TCP connection if the TLS handshake failed? \n- Could be challenging for implementations that don't control the TLS stack as much?\n- Constrained devices may not want to pay the cost of multiple TLS handshakes\n- Have seen things in the wild that break TLS in the presence of IPv6\n- Substantial support in the room for using SHOULD\n- MUST unless you can't?",
+          "createdAt": "2025-11-06T20:16:34Z",
+          "updatedAt": "2025-11-06T20:16:34Z"
         }
       ]
+    },
+    {
+      "number": 105,
+      "id": "I_kwDOKH7CuM7WXLBh",
+      "title": "Consider adding guidance for inter-attempt pacing across concurrent HE3 procedures to the same host",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/105",
+      "state": "OPEN",
+      "author": "KershawChang",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The Happy Eyeballs v3 (HE3) defines the process for producing one connection, including a connection attempt delay to mitigate bursts and avoid congestion collapse. However, In real-world HTTP stacks, it\u2019s possible to run multiple HE3 procedures to the same host within a short period (e.g., parallel fetches, speculative connects, preconnect + navigation, multiple tabs). While each HE3 run applies its internal connection attempt delay, the draft doesn\u2019t address pacing between separate HE3 runs, so the aggregate can still create a burst of connection attempts.\n\nMaybe we should add guidance to pace HE3 starts per host/connection group (e.g., a minimum inter-attempt interval).",
+      "createdAt": "2025-11-06T15:44:53Z",
+      "updatedAt": "2025-11-06T15:44:53Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 106,
+      "id": "I_kwDOKH7CuM7Wa0sr",
+      "title": "Should there be text about session resumption?",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/106",
+      "state": "OPEN",
+      "author": "JonathanLennox",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "When doing session resumption, it's always possible that the resumption might fail.  Should there be text in this document discussing how long you should wait for session resumption to succeed, and what to do once you've waited long enough that it might be failing?",
+      "createdAt": "2025-11-06T19:46:29Z",
+      "updatedAt": "2025-11-06T19:46:29Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 107,
+      "id": "I_kwDOKH7CuM7WbD0n",
+      "title": "I don't understand how different values could be used for MUST values ?",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/107",
+      "state": "OPEN",
+      "author": "gorryfair",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "In, \"Summary of Configurable Values\", I have a requirement query?\n\nThe text says: \u201c...For that reason, it is expected that these values will change over time. Implementors should feel welcome to use different values without changing this specification.\u201d\n\n- The section contains both \u201cSHOULD\u201d and \u201cMUST\u201d values, I get this for the recommended values, but then I have a hard time understanding how that sentence applies to the \u201cMUST\u201d values.",
+      "createdAt": "2025-11-06T20:03:24Z",
+      "updatedAt": "2025-11-06T20:03:24Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 108,
+      "id": "I_kwDOKH7CuM7WbThP",
+      "title": "What is the PMTU issue?",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/108",
+      "state": "OPEN",
+      "author": "gorryfair",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The text says: \"For TCP connections, since Happy Eyeballs is only active during the initial handshake and TCP does not pass the initial handshake, issues related to MTU can be masked and go unnoticed during Happy Eyeballs.\"\n\n-- I can believe there might be an \"issue\", but what is the issue, please explain.\n-- If this is about the MSS option, is there an issue for some other options?",
+      "createdAt": "2025-11-06T20:20:38Z",
+      "updatedAt": "2025-11-06T20:20:38Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -6279,7 +6357,7 @@
       "labels": [],
       "body": "This simplifies the section about IPv6-only networks while hopefully addressing comments from #91:\r\n\r\n - Remove mentions of IPv6-mostly, since the host where Happy Eyeballs runs will never be IPv6-mostly, it would be either Dual-stack or IPv6-only.\r\n - Use the presence of PREF64 as the only detection mechanism of NAT64\r\n - Note that RFC 7050 should be used, but only when RFC 8781 failed\r\n - Prescribe handling of IPv4 addresses by first looking up the routing table (needed for VPNs) and then synthesizing IPv6. This already covers the former text on IPv4 literals, broken AAAA records and VPN case\r\n - Add section on dealing with DNS64: basically detect and undo since it is not needed for HE.\r\n - Removed the `Last Resort Local Synthesis Delay` configurable variable. If we want HE to function properly without DNS64, every IPv4-only destination looks exactly like \"Broken AAAA record\" case and we definitely don't want 2 second delay every single time.",
       "createdAt": "2025-07-29T21:43:48Z",
-      "updatedAt": "2025-11-04T22:43:48Z",
+      "updatedAt": "2025-11-06T20:13:50Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
@@ -6297,6 +6375,13 @@
           "body": "@furry13 @lcolitti Could you please take a look at this as well?",
           "createdAt": "2025-10-14T04:10:42Z",
           "updatedAt": "2025-10-14T04:10:42Z"
+        },
+        {
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Discussed at IETF 124: \r\n- Potential for a design team\r\n- Potential to ask 6man to do a 6724bisbis",
+          "createdAt": "2025-11-06T20:13:50Z",
+          "updatedAt": "2025-11-06T20:13:50Z"
         }
       ],
       "reviews": [
@@ -7120,7 +7205,7 @@
       ],
       "body": "Closes #64 ",
       "createdAt": "2025-10-20T03:57:38Z",
-      "updatedAt": "2025-11-03T02:49:25Z",
+      "updatedAt": "2025-11-06T20:47:13Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
@@ -7177,6 +7262,26 @@
           "createdAt": "2025-10-20T14:03:09Z",
           "updatedAt": "2025-10-20T14:03:09Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7MeSEh",
+          "commit": {
+            "abbreviatedOid": "b4d57ad"
+          },
+          "author": "tojens-ietf",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-06T20:47:13Z",
+          "updatedAt": "2025-11-06T20:47:13Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Other times it's called serve stale, unless I'm missing a difference: https://www.rfc-editor.org/rfc/rfc8767",
+              "createdAt": "2025-11-06T20:47:13Z",
+              "updatedAt": "2025-11-06T20:47:13Z"
+            }
+          ]
         }
       ]
     },
@@ -7353,7 +7458,7 @@
       "labels": [],
       "body": "Attempts to close #71 ",
       "createdAt": "2025-10-20T05:34:01Z",
-      "updatedAt": "2025-11-03T03:18:30Z",
+      "updatedAt": "2025-11-06T19:54:22Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
@@ -7451,8 +7556,54 @@
               "updatedAt": "2025-11-03T03:18:30Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7MdXzf",
+          "commit": {
+            "abbreviatedOid": "0283ceb"
+          },
+          "author": "enygren",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-06T19:54:22Z",
+          "updatedAt": "2025-11-06T19:54:22Z",
+          "comments": [
+            {
+              "originalPosition": 32,
+              "body": "I agree with Ben here.  There's nothing in\r\nhttps://datatracker.ietf.org/doc/html/draft-ietf-tls-svcb-ech-08\r\nwhich says you can adjust priorities -- instead it handles it via Security Considerations to operators.",
+              "createdAt": "2025-11-06T19:54:22Z",
+              "updatedAt": "2025-11-06T19:54:22Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 109,
+      "id": "PR_kwDOKH7CuM6x_OrA",
+      "title": "client SHOULD wait for the TLS handshake",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/109",
+      "state": "OPEN",
+      "author": "mxinden",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/104.\r\n\r\nSee IETF 124 discussion in https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/104#issuecomment-3499230930.",
+      "createdAt": "2025-11-06T20:27:41Z",
+      "updatedAt": "2025-11-06T20:27:42Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "f4fd153f7c9b0c517af21dbde61f32d9b2fdc45c",
+      "headRepository": "mxinden/draft-happy-eyeballs-v3",
+      "headRefName": "patch-2",
+      "headRefOid": "ecd1e865b00820fd6b66b3e50950393e3a9ce787",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
