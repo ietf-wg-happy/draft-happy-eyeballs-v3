@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-09T01:53:43.918124+00:00",
+  "timestamp": "2025-11-11T01:51:30.385776+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -6357,7 +6357,7 @@
       "labels": [],
       "body": "This simplifies the section about IPv6-only networks while hopefully addressing comments from #91:\r\n\r\n - Remove mentions of IPv6-mostly, since the host where Happy Eyeballs runs will never be IPv6-mostly, it would be either Dual-stack or IPv6-only.\r\n - Use the presence of PREF64 as the only detection mechanism of NAT64\r\n - Note that RFC 7050 should be used, but only when RFC 8781 failed\r\n - Prescribe handling of IPv4 addresses by first looking up the routing table (needed for VPNs) and then synthesizing IPv6. This already covers the former text on IPv4 literals, broken AAAA records and VPN case\r\n - Add section on dealing with DNS64: basically detect and undo since it is not needed for HE.\r\n - Removed the `Last Resort Local Synthesis Delay` configurable variable. If we want HE to function properly without DNS64, every IPv4-only destination looks exactly like \"Broken AAAA record\" case and we definitely don't want 2 second delay every single time.",
       "createdAt": "2025-07-29T21:43:48Z",
-      "updatedAt": "2025-11-06T20:13:50Z",
+      "updatedAt": "2025-11-10T10:31:24Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
@@ -6855,6 +6855,19 @@
               "updatedAt": "2025-11-04T22:41:04Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7NLX82",
+          "commit": {
+            "abbreviatedOid": "45bd512"
+          },
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "state": "CHANGES_REQUESTED",
+          "body": "After Discussions on Montreal, let's hold this until we ran this by a design team. \r\n\r\nMy hope is that it will simplify dramatically if we just treat known NAT64 as IPv4. \r\nIf you don't look too closely, CLAT is already IPv4.\r\nWhether to prefer self-synthesized NAT64 addresses over CLAT and native-IPv4 over CLAT seems to be a minor optimization to me which probably 99% of the use-cases can ignore.",
+          "createdAt": "2025-11-10T10:31:24Z",
+          "updatedAt": "2025-11-10T10:31:24Z",
+          "comments": []
         }
       ]
     },
