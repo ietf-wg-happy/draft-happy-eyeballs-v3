@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-11T01:51:30.385776+00:00",
+  "timestamp": "2025-11-23T02:04:16.196343+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1208,7 +1208,7 @@
       "labels": [],
       "body": "Clients can remember expired DNS answers (also called \"optimistic DNS\"), and try expired answers in parallel with requesting new DNS answers. This needs to be folded into the happy eyeballs algorithm.",
       "createdAt": "2024-11-06T14:55:08Z",
-      "updatedAt": "2025-10-14T22:24:01Z",
+      "updatedAt": "2025-11-21T21:03:21Z",
       "closedAt": null,
       "comments": [
         {
@@ -1217,6 +1217,13 @@
           "body": "Potentially optimistic DNS is covered in a separate doc that the main algorithm references",
           "createdAt": "2025-07-19T11:00:10Z",
           "updatedAt": "2025-07-19T11:00:10Z"
+        },
+        {
+          "author": "enygren",
+          "authorAssociation": "NONE",
+          "body": "I put a long answer into PR #100.  Copying it here as well:\n\nAs mentioned in Montreal, I'm very uncomfortable with this concept.  This substantially changes client behavior in ways that likely violates various RFCs and introduces significant risks.  There's also no way for operators to prevent its use.  \n\nUnlike DNS Serve Stale (which is for reliability and only kicks in when there are ambiguous failures), this kicks in all the time for performance reasons.  Just having a valid cert isn't good enough to avoid some of the major operational challenges this introduces.  For example:\n\n* When a CDN operator removes a cluster from DNS rotation then traffic will keep showing up to it well past the DNS TTLs.  This creates operational challenges for draining prior to maintenance, and could also result in increased errors (eg, just because the TLS connection succeeded doesn't mean that the HTTP/1.1 connection won't get broken mid operation when a server restarts).\n\n* This causes problems for multi-CDN setups as well as DNS-based load balancers.  If traffic keeps showing up well past DNS TTLs then it can make things impossible to move. \n\n* This causes problems when a site operator has switched between vendors or environments or hasn't deprovisioned the old one.  Traffic may keep showing up to the old environment.\n\n* This introduces security and privacy risks in cloud environments where IPs get frequently reused.  For example, SNI at least will be getting leaked to other operators.  Some cloud environments will reuse IPv4 addresses within hours after having been released.\n\nIf anything this really needs to be its own separate draft, and we need to think through how we put controls and guardrails in-place to mitigate some of these issues.\n\nSome possible ways to improve this may be:\n\n* Consider prefresh instead (eg, re-resolve shortly before the DNS TTL expires)\n* Have well-defined bounds on this that are tied to the TTL (eg, you can use for some function of the TTL?)\n* Have a SvcParam which can signal how long the DNS answers associated with the endpoint can be used for past their TTL.\n",
+          "createdAt": "2025-11-21T21:03:21Z",
+          "updatedAt": "2025-11-21T21:03:21Z"
         }
       ]
     },
@@ -7218,7 +7225,7 @@
       ],
       "body": "Closes #64 ",
       "createdAt": "2025-10-20T03:57:38Z",
-      "updatedAt": "2025-11-06T20:47:13Z",
+      "updatedAt": "2025-11-21T21:02:24Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
@@ -7229,7 +7236,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "enygren",
+          "authorAssociation": "NONE",
+          "body": "As mentioned in Montreal, I'm very uncomfortable with this concept.  This substantially changes client behavior in ways that likely violates various RFCs and introduces significant risks.  There's also no way for operators to prevent its use.  \r\n\r\nUnlike DNS Serve Stale (which is for reliability and only kicks in when there are ambiguous failures), this kicks in all the time for performance reasons.  Just having a valid cert isn't good enough to avoid some of the major operational challenges this introduces.  For example:\r\n\r\n* When a CDN operator removes a cluster from DNS rotation then traffic will keep showing up to it well past the DNS TTLs.  This creates operational challenges for draining prior to maintenance, and could also result in increased errors (eg, just because the TLS connection succeeded doesn't mean that the HTTP/1.1 connection won't get broken mid operation when a server restarts).\r\n\r\n* This causes problems for multi-CDN setups as well as DNS-based load balancers.  If traffic keeps showing up well past DNS TTLs then it can make things impossible to move. \r\n\r\n* This causes problems when a site operator has switched between vendors or environments or hasn't deprovisioned the old one.  Traffic may keep showing up to the old environment.\r\n\r\n* This introduces security and privacy risks in cloud environments where IPs get frequently reused.  For example, SNI at least will be getting leaked to other operators.  Some cloud environments will reuse IPv4 addresses within hours after having been released.\r\n\r\nIf anything this really needs to be its own separate draft, and we need to think through how we put controls and guardrails in-place to mitigate some of these issues.\r\n\r\nSome possible ways to improve this may be:\r\n\r\n* Consider prefresh instead (eg, re-resolve shortly before the DNS TTL expires)\r\n* Have well-defined bounds on this that are tied to the TTL (eg, you can use for some function of the TTL?)\r\n* Have a SvcParam which can signal how long the DNS answers associated with the endpoint can be used for past their TTL.\r\n",
+          "createdAt": "2025-11-21T21:02:24Z",
+          "updatedAt": "2025-11-21T21:02:24Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOKH7CuM7IESbw",
@@ -7293,6 +7308,26 @@
               "body": "Other times it's called serve stale, unless I'm missing a difference: https://www.rfc-editor.org/rfc/rfc8767",
               "createdAt": "2025-11-06T20:47:13Z",
               "updatedAt": "2025-11-06T20:47:13Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7QRxfJ",
+          "commit": {
+            "abbreviatedOid": "b4d57ad"
+          },
+          "author": "enygren",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2025-11-21T20:51:14Z",
+          "updatedAt": "2025-11-21T20:51:14Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Serve Stale is different -- it is specifically and only for resilience in the case of failures.  (eg, if resolutions are failing due to connectivity issues or timeouts, only then can you use the stale answers.)",
+              "createdAt": "2025-11-21T20:51:14Z",
+              "updatedAt": "2025-11-21T20:51:14Z"
             }
           ]
         }
