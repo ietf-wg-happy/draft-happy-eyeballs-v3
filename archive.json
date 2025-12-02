@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-23T02:04:16.196343+00:00",
+  "timestamp": "2025-12-02T01:53:52.532305+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1208,7 +1208,7 @@
       "labels": [],
       "body": "Clients can remember expired DNS answers (also called \"optimistic DNS\"), and try expired answers in parallel with requesting new DNS answers. This needs to be folded into the happy eyeballs algorithm.",
       "createdAt": "2024-11-06T14:55:08Z",
-      "updatedAt": "2025-11-21T21:03:21Z",
+      "updatedAt": "2025-12-01T15:15:08Z",
       "closedAt": null,
       "comments": [
         {
@@ -1224,6 +1224,13 @@
           "body": "I put a long answer into PR #100.  Copying it here as well:\n\nAs mentioned in Montreal, I'm very uncomfortable with this concept.  This substantially changes client behavior in ways that likely violates various RFCs and introduces significant risks.  There's also no way for operators to prevent its use.  \n\nUnlike DNS Serve Stale (which is for reliability and only kicks in when there are ambiguous failures), this kicks in all the time for performance reasons.  Just having a valid cert isn't good enough to avoid some of the major operational challenges this introduces.  For example:\n\n* When a CDN operator removes a cluster from DNS rotation then traffic will keep showing up to it well past the DNS TTLs.  This creates operational challenges for draining prior to maintenance, and could also result in increased errors (eg, just because the TLS connection succeeded doesn't mean that the HTTP/1.1 connection won't get broken mid operation when a server restarts).\n\n* This causes problems for multi-CDN setups as well as DNS-based load balancers.  If traffic keeps showing up well past DNS TTLs then it can make things impossible to move. \n\n* This causes problems when a site operator has switched between vendors or environments or hasn't deprovisioned the old one.  Traffic may keep showing up to the old environment.\n\n* This introduces security and privacy risks in cloud environments where IPs get frequently reused.  For example, SNI at least will be getting leaked to other operators.  Some cloud environments will reuse IPv4 addresses within hours after having been released.\n\nIf anything this really needs to be its own separate draft, and we need to think through how we put controls and guardrails in-place to mitigate some of these issues.\n\nSome possible ways to improve this may be:\n\n* Consider prefresh instead (eg, re-resolve shortly before the DNS TTL expires)\n* Have well-defined bounds on this that are tied to the TTL (eg, you can use for some function of the TTL?)\n* Have a SvcParam which can signal how long the DNS answers associated with the endpoint can be used for past their TTL.\n",
           "createdAt": "2025-11-21T21:03:21Z",
           "updatedAt": "2025-11-21T21:03:21Z"
+        },
+        {
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "body": "In general, I am opposed to TTL stretching in HAPPY.  TTL stretching should require an explicit \"opt-in\" from the domain, which is out of scope for HAPPY.",
+          "createdAt": "2025-12-01T15:15:08Z",
+          "updatedAt": "2025-12-01T15:15:08Z"
         }
       ]
     },
