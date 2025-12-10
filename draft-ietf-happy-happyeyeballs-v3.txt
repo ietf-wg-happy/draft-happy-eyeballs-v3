@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 23 April 2026                                           N. Jaju
+Expires: 13 June 2026                                            N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                         20 October 2025
+                                                        10 December 2025
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 April 2026.
+   This Internet-Draft will expire on 13 June 2026.
 
 Copyright Notice
 
@@ -623,7 +623,7 @@ Table of Contents
    on top, such as for unencrypted HTTP connections) will determine
    successful establishment based on completing the TCP handshake only.
    When TLS is used on top of of TCP (such as for encrypted HTTP
-   connections), clients MAY choose to wait for the TLS handshake to
+   connections), clients SHOULD wait for the TLS handshake to
    successfully complete before cancelling other connection attempts.
    This is particularly useful for networks in which a TCP-terminating
    proxy might be causing TCP handshakes to succeed quickly, even though
