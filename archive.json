@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-02T01:53:52.532305+00:00",
+  "timestamp": "2025-12-11T01:58:09.744276+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1628,15 +1628,15 @@
       "id": "I_kwDOKH7CuM7VntBp",
       "title": "nit: client SHOULD choose to wait for the TLS handshake",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/104",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mxinden",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "[Current wording](https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/blob/f4fd153f7c9b0c517af21dbde61f32d9b2fdc45c/draft-ietf-happy-happyeyeballs-v3.md?plain=1#L563-L566):\n\n> When TLS is used on top of of TCP (such as for encrypted HTTP connections), clients **MAY** choose to wait for the TLS handshake to successfully complete before cancelling other connection attempts.\n\nHow about replacing the _MAY_ with a _SHOULD_?\n\nAs the two paragraphs below reason, this is actually the recommended (as in _SHOULD_) option of the draft:\n- > This is particularly useful for networks in which a TCP-terminating proxy might be causing TCP handshakes to succeed quickly, even though end-to-end connectivity with the TLS-terminating server will fail.\n- > QUIC connections inherently include a secure handshake in their main handshakes, and thus usually only need to wait for a single handshake to complete.\n\n\nhttps://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/blob/f4fd153f7c9b0c517af21dbde61f32d9b2fdc45c/draft-ietf-happy-happyeyeballs-v3.md?plain=1#L563-L571",
       "createdAt": "2025-11-03T22:20:24Z",
-      "updatedAt": "2025-11-06T20:16:34Z",
-      "closedAt": null,
+      "updatedAt": "2025-12-10T16:59:08Z",
+      "closedAt": "2025-12-10T16:59:08Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -7639,26 +7639,63 @@
       "id": "PR_kwDOKH7CuM6x_OrA",
       "title": "client SHOULD wait for the TLS handshake",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/109",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mxinden",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Fixes https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/104.\r\n\r\nSee IETF 124 discussion in https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/104#issuecomment-3499230930.",
       "createdAt": "2025-11-06T20:27:41Z",
-      "updatedAt": "2025-11-06T20:27:42Z",
+      "updatedAt": "2025-12-10T16:59:07Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "f4fd153f7c9b0c517af21dbde61f32d9b2fdc45c",
       "headRepository": "mxinden/draft-happy-eyeballs-v3",
       "headRefName": "patch-2",
       "headRefOid": "ecd1e865b00820fd6b66b3e50950393e3a9ce787",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "closedAt": "2025-12-10T16:59:07Z",
+      "mergedAt": "2025-12-10T16:59:07Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "b4b188c567e15a52cee8c473a8ee49edd4f57921"
+      },
+      "comments": [
+        {
+          "author": "mxinden",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Friendly ping @tfpauly. Can this pull request be merged?",
+          "createdAt": "2025-12-09T12:03:53Z",
+          "updatedAt": "2025-12-09T12:03:53Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7UFW6v",
+          "commit": {
+            "abbreviatedOid": "ecd1e86"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-12-09T15:44:50Z",
+          "updatedAt": "2025-12-09T15:44:50Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7UZ9Rt",
+          "commit": {
+            "abbreviatedOid": "ecd1e86"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-12-10T16:58:45Z",
+          "updatedAt": "2025-12-10T16:58:45Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
