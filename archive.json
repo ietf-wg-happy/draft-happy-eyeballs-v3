@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-11T01:58:09.744276+00:00",
+  "timestamp": "2025-12-14T02:04:06.671557+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -823,7 +823,7 @@
       "labels": [],
       "body": "This is an open question I do not have an answer for yet - I guess the arguments can be made for both approaches..\r\n\r\nSo if an IPv6-mostly network provides DNS64, then a dual-stack host talking to an IPv4-only destination would have a choice between:\r\n\r\n* a synthesized IPv6 address which will be routed via NAT64\r\n* a native IPv4 path\r\n\r\n(we have a similar discussion in https://datatracker.ietf.org/doc/draft-link-v6ops-claton/: shall CLAT be enabled if both PLAT and IPv4 are available?)",
       "createdAt": "2024-03-18T23:06:41Z",
-      "updatedAt": "2025-09-03T11:30:45Z",
+      "updatedAt": "2025-12-11T21:43:54Z",
       "closedAt": null,
       "comments": [
         {
@@ -853,6 +853,13 @@
           "body": "Should Happl Eyeballs define this behavior or is this an update to RFC6724\u2026 de-prioritization of NAT64 well-known prefix against normal IPv6 GUA and introducing different scopes for RFC1918 and non RFC1918 would be the cleanest solution.\nSame goes for detecting PREF64\u2026",
           "createdAt": "2025-09-03T11:30:45Z",
           "updatedAt": "2025-09-03T11:30:45Z"
+        },
+        {
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "body": "Based on my latest experience with DNS64 and broken v6 connectivity for dual-stacked servers I concluded that CLAT is the earliest solution to make sure that there is some connectivity.\n\nSynthesis of DNS64 addresses is only an alternative if everything is properly integrated, which is hard do achieve without a TAPS like API",
+          "createdAt": "2025-12-11T21:43:54Z",
+          "updatedAt": "2025-12-11T21:43:54Z"
         }
       ]
     },
