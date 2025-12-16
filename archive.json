@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-14T02:04:06.671557+00:00",
+  "timestamp": "2025-12-16T01:58:03.903898+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1729,6 +1729,22 @@
       "body": "The text says: \"For TCP connections, since Happy Eyeballs is only active during the initial handshake and TCP does not pass the initial handshake, issues related to MTU can be masked and go unnoticed during Happy Eyeballs.\"\n\n-- I can believe there might be an \"issue\", but what is the issue, please explain.\n-- If this is about the MSS option, is there an issue for some other options?",
       "createdAt": "2025-11-06T20:20:38Z",
       "updatedAt": "2025-11-06T20:20:38Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 110,
+      "id": "I_kwDOKH7CuM7eV1J0",
+      "title": "DNS64 does not play well with Happy Eyeballs \u2013 We need CLAT or local synthesis",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/110",
+      "state": "OPEN",
+      "author": "philsbln",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Hi,\n\nfrom recent operational challenges, I have seen that DNS64 does not play well with Happy Eyeballs.\nScenario: \n- A domain name having an `A` and an `AAAA` in DNS, but broken IPv6 connectivity (in my case, a routing loop).\n- DNS64 finds a `AAAA` and does not synthesize a DNS64 record for the domain name.\n- In case of CLAT, everything would be fine, but if there is no CLAT, the client can not fall back to IPv4 as the local resolver on IPv6-only client discards A recored as there is no IPv4 connectivity (correct following RFC6724).\n\nWhat we need here is a way to still use the A record and fall back to NAT64 and synthesize a DNS64 address.\n\nPR #94 does the right thing here, thus, IMHO in a little too complicated/hard to implement way (use DNS64 only for prefix detection and filter out DNS64 `AAAA`s) while always synthesizing `AAAA`s in the HE engine.\n\nA simpler approach would be to recommend de-activating address family filtering, always synthesizing `AAAA` while still treating them as IPv4 and discarding duplicates.",
+      "createdAt": "2025-12-15T12:40:50Z",
+      "updatedAt": "2025-12-15T12:40:50Z",
       "closedAt": null,
       "comments": []
     }
