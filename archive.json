@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-16T01:58:03.903898+00:00",
+  "timestamp": "2025-12-18T01:54:01.749104+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1744,9 +1744,31 @@
       "labels": [],
       "body": "Hi,\n\nfrom recent operational challenges, I have seen that DNS64 does not play well with Happy Eyeballs.\nScenario: \n- A domain name having an `A` and an `AAAA` in DNS, but broken IPv6 connectivity (in my case, a routing loop).\n- DNS64 finds a `AAAA` and does not synthesize a DNS64 record for the domain name.\n- In case of CLAT, everything would be fine, but if there is no CLAT, the client can not fall back to IPv4 as the local resolver on IPv6-only client discards A recored as there is no IPv4 connectivity (correct following RFC6724).\n\nWhat we need here is a way to still use the A record and fall back to NAT64 and synthesize a DNS64 address.\n\nPR #94 does the right thing here, thus, IMHO in a little too complicated/hard to implement way (use DNS64 only for prefix detection and filter out DNS64 `AAAA`s) while always synthesizing `AAAA`s in the HE engine.\n\nA simpler approach would be to recommend de-activating address family filtering, always synthesizing `AAAA` while still treating them as IPv4 and discarding duplicates.",
       "createdAt": "2025-12-15T12:40:50Z",
-      "updatedAt": "2025-12-15T12:40:50Z",
+      "updatedAt": "2025-12-17T09:27:08Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "body": "Hey, this is already adressed in HE 2.0, in [section 7.2 of RFC 8305](https://datatracker.ietf.org/doc/html/rfc8305#section-7.2) and is part of the current draft in [section 8.4](https://www.ietf.org/archive/id/draft-ietf-happy-happyeyeballs-v3-02.html#name-hostnames-with-broken-aaaa-) since it was just taken over from the previous one.\n\nHappy Eyeballs can hardly influence the DNS64 behaviour and the default behaviour of DNS64 not to perform synthesis when there is a native IPv6 address available is necessary for dealing with simple clients as well as for not breaking DNSSEC signatures for hosts with native IPv6 resources.\n\nAnyway, since there seems to be consensus that devices should support IPv6-only networks with just NAT64 and PREF64 option in RA, without DNS64, I conclude that local synthesis is inevitable. Which makes the current text suboptimal. But I already stated that in the last bullet of #94. ",
+          "createdAt": "2025-12-16T18:58:52Z",
+          "updatedAt": "2025-12-16T18:58:52Z"
+        },
+        {
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "body": "To my knowledge, Chrome does not implement this, the question is who does\u2026\n\nDo we need to stress/re-iterate the point in v3?",
+          "createdAt": "2025-12-17T08:48:35Z",
+          "updatedAt": "2025-12-17T08:48:35Z"
+        },
+        {
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "body": "Correct. To my knowledge HE 2.0 only exists in the Apple ecosystem - and only in apps using the highest level Apple APIs - so not even in portable apps like Chrome or Firefox running on macOS.",
+          "createdAt": "2025-12-17T09:27:08Z",
+          "updatedAt": "2025-12-17T09:27:08Z"
+        }
+      ]
     }
   ],
   "pulls": [
