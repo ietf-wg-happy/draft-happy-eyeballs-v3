@@ -851,8 +851,8 @@ provided by the application ({{literals}}).
 The values that may be configured as defaults on a client for use in
 Happy Eyeballs are as follows:
 
-- Resolution Delay ({{resolution}}): The time to wait for a AAAA record
-after receiving an A record. Recommended to be 50 milliseconds.
+- Resolution Delay ({{resolution}}): The time to wait for AAAA and/or SVCB/HTTPS
+records after receiving an A record. Recommended to be 50 milliseconds.
 
 - Preferred Address Family Count ({{sorting}}): The number of
 addresses belonging to the preferred address family (such as IPv6)
