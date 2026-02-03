@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-18T01:54:01.749104+00:00",
+  "timestamp": "2026-02-03T02:33:19.042299+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1215,7 +1215,7 @@
       "labels": [],
       "body": "Clients can remember expired DNS answers (also called \"optimistic DNS\"), and try expired answers in parallel with requesting new DNS answers. This needs to be folded into the happy eyeballs algorithm.",
       "createdAt": "2024-11-06T14:55:08Z",
-      "updatedAt": "2025-12-01T15:15:08Z",
+      "updatedAt": "2026-02-02T11:14:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -1238,6 +1238,13 @@
           "body": "In general, I am opposed to TTL stretching in HAPPY.  TTL stretching should require an explicit \"opt-in\" from the domain, which is out of scope for HAPPY.",
           "createdAt": "2025-12-01T15:15:08Z",
           "updatedAt": "2025-12-01T15:15:08Z"
+        },
+        {
+          "author": "mxinden",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "For what it is worth, as mentioned in Montreal, by default Firefox uses DNS entries up to 10 minutes after their expiration. \n\nhttps://github.com/mozilla-firefox/firefox/blob/33fd6bd39c625067a29f153adce6a4646e45750f/modules/libpref/init/StaticPrefList.yaml#L14579-L14584",
+          "createdAt": "2026-02-02T11:14:19Z",
+          "updatedAt": "2026-02-02T11:14:19Z"
         }
       ]
     },
@@ -1696,9 +1703,31 @@
       "labels": [],
       "body": "When doing session resumption, it's always possible that the resumption might fail.  Should there be text in this document discussing how long you should wait for session resumption to succeed, and what to do once you've waited long enough that it might be failing?",
       "createdAt": "2025-11-06T19:46:29Z",
-      "updatedAt": "2025-11-06T19:46:29Z",
+      "updatedAt": "2026-02-02T17:03:09Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mxinden",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "For what it is worth, in our (Firefox) first implementation, we will simply treat resumed connections just like other connections. If the resumed connection does not succeed within the _connection attempt delay_, we will race it with an additional (new) connection to another endpoint.",
+          "createdAt": "2026-02-02T08:30:28Z",
+          "updatedAt": "2026-02-02T08:30:28Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The Apple implementation similarly treats resumed connections like other connections \u2014 there isn't a special timer we set to make it shorter for resumption, etc.",
+          "createdAt": "2026-02-02T17:02:55Z",
+          "updatedAt": "2026-02-02T17:02:55Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Probably good to specify advice, either way",
+          "createdAt": "2026-02-02T17:03:09Z",
+          "updatedAt": "2026-02-02T17:03:09Z"
+        }
+      ]
     },
     {
       "number": 107,
@@ -7739,6 +7768,53 @@
           "createdAt": "2025-12-10T16:58:45Z",
           "updatedAt": "2025-12-10T16:58:45Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 111,
+      "id": "PR_kwDOKH7CuM7A7Gr0",
+      "title": "Include SVCB/HTTPS records in Resolution Delay definition",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/111",
+      "state": "OPEN",
+      "author": "mxinden",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 4.2. \"Handling DNS Answers Asynchronously\" says the resolution delay is used to wait for both AAAA and SVCB/HTTPS records:\r\n\r\n> The resolution time delay is a short time that provides a chance to receive\r\npreferred addresses (via AAAA records) along with service information (via SVCB/HTTPS records). This accounts for the case where the AAAA or SVCB/HTTPS records follow the A records by a few milliseconds. This delay is referred to as the \"Resolution Delay\".\r\n\r\nYet the Resolution Delay definition in section 9. \"Summary of Configurable Values\" only mentions AAAA:\r\n\r\n> Resolution Delay (Section 4): The time to wait for a AAAA record after\r\nreceiving an A record. Recommended to be 50 milliseconds.\r\n\r\nThis commit updates the latter to include the mention of SVCB/HTTPS in addition to AAAA.",
+      "createdAt": "2026-02-02T14:04:49Z",
+      "updatedAt": "2026-02-02T17:01:40Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "b4b188c567e15a52cee8c473a8ee49edd4f57921",
+      "headRepository": "mxinden/draft-happy-eyeballs-v3",
+      "headRefName": "resolution-delay",
+      "headRefOid": "6e5b059aa88f23757a493be7caa06808358e0977",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7e95dT",
+          "commit": {
+            "abbreviatedOid": "6e5b059"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "One minor nit. Thanks for pointing this out!",
+          "createdAt": "2026-02-02T17:01:26Z",
+          "updatedAt": "2026-02-02T17:01:40Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\n- Resolution Delay ({{resolution}}): The time to wait for AAAA and/or SVCB/HTTPS records\n```",
+              "createdAt": "2026-02-02T17:01:26Z",
+              "updatedAt": "2026-02-02T17:01:40Z"
+            }
+          ]
         }
       ]
     }
