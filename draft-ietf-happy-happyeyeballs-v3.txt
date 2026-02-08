@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 13 June 2026                                            N. Jaju
+Expires: 12 August 2026                                          N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                        10 December 2025
+                                                         8 February 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,11 +59,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 June 2026.
+   This Internet-Draft will expire on 12 August 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -909,8 +909,9 @@ Table of Contents
    The values that may be configured as defaults on a client for use in
    Happy Eyeballs are as follows:
 
-   *  Resolution Delay (Section 4): The time to wait for a AAAA record
-      after receiving an A record.  Recommended to be 50 milliseconds.
+   *  Resolution Delay (Section 4): The time to wait for AAAA and/or
+      SVCB/HTTPS records after receiving an A record.  Recommended to be
+      50 milliseconds.
 
    *  Preferred Address Family Count (Section 5): The number of
       addresses belonging to the preferred address family (such as IPv6)
