@@ -716,135 +716,82 @@ If an address is added to the list, it should be sorted into the list
 of addresses not yet attempted according to the rules above (see
 {{sorting}}).
 
-# Supporting IPv6-Mostly and IPv6-Only Networks {#v6only}
+# Supporting IPv6-Only and IPv6-Mostly Networks with NAT64 {#v6only}
 
-While many IPv6 transition protocols have been standardized and
+While many IPv6 transition mechanisms have been standardized and
 deployed, most are transparent to client devices. Supporting IPv6-only
-networks often requires specific client-side changes, especially when
-interacting with IPv4-only services. Two primary mechanisms for this
-are the combined use of NAT64 {{!RFC6146}} with DNS64 {{!RFC6147}}, or
-leveraging NAT64 with a discovered PREF64 prefix {{!RFC8781}}.
+networks often requires specific client-side changes for
+interacting with IPv4-only services. The exception is NAT64 {{!RFC6146}},
+which allows interacting with IPv4-only services by sending ordinary IPv6
+packets towards the NAT64 translation prefix.
 
-One possible way to handle these networks is for the client device
-networking stack to implement 464XLAT {{?RFC6877}}. 464XLAT has the
-advantage of not requiring changes to user space software; however, it
-requires per-packet translation if the application is using IPv4
-literals and does not encourage client application software to support
-native IPv6. On platforms that do not support 464XLAT, the Happy
+IPv6-Mostly networks {{!RFC8925}} allow hosts to work either in legacy
+dual-stack mode or in IPv6-only mode, based on the behavior of the DHCP client.
+In the former case, no special handling is required by the Happy Eyeballs. In
+the latter case, the handling described in this section applies.
+
+Historically, NAT64 is often deployed together with DNS64 {{!RFC6147}}, making
+connection to IPv4-only services almost transparent to IPv6-capable
+applications. However DNS64 has a number of disadvantages (see Section 6.2 of
+{{?RFC6147}}). IPv6-capable applications can avoid relying on DNS64 by
+discovering the NAT64 prefix used in the network {{?RFC9872}} and performing
+local synthesis. To allow applications which do not support IPv6 or have IPv4
+dependencies to operate on IPv6-only hosts, 464XLAT {{?RFC6877}} is used.
+464XLAT has the
+advantage of not requiring changes to user space software; however, it requires
+per-packet translation and does not encourage client application software to
+support native IPv6. On platforms that do not support 464XLAT, the Happy
 Eyeballs engine SHOULD follow the recommendations in this section to
-properly support IPv6-mostly ({{?V6-MOSTLY=I-D.ietf-v6ops-6mops}}) and IPv6-only networks.
+properly support IPv6-only networks. Since generating native IPv6 packets is
+more efficient than generating IPv4 packets that would get translated into IPv6
+in the host, the Happy Eyeballs mechanism MAY choose to avoid sending IPv4
+packets via 464XLAT and produce native IPv6 packets instead.
 
-The features described in this section SHOULD only be enabled when the
-host detects an IPv6-mostly or IPv6-only network. A simple heuristic
-to detect one of these networks is to check if the network offers
-routable IPv6 addressing, does not offer routable IPv4 addressing, and
-offers a DNS resolver address.
+## Discovering and Utilizing NAT64 Prefix {#pref64-detection}
 
-## IPv4 Address Literals {#literals}
+In order support special handling of IPv6-only networks with NAT64,
+the Happy Eyeballs mechanism needs to discover the presence of NAT64 by
+discovering prefix used by it. This can be done by:
 
-If client applications or users wish to connect to IPv4 address
-literals, the Happy Eyeballs engine will need to perform NAT64 address
-synthesis for them. The solution is similar to "Bump-in-the-Host"
-{{!RFC6535}} but is implemented inside the Happy Eyeballs client.
+ - PREF64 option in Router Advertisement {{!RFC8781}}
+ - Using the algorithm described in {{!RFC7050}} if the network supports DNS64
 
-Note that some IPv4 prefixes are scoped to a given host or network,
-such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and
-255.255.255.255/32, and therefore do not require NAT64 address
-synthesis.
+The Happy Eyeballs SHOULD follow recommendations defined in {{?RFC9872}}.
 
-## Discovering and Utilizing PREF64 {#pref64-detection}
+## Handling of IPv4 connections {#ipv4}
 
-When an IPv4 address is passed into the Happy Eyeballs implementation
-instead of a hostname, it SHOULD use PREF64s received from Router
-Advertisements {{!RFC8781}}.
+When NAT64 prefix is discovered, dual-stack connectivity can be assumed and the Happy Eyeballs engine should query DNS for AAAA and A records.
 
-With PREF64 available, networks might choose to not deploy DNS64, as
-the latter has a number of disadvantages (see
-{{V6-MOSTLY, Section 4.3.4}}). To ensure
-compatibility with such networks, if PREF64 is available, clients
-SHOULD send an A query in addition to an AAAA query for a given
-hostname. This allows the client to receive any existing IPv4 A
-records and perform local NAT64 address synthesis, eliminating the
-network's need to run DNS64.
+All IPv4 based candidates, independent whether they came from an IPv4 address literal,
+hint in SVCB record, or were result of a query for A records, should be pre-processed in the following way:
 
-If the network does not provide PREF64s, the implementation SHOULD
-query the network for the NAT64 prefix using "Discovery of the IPv6
-Prefix Used for IPv6 Address Synthesis" {{!RFC7050}}. It then
-synthesizes an appropriate IPv6 address (or several) using the
-encoding described in "IPv6 Addressing of IPv4/ IPv6 Translators"
-{{!RFC6052}}. The synthesized addresses are then inserted into the
-list of addresses as if they were results from DNS A queries;
-connection attempts follow the algorithm described above (see
-{{connections}}).
+  1. Consult IPv4 routing table. If there is a valid route towards requested
+     destination, use that IPv4 address as it is.
+  2. If there is no route to the destination IPv4 address, combine the discovered
+     NAT64 prefix with the destination IPv4 address to create destination IPv6 address
+     to be used instead.
 
-Such translation also applies to any IPv4 addresses received in A
-records and IPv4 address hints received in SVCB records.
+During the first step, the Happy Eyeballs MAY choose to ignore the IPv4 default
+route if such a route leads to the CLAT translator. The IPv6 addresses created
+by combining the NAT64 prefix with IPv4 address are for the purposes of ordering still
+considered IPv4 addresses.
 
-## Supporting DNS64 {#dns64}
+## Handling of DNS64 responses {#dns64}
 
-If PREF64 is not available and the NAT64 prefix cannot be discovered,
-clients SHOULD assume the network is relying on DNS64 for IPv4-to-IPv6
-address synthesis. In this scenario, clients will typically only
-receive AAAA records from DNS queries, as DNS64 servers synthese these
-records for IPv4-only domains.
+The Happy Eyeballs algorithm is fully functional on an IPv6-only network with
+NAT64 without DNS64, providing that the NAT64 prefix can be detected.
+If there is DNS64 deployed in the network, the Happy Eyeballs mechanism will
+receive a positive answer to an AAAA query even for an IPv4-only destination. Since
+such synthesized IPv6 addresses actually represent IPv4 destinations, they
+should be treated as IPv4 addresses.
 
-## Hostnames with Broken AAAA Records {#broken}
+Synthesized AAAA responses can be detected by comparing the IPv6 address with
+the NAT64 prefix. If synthesized AAAA response is detected, the host SHOULD:
 
-At the time of writing, there exist a small but non-negligible number
-of hostnames that resolve to valid A records and broken AAAA records,
-which we define as AAAA records that contain seemingly valid IPv6
-addresses but those addresses never reply when contacted on the usual
-ports. These can be, for example, caused by:
-
-- Mistyping of the IPv6 address in the DNS zone configuration
-
-- Routing black holes
-
-- Service outages
-
-While an algorithm complying with the other sections of this document
-would correctly handle such hostnames on a dual-stack network, they
-will not necessarily function correctly on IPv6-only networks with
-NAT64 and DNS64. Since DNS64 recursive resolvers rely on the
-authoritative name servers sending negative (no error, no data)
-responses for AAAA records in order to synthesize, they will not
-synthesize records for these particular hostnames and will instead
-pass through the broken AAAA record.
-
-In order to support these scenarios, the client device needs to query
-the DNS for the A record and then perform local synthesis. Since
-these types of hostnames are rare and, in order to minimize load on
-DNS servers, this A query should only be performed when the client
-has given up on the AAAA records it initially received. This can be
-achieved by using a longer timeout, referred to as the "Last Resort
-Local Synthesis Delay"; the delay is recommended to be 2 seconds.
-The timer is started when the last connection attempt is fired. If
-no connection attempt has succeeded when this timer fires, the device
-queries the DNS for the IPv4 address and, on reception of a valid A
-record, treats it as if it were provided by the application (see
-{{literals}}).
-
-## Virtual Private Networks
-
-Some Virtual Private Networks (VPNs) may be configured to handle DNS
-queries from the device. The configuration could encompass all
-queries or a subset such as "*.internal.example.com". These VPNs can
-also be configured to only route part of the IPv4 address space, such
-as 192.0.2.0/24. However, if an internal hostname resolves to an
-external IPv4 address, these can cause issues if the underlying
-network is IPv6-only. As an example, let's assume that
-"www.internal.example.com" has exactly one A record, 198.51.100.42,
-and no AAAA records. The client will send the DNS query to the
-company's recursive resolver and that resolver will reply with these
-records. The device now only has an IPv4 address to connect to and
-no route to that address. Since the company's resolver does not know
-the NAT64 prefix of the underlying network, it cannot synthesize the
-address. Similarly, the underlying network's DNS64 recursive
-resolver does not know the company's internal addresses, so it cannot
-resolve the hostname. Because of this, the client device needs to
-resolve the A record using the company's resolver and then locally
-synthesize an IPv6 address, as if the resolved IPv4 address were
-provided by the application ({{literals}}).
+  1. Abort ongoing A query for the same host name.
+  2. Extract IPv4 addresses from the synthesized responses and consider them the
+     results of the A query.
+  3. Remove synthesized IPv6 addresses from the set of IPv6 destinations.
 
 # Summary of Configurable Values
 
@@ -870,10 +817,6 @@ milliseconds. MUST NOT be less than 10 milliseconds.
 
 - Maximum Connection Attempt Delay ({{connections}}): The maximum time to
 wait between connection attempts. Recommended to be 2 seconds.
-
-- Last Resort Local Synthesis Delay ({{broken}}): The time to wait
-after starting the last IPv6 attempt and before sending the A
-query. Recommended to be 2 seconds.
 
 The delay values described in this section were determined
 empirically by measuring the timing of connections on a very wide set
