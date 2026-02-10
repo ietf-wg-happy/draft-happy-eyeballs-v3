@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-08T02:52:36.790302+00:00",
+  "timestamp": "2026-02-10T02:46:05.460581+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1703,7 +1703,7 @@
       "labels": [],
       "body": "When doing session resumption, it's always possible that the resumption might fail.  Should there be text in this document discussing how long you should wait for session resumption to succeed, and what to do once you've waited long enough that it might be failing?",
       "createdAt": "2025-11-06T19:46:29Z",
-      "updatedAt": "2026-02-02T17:03:09Z",
+      "updatedAt": "2026-02-09T10:26:38Z",
       "closedAt": null,
       "comments": [
         {
@@ -1726,6 +1726,13 @@
           "body": "Probably good to specify advice, either way",
           "createdAt": "2026-02-02T17:03:09Z",
           "updatedAt": "2026-02-02T17:03:09Z"
+        },
+        {
+          "author": "mxinden",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Probably good to specify advice\n\nI propose https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/114. @JonathanLennox @tfpauly thoughts?",
+          "createdAt": "2026-02-09T10:26:38Z",
+          "updatedAt": "2026-02-09T10:26:38Z"
         }
       ]
     },
@@ -1811,9 +1818,17 @@
       "labels": [],
       "body": "Hey guys, I'm trying to figure out how to implement happy eyeballs for QUIC.\n\nOne of the differences between QUIC and TCP/TLS is that the first flight has a CPU cost in the form of TLS secret generation. If you create two separate QUIC connections, one for IPv4 and one for IPv6, you will pay this cost twice unless the delay between connections is sufficiently large enough.\n\nAlternatively, if the QUIC client sends a copy of the Initial packet over both IPv4 and IPv6, I believe you can avoid this duplicate work. The packets being transmitted over IPv4 and IPv6 would be the same. The server would finish the handshake using the earliest (or both?) socket family.\n\nDoes this make sense? Is there any guidance on if happy eyeballs should happen at the transport or application level for QUIC?",
       "createdAt": "2026-02-06T00:49:04Z",
-      "updatedAt": "2026-02-06T00:54:04Z",
+      "updatedAt": "2026-02-09T09:43:13Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mxinden",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Alternatively, if the QUIC client sends a copy of the Initial packet over both IPv4 and IPv6, I believe you can avoid this duplicate work. The packets being transmitted over IPv4 and IPv6 would be the same. The server would finish the handshake using the earliest (or both?) socket family.\n\nFor what my opinion is worth, I consider this an optimization not worth specifying in the document.\n\nWe (Mozilla) expect the majority of connections to succeed on the first attempt, and thus will not introduce such optimizations (for now).\n\n> Is there any guidance on if happy eyeballs should happen at the transport or application level for QUIC?\n\nThe draft is currently specified at both the transport level (TCP) and application level (here TLS), see e.g.:\n\nhttps://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/blob/f9fae351b5bbbb58107fe624a0677f1e9911ed2d/draft-ietf-happy-happyeyeballs-v3.md?plain=1#L560-L571",
+          "createdAt": "2026-02-09T09:43:13Z",
+          "updatedAt": "2026-02-09T09:43:13Z"
+        }
+      ]
     },
     {
       "number": 113,
@@ -7808,24 +7823,26 @@
       "id": "PR_kwDOKH7CuM7A7Gr0",
       "title": "Include SVCB/HTTPS records in Resolution Delay definition",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/111",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mxinden",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Section 4.2. \"Handling DNS Answers Asynchronously\" says the resolution delay is used to wait for both AAAA and SVCB/HTTPS records:\r\n\r\n> The resolution time delay is a short time that provides a chance to receive\r\npreferred addresses (via AAAA records) along with service information (via SVCB/HTTPS records). This accounts for the case where the AAAA or SVCB/HTTPS records follow the A records by a few milliseconds. This delay is referred to as the \"Resolution Delay\".\r\n\r\nYet the Resolution Delay definition in section 9. \"Summary of Configurable Values\" only mentions AAAA:\r\n\r\n> Resolution Delay (Section 4): The time to wait for a AAAA record after\r\nreceiving an A record. Recommended to be 50 milliseconds.\r\n\r\nThis commit updates the latter to include the mention of SVCB/HTTPS in addition to AAAA.",
       "createdAt": "2026-02-02T14:04:49Z",
-      "updatedAt": "2026-02-02T17:01:40Z",
+      "updatedAt": "2026-02-08T14:41:55Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "b4b188c567e15a52cee8c473a8ee49edd4f57921",
       "headRepository": "mxinden/draft-happy-eyeballs-v3",
       "headRefName": "resolution-delay",
-      "headRefOid": "6e5b059aa88f23757a493be7caa06808358e0977",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "6bb84d915aba1e8b3e05f869b3442ac1e976c794",
+      "closedAt": "2026-02-08T14:41:55Z",
+      "mergedAt": "2026-02-08T14:41:55Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "f9fae351b5bbbb58107fe624a0677f1e9911ed2d"
+      },
       "comments": [],
       "reviews": [
         {
@@ -7847,8 +7864,67 @@
               "updatedAt": "2026-02-02T17:01:40Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7gqfBe",
+          "commit": {
+            "abbreviatedOid": "6e5b059"
+          },
+          "author": "mxinden",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-02-08T08:49:38Z",
+          "updatedAt": "2026-02-08T08:49:38Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Thanks. Done.",
+              "createdAt": "2026-02-08T08:49:38Z",
+              "updatedAt": "2026-02-08T08:49:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7gsxQd",
+          "commit": {
+            "abbreviatedOid": "6bb84d9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-02-08T14:41:47Z",
+          "updatedAt": "2026-02-08T14:41:47Z",
+          "comments": []
         }
       ]
+    },
+    {
+      "number": 114,
+      "id": "PR_kwDOKH7CuM7CcX7V",
+      "title": "Specify Connection Attempt Delay for session resumption",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/114",
+      "state": "OPEN",
+      "author": "mxinden",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Clients should use the same delay for resumed connections as for new connections.\r\n\r\nProposed text for #106.\r\n\r\nFixes #106.",
+      "createdAt": "2026-02-09T10:26:01Z",
+      "updatedAt": "2026-02-09T10:26:02Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "f9fae351b5bbbb58107fe624a0677f1e9911ed2d",
+      "headRepository": "mxinden/draft-happy-eyeballs-v3",
+      "headRefName": "resumed",
+      "headRefOid": "7aa6473c02e09bd46dc10f6ad50ab3db69fd202d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
