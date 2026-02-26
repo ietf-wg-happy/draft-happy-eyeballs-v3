@@ -526,7 +526,11 @@ other connections to the same host or prefix, it can use this
 information to influence its delay. Note that this algorithm should
 only try to approximate the time of the first handshake packet
 retransmission, and not any further retransmissions that may be
-influenced by exponential timer back off.
+influenced by exponential timer back off. Clients that support
+session resumption mechanisms (such as TLS session tickets
+{{?RFC8446}} or QUIC 0-RTT {{?RFC9001}}) SHOULD use the same
+Connection Attempt Delay for resumed connections as for new
+connections.
 
 The Connection Attempt Delay MUST have a lower bound, especially if it
 is computed using historical data. More specifically, a subsequent
