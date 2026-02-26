@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-10T02:46:05.460581+00:00",
+  "timestamp": "2026-02-26T02:29:28.420006+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -67,6 +67,11 @@
       "name": "editorial",
       "description": "Editorial issues",
       "color": "87fa46"
+    },
+    {
+      "name": "ready to close",
+      "description": "",
+      "color": "ed1ea8"
     }
   ],
   "issues": [
@@ -1215,7 +1220,7 @@
       "labels": [],
       "body": "Clients can remember expired DNS answers (also called \"optimistic DNS\"), and try expired answers in parallel with requesting new DNS answers. This needs to be folded into the happy eyeballs algorithm.",
       "createdAt": "2024-11-06T14:55:08Z",
-      "updatedAt": "2026-02-02T11:14:19Z",
+      "updatedAt": "2026-02-25T20:49:19Z",
       "closedAt": null,
       "comments": [
         {
@@ -1245,6 +1250,20 @@
           "body": "For what it is worth, as mentioned in Montreal, by default Firefox uses DNS entries up to 10 minutes after their expiration. \n\nhttps://github.com/mozilla-firefox/firefox/blob/33fd6bd39c625067a29f153adce6a4646e45750f/modules/libpref/init/StaticPrefList.yaml#L14579-L14584",
           "createdAt": "2026-02-02T11:14:19Z",
           "updatedAt": "2026-02-02T11:14:19Z"
+        },
+        {
+          "author": "gakiwate",
+          "authorAssociation": "NONE",
+          "body": "We can also limit the use of expired DNS entries only when combined with TLS. The TLS requirement can help assuage most security considerations.",
+          "createdAt": "2026-02-25T19:32:34Z",
+          "updatedAt": "2026-02-25T19:32:34Z"
+        },
+        {
+          "author": "bemasc",
+          "authorAssociation": "NONE",
+          "body": "@gakiwate Yes, DNS TTL stretching is even worse without TLS, but the primary concern is about the deleterious impact on traffic steering and reconfiguration, not security.\n\nBottom line: HAPPY shouldn't redefine the rules of the DNS game without consulting DNSOP.\n\n@mxinden Yes, some clients do stretch TTL by a few minutes.  We tolerate this level of noncompliance, but that doesn't make it a good behavior.  Historically, this stretching was introduced because getaddrinfo() (et. al.) don't expose the TTL, and many clients didn't have stub caches.  That left browsers with a choice between heuristic caching (with expiration times chosen to limit, but not eliminate, TTL stretching) or no local caching at all.\n\nIn HEv3, we assume that the DNS TTL is known, so we are not limited to browser-style heuristic caching.  Today, most devices already have TTL-respecting stub caches.",
+          "createdAt": "2026-02-25T20:10:56Z",
+          "updatedAt": "2026-02-25T20:49:19Z"
         }
       ]
     },
@@ -1496,10 +1515,12 @@
       "author": "bemasc",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "discuss"
+      ],
       "body": "Currently, HEv3 is defined as a procedure that produces a single connection as its output.  This does not model the actual behavior of optimized HTTP clients, which continue to race QUIC and TCP even after TCP \"wins\" and the first HTTP request is sent, so that the QUIC connection can be used for the next HTTP request.\n\nI would like to see a mode of HE that is a \"connection escalator\": its output is an asynchronous finite sequence of connections, each more preferred than the last.\n\nThe charter requires that HEv3 \"ends with a single established connection to a server\".  Like the current specification, this is true of a connection escalator: less preferred connections are closed in favor of more-preferred connections as they become available.",
       "createdAt": "2025-07-24T08:48:54Z",
-      "updatedAt": "2025-11-06T20:41:54Z",
+      "updatedAt": "2026-02-25T23:21:56Z",
       "closedAt": null,
       "comments": [
         {
@@ -1629,13 +1650,30 @@
       "state": "OPEN",
       "author": "nidhijaju",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "nidhijaju"
+      ],
       "labels": [],
       "body": "\"This historical data ... MUST NOT be used across different network interfaces. The data SHOULD\r\nbe flushed whenever a device changes the network to which it is attached.\"\r\n\r\nThis flush behavior would make history virtually useless on many mobile devices.  It also seems to be unnecessary for the privacy goal.  Can we remove this recommendation?\r\n\r\n_Originally posted by @bemasc in https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/97#discussion_r2457659509_\r\n            ",
       "createdAt": "2025-11-01T18:07:50Z",
-      "updatedAt": "2025-11-01T18:07:50Z",
+      "updatedAt": "2026-02-25T23:11:48Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "My personal opinion here is that even with mobile devices, there aren't _so_ many network changes that this is useless. Trying to assume that network path characteristics are the same across networks likely will be wrong.",
+          "createdAt": "2026-02-25T23:10:55Z",
+          "updatedAt": "2026-02-25T23:10:55Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Could be nice to mention that if you come back to a network you were on before, you can choose to remember historical information from it.",
+          "createdAt": "2026-02-25T23:11:31Z",
+          "updatedAt": "2026-02-25T23:11:31Z"
+        }
+      ]
     },
     {
       "number": 104,
@@ -1744,13 +1782,25 @@
       "state": "OPEN",
       "author": "gorryfair",
       "authorAssociation": "NONE",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [
+        "editorial"
+      ],
       "body": "In, \"Summary of Configurable Values\", I have a requirement query?\n\nThe text says: \u201c...For that reason, it is expected that these values will change over time. Implementors should feel welcome to use different values without changing this specification.\u201d\n\n- The section contains both \u201cSHOULD\u201d and \u201cMUST\u201d values, I get this for the recommended values, but then I have a hard time understanding how that sentence applies to the \u201cMUST\u201d values.",
       "createdAt": "2025-11-06T20:03:24Z",
-      "updatedAt": "2025-11-06T20:03:24Z",
+      "updatedAt": "2026-02-25T23:14:02Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "There's a MUST NOT for not being below 10ms, which does constrain things. We can clarify that you can alter the values within the bounds of the must.",
+          "createdAt": "2026-02-25T23:14:01Z",
+          "updatedAt": "2026-02-25T23:14:01Z"
+        }
+      ]
     },
     {
       "number": 108,
@@ -1760,11 +1810,15 @@
       "state": "OPEN",
       "author": "gorryfair",
       "authorAssociation": "NONE",
-      "assignees": [],
-      "labels": [],
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [
+        "editorial"
+      ],
       "body": "The text says: \"For TCP connections, since Happy Eyeballs is only active during the initial handshake and TCP does not pass the initial handshake, issues related to MTU can be masked and go unnoticed during Happy Eyeballs.\"\n\n-- I can believe there might be an \"issue\", but what is the issue, please explain.\n-- If this is about the MSS option, is there an issue for some other options?",
       "createdAt": "2025-11-06T20:20:38Z",
-      "updatedAt": "2025-11-06T20:20:38Z",
+      "updatedAt": "2026-02-25T23:20:08Z",
       "closedAt": null,
       "comments": []
     },
@@ -1773,15 +1827,17 @@
       "id": "I_kwDOKH7CuM7eV1J0",
       "title": "DNS64 does not play well with Happy Eyeballs \u2013 We need CLAT or local synthesis",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/110",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "philsbln",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "ready to close"
+      ],
       "body": "Hi,\n\nfrom recent operational challenges, I have seen that DNS64 does not play well with Happy Eyeballs.\nScenario: \n- A domain name having an `A` and an `AAAA` in DNS, but broken IPv6 connectivity (in my case, a routing loop).\n- DNS64 finds a `AAAA` and does not synthesize a DNS64 record for the domain name.\n- In case of CLAT, everything would be fine, but if there is no CLAT, the client can not fall back to IPv4 as the local resolver on IPv6-only client discards A recored as there is no IPv4 connectivity (correct following RFC6724).\n\nWhat we need here is a way to still use the A record and fall back to NAT64 and synthesize a DNS64 address.\n\nPR #94 does the right thing here, thus, IMHO in a little too complicated/hard to implement way (use DNS64 only for prefix detection and filter out DNS64 `AAAA`s) while always synthesizing `AAAA`s in the HE engine.\n\nA simpler approach would be to recommend de-activating address family filtering, always synthesizing `AAAA` while still treating them as IPv4 and discarding duplicates.",
       "createdAt": "2025-12-15T12:40:50Z",
-      "updatedAt": "2025-12-17T09:27:08Z",
-      "closedAt": null,
+      "updatedAt": "2026-02-24T10:46:28Z",
+      "closedAt": "2026-02-24T10:46:28Z",
       "comments": [
         {
           "author": "oskar456",
@@ -1803,6 +1859,20 @@
           "body": "Correct. To my knowledge HE 2.0 only exists in the Apple ecosystem - and only in apps using the highest level Apple APIs - so not even in portable apps like Chrome or Firefox running on macOS.",
           "createdAt": "2025-12-17T09:27:08Z",
           "updatedAt": "2025-12-17T09:27:08Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Not quite just \"highest-level\" APIs. WebKit and URLSession do get it, but so do the transport-networking layers via Network Framework https://developer.apple.com/documentation/network?language=objc . It's mainly a choice by other apps to not use that layer. Almost everything on iOS gets happy eyeballs.\n\n@oskar456 is right that this is already covered by the current section 8.4.\n\n@philsbln are you OK to close this particular issue?",
+          "createdAt": "2026-02-24T05:02:43Z",
+          "updatedAt": "2026-02-24T05:02:43Z"
+        },
+        {
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "body": "@tfpauly It's for me okay to close the issue. I overlooked the text as the current Section 8 is still a collection of things and does not connect the different cases well. ",
+          "createdAt": "2026-02-24T10:46:28Z",
+          "updatedAt": "2026-02-24T10:46:28Z"
         }
       ]
     },
@@ -1839,12 +1909,22 @@
       "author": "Vaisman",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "discuss"
+      ],
       "body": "Section 6 says \"all of the addresses of the first group SHOULD be started before starting attempts using the next group.\"\nIs interleaving across service-priority groups acceptable for faster fallback?\nWith 4+ addresses in the first group and CAD=250ms, the next group may be delayed by ~1s.",
       "createdAt": "2026-02-06T09:05:27Z",
-      "updatedAt": "2026-02-06T09:05:27Z",
+      "updatedAt": "2026-02-25T23:17:30Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think it is intentional that we are strictly sorting by priority. It is true that if the higher priority service has a very long list of addresses, it can take longer to drain it. To some degree, I see that as a server DNS configuration issue if they don't want that behavior.",
+          "createdAt": "2026-02-25T23:17:12Z",
+          "updatedAt": "2026-02-25T23:17:12Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -7912,7 +7992,7 @@
       "labels": [],
       "body": "Clients should use the same delay for resumed connections as for new connections.\r\n\r\nProposed text for #106.\r\n\r\nFixes #106.",
       "createdAt": "2026-02-09T10:26:01Z",
-      "updatedAt": "2026-02-09T10:26:02Z",
+      "updatedAt": "2026-02-25T23:06:35Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "f9fae351b5bbbb58107fe624a0677f1e9911ed2d",
@@ -7924,7 +8004,21 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7l7COE",
+          "commit": {
+            "abbreviatedOid": "7aa6473"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-02-25T23:06:35Z",
+          "updatedAt": "2026-02-25T23:06:35Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
