@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 12 August 2026                                          N. Jaju
+Expires: 30 August 2026                                          N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                         8 February 2026
+                                                        26 February 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 August 2026.
+   This Internet-Draft will expire on 30 August 2026.
 
 Copyright Notice
 
@@ -588,7 +588,10 @@ Table of Contents
    information to influence its delay.  Note that this algorithm should
    only try to approximate the time of the first handshake packet
    retransmission, and not any further retransmissions that may be
-   influenced by exponential timer back off.
+   influenced by exponential timer back off.  Clients that support
+   session resumption mechanisms (such as TLS session tickets [RFC8446]
+   or QUIC 0-RTT [RFC9001]) SHOULD use the same Connection Attempt Delay
+   for resumed connections as for new connections.
 
    The Connection Attempt Delay MUST have a lower bound, especially if
    it is computed using historical data.  More specifically, a
@@ -1160,9 +1163,17 @@ Table of Contents
               Fast Open", RFC 7413, DOI 10.17487/RFC7413, December 2014,
               <https://www.rfc-editor.org/rfc/rfc7413>.
 
+   [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
+              Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
+              <https://www.rfc-editor.org/rfc/rfc8446>.
+
    [RFC8765]  Pusateri, T. and S. Cheshire, "DNS Push Notifications",
               RFC 8765, DOI 10.17487/RFC8765, June 2020,
               <https://www.rfc-editor.org/rfc/rfc8765>.
+
+   [RFC9001]  Thomson, M., Ed. and S. Turner, Ed., "Using TLS to Secure
+              QUIC", RFC 9001, DOI 10.17487/RFC9001, May 2021,
+              <https://www.rfc-editor.org/rfc/rfc9001>.
 
    [RFC9002]  Iyengar, J., Ed. and I. Swett, Ed., "QUIC Loss Detection
               and Congestion Control", RFC 9002, DOI 10.17487/RFC9002,
