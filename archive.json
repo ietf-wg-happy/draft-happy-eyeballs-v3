@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-26T02:29:28.420006+00:00",
+  "timestamp": "2026-03-01T02:42:29.233268+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1734,15 +1734,15 @@
       "id": "I_kwDOKH7CuM7Wa0sr",
       "title": "Should there be text about session resumption?",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/106",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "JonathanLennox",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "When doing session resumption, it's always possible that the resumption might fail.  Should there be text in this document discussing how long you should wait for session resumption to succeed, and what to do once you've waited long enough that it might be failing?",
       "createdAt": "2025-11-06T19:46:29Z",
-      "updatedAt": "2026-02-09T10:26:38Z",
-      "closedAt": null,
+      "updatedAt": "2026-02-26T03:21:31Z",
+      "closedAt": "2026-02-26T03:21:31Z",
       "comments": [
         {
           "author": "mxinden",
@@ -1925,6 +1925,64 @@
           "updatedAt": "2026-02-25T23:17:12Z"
         }
       ]
+    },
+    {
+      "number": 115,
+      "id": "I_kwDOKH7CuM7ui4up",
+      "title": "Use of the word \"address\"",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/115",
+      "state": "OPEN",
+      "author": "bemasc",
+      "authorAssociation": "NONE",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [],
+      "body": "The draft uses the word \"address\" throughout.  However, in many cases this is inaccurate or confusing.  For example, TCP and QUIC connections may be attempted to the same \"IP address\".  It is even conceivable (albeit unusual) that two competing connections could be attempted to the same \"transport address\" (IP+port+protocol).\n\nSVCB uses the term \"endpoint\" to distinguish this from the IP address.  (ICE uses the term \"candidate\".)  A similar term is needed in this draft.",
+      "createdAt": "2026-02-27T17:38:51Z",
+      "updatedAt": "2026-02-28T14:38:04Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 116,
+      "id": "I_kwDOKH7CuM7ujZeI",
+      "title": "New attempt at retransmission",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/116",
+      "state": "OPEN",
+      "author": "bemasc",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The draft suggests retrying simultaneously with a retransmission timer of a pending attempt, but it doesn't offer any motivation for this.  Is it to minimize radio wakeups by clustering transmissions?  Or perhaps to provide fair RTT racing?",
+      "createdAt": "2026-02-27T18:15:43Z",
+      "updatedAt": "2026-02-28T14:42:30Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In my opinion it is about providing a fair chance for the original attempt--if it is sooner than the retransmission time, then it will fairly likely be wasteful since the original attempt can still come back and complete. \n\nThe overall goal is to only kick off attempts when they are likely to be needed. ",
+          "createdAt": "2026-02-28T14:42:30Z",
+          "updatedAt": "2026-02-28T14:42:30Z"
+        }
+      ]
+    },
+    {
+      "number": 117,
+      "id": "I_kwDOKH7CuM7ulmDU",
+      "title": "DNS Server Selection repeats/contradicts RFC 3901bis",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/117",
+      "state": "OPEN",
+      "author": "bemasc",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "[RFC 3901bis Section 4.3](https://www.ietf.org/archive/id/draft-ietf-dnsop-3901bis-17.html#name-guidelines-for-dns-stub-res) discusses how DNS stub resolvers should behave in dual-stack setups.  This draft can reference that text but should not attempt to instruct stub resolvers on how to behave.",
+      "createdAt": "2026-02-27T20:56:12Z",
+      "updatedAt": "2026-02-27T20:56:12Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -7985,24 +8043,26 @@
       "id": "PR_kwDOKH7CuM7CcX7V",
       "title": "Specify Connection Attempt Delay for session resumption",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/114",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mxinden",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Clients should use the same delay for resumed connections as for new connections.\r\n\r\nProposed text for #106.\r\n\r\nFixes #106.",
       "createdAt": "2026-02-09T10:26:01Z",
-      "updatedAt": "2026-02-25T23:06:35Z",
+      "updatedAt": "2026-02-26T03:21:30Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "f9fae351b5bbbb58107fe624a0677f1e9911ed2d",
       "headRepository": "mxinden/draft-happy-eyeballs-v3",
       "headRefName": "resumed",
       "headRefOid": "7aa6473c02e09bd46dc10f6ad50ab3db69fd202d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-02-26T03:21:30Z",
+      "mergedAt": "2026-02-26T03:21:30Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "18383cce63c68697d4b3e4afd19bfffe01910f4e"
+      },
       "comments": [],
       "reviews": [
         {
@@ -8019,6 +8079,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 118,
+      "id": "PR_kwDOKH7CuM7G7dEW",
+      "title": "Address sorting should include all addresses, including already attem\u2026",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/118",
+      "state": "OPEN",
+      "author": "gakiwate",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "\u2026pted",
+      "createdAt": "2026-02-27T21:59:29Z",
+      "updatedAt": "2026-02-27T21:59:40Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "18383cce63c68697d4b3e4afd19bfffe01910f4e",
+      "headRepository": "gakiwate/draft-happy-eyeballs-v3",
+      "headRefName": "main",
+      "headRefOid": "6c44436d053512c4bdfebc685a62c71f1c6427d5",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
