@@ -1763,10 +1763,12 @@ cookies. This historical data <span class="bcp14">MUST</span> be partitioned usi
 boundaries used for privacy-sensitive information specific to that endpoint,
 and <span class="bcp14">MUST NOT</span> be used across different network interfaces. The data <span class="bcp14">SHOULD</span>
 be flushed whenever a device changes the network to which it is attached.
-Clients that use historical data <span class="bcp14">MUST</span> ensure that clients with different
-historical data will eventually converge toward the same behaviors. For
-example, clients can periodically ignore historical data to ensure that
-fresh addresses are attempted.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+However, if a client can reliably identify a previously attached network,
+it <span class="bcp14">MAY</span> retain and resume using historical data associated with that network
+upon reconnection. Clients that use historical data <span class="bcp14">MUST</span> ensure that clients
+with different historical data will eventually converge toward the same
+behaviors. For example, clients can periodically ignore historical data to
+ensure that fresh addresses are attempted.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 <p id="section-5.3-4">Next, the client <span class="bcp14">SHOULD</span> modify the ordered list to interleave
 address families. Whichever address family is first in the list
 should be followed by an endpoint of the other address family. For example,
