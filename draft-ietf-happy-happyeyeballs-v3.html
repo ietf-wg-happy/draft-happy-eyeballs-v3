@@ -2016,19 +2016,23 @@ of SVCB, and thus do not require waiting for SVCB responses.<a href="#section-6.
 change by either adding resolved addresses (for example due to DNS
 push notifications <span>[<a href="#RFC8765" class="cite xref">RFC8765</a>]</span>) or removing previously resolved
 addresses (for example, due to expiry of the TTL on that DNS record),
-the client should react based on its current progress. Additionally,
-once A and AAAA records are received, addresses received via SVCB
-hints that are not included in the A and AAAA records for the
-corresponding address family <span class="bcp14">SHOULD</span> be removed from the list, as
-specified in <span><a href="https://rfc-editor.org/rfc/rfc9460#section-7.3" class="relref">Section 7.3</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>.<a href="#section-7-1" class="pilcrow">¶</a></p>
+the client should react based on its current progress. Additionally, addresses
+from SVCB IP hints <span class="bcp14">SHOULD</span> be removed from the list once A and AAAA records are
+received for the corresponding name, if the addresses from the hints are absent from the
+received records <span><a href="https://rfc-editor.org/rfc/rfc9460#section-7.3" class="relref">Section 7.3</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <p id="section-7-2">If an address is removed from the list that already had a connection
 attempt started, the connection attempt <span class="bcp14">SHOULD NOT</span> be canceled, but
 rather be allowed to continue. If the removed address had not yet
 had a connection attempt started, it <span class="bcp14">SHOULD</span> be removed from the list
 of addresses to try.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">If an address is added to the list, it should be sorted into the list
-of addresses not yet attempted according to the rules above (see
-<a href="#sorting" class="auto internal xref">Section 5</a>).<a href="#section-7-3" class="pilcrow">¶</a></p>
+<p id="section-7-3">If an address is added to the list, its position <span class="bcp14">SHOULD</span> be determined by
+applying the sorting rules (see <a href="#sorting" class="auto internal xref">Section 5</a>) to the complete list of addresses,
+including those previously received. This ensures that sorting rules, such as address family
+interleaving, are maintained correctly regardless of when addresses arrive. For
+example, consider a connection attempt in which only IPv6 addresses
+are available initially, and an attempt to one IPv6 address is already in progress.
+Then, when IPv4 addresses are later received, an IPv4 address should be placed next in the list of addresses to attempt
+(to account for interleaving address families) ahead of any remaining IPv6 addresses, as if it had been available initially.<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="v6only">
