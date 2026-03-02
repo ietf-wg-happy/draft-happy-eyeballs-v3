@@ -902,12 +902,13 @@ Connections that use TCP only (without TLS or another protocol on top)
 perform connection racing only during the TCP handshake. Such connections
 can encounter issues where the handshake (using small packets) completes
 but then large packets are dropped or incorrectly handled by the network
-due to MTU issues on the network. Such issues might be specific to IPv6
+due to a small MTU being configured on the network. Such issues might be specific to IPv6
 traffic on the network.
 
-When TLS is used during connection racing, or when QUIC connections are
-used, larger packets will be sent during the connection establishment
-phase. For QUIC connections, a minimum MTU of at least 1200 bytes
+This problem can also occur when TLS is used, but the larger
+messages used in many TLS handshakes are often sufficient to
+ensure maximum-size TCP segments are deliverable. For QUIC
+connections, a minimum MTU of at least 1200 bytes
 {{!RFC9000, Section 8.1-5}} is guaranteed, but there is a chance that
 larger values may not be available.
 
