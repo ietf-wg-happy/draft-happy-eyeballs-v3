@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 30 August 2026                                          N. Jaju
+Expires: 3 September 2026                                        N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                        26 February 2026
+                                                            2 March 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 August 2026.
+   This Internet-Draft will expire on 3 September 2026.
 
 Copyright Notice
 
@@ -942,11 +942,11 @@ Table of Contents
    of production devices.  They were picked to reduce wait times noticed
    by users while minimizing load on the network.  As time passes, it is
    expected that the properties of networks will evolve.  For that
-   reason, it is expected that these values will change over time.
-   Implementors should feel welcome to use different values without
-   changing this specification.  Since IPv6 issues are expected to be
-   less common, the delays SHOULD be increased with time as client
-   software is updated.
+   reason, it is expected that the values chosen by implementations will
+   change over time.  Implementors MAY use values different from the
+   recommended values listed above, without changing this specification,
+   as long as they do not violate any of the normative requirements
+   (such as minimum delays).
 
 10.  Limitations
 
