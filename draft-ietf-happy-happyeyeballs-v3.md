@@ -884,11 +884,11 @@ empirically by measuring the timing of connections on a very wide set
 of production devices. They were picked to reduce wait times noticed
 by users while minimizing load on the network. As time passes, it is
 expected that the properties of networks will evolve. For that
-reason, it is expected that these values will change over time.
-Implementors should feel welcome to use different values without
-changing this specification. Since IPv6 issues are expected to be
-less common, the delays SHOULD be increased with time as client
-software is updated.
+reason, it is expected that the values chosen by implementations
+will change over time. Implementors MAY use values different from the
+recommended values listed above, without changing this specification,
+as long as they do not violate any of normative requirements (such
+as minimum delays).
 
 # Limitations
 
