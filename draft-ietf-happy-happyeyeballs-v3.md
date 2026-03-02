@@ -706,7 +706,7 @@ push notifications {{?RFC8765}}) or removing previously resolved
 addresses (for example, due to expiry of the TTL on that DNS record),
 the client should react based on its current progress. Additionally, addresses
 from SVCB IP hints SHOULD be removed from the list once A and AAAA records are
-received for the corresponding name and those addresses are absent from the
+received for the corresponding name, if the addresses from the hints are absent from the
 received records {{Section 7.3 of SVCB}}.
 
 If an address is removed from the list that already had a connection
