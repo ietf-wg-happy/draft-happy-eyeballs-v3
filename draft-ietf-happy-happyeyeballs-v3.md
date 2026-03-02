@@ -460,10 +460,12 @@ cookies. This historical data MUST be partitioned using the same
 boundaries used for privacy-sensitive information specific to that endpoint,
 and MUST NOT be used across different network interfaces. The data SHOULD
 be flushed whenever a device changes the network to which it is attached.
-Clients that use historical data MUST ensure that clients with different
-historical data will eventually converge toward the same behaviors. For
-example, clients can periodically ignore historical data to ensure that
-fresh addresses are attempted.
+However, if a client can reliably identify a previously attached network,
+it MAY retain and resume using historical data associated with that network
+upon reconnection. Clients that use historical data MUST ensure that clients
+with different historical data will eventually converge toward the same
+behaviors. For example, clients can periodically ignore historical data to
+ensure that fresh addresses are attempted.
 
 Next, the client SHOULD modify the ordered list to interleave
 address families. Whichever address family is first in the list
