@@ -887,7 +887,7 @@ expected that the properties of networks will evolve. For that
 reason, it is expected that the values chosen by implementations
 will change over time. Implementors MAY use values different from the
 recommended values listed above, without changing this specification,
-as long as they do not violate any of normative requirements (such
+as long as they do not violate any of the normative requirements (such
 as minimum delays).
 
 # Limitations
