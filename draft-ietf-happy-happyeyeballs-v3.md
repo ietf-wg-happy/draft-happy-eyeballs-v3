@@ -722,8 +722,7 @@ interleaving, are maintained correctly regardless of when addresses arrive. For
 example, consider a connection attempt in which only IPv6 addresses
 are available initially, and an attempt to one IPv6 address is already in progress.
 Then, when IPv4 addresses are later received, an IPv4 address should be placed next in the list of addresses to attempt
-(to account for interleaving address families) ahead of any remaining IPv6 addresses, as it would have
-been had it been available from the start.
+(to account for interleaving address families) ahead of any remaining IPv6 addresses, as if it had been available initially.
 
 # Supporting IPv6-Mostly and IPv6-Only Networks {#v6only}
 
