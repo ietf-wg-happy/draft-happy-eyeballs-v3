@@ -719,9 +719,10 @@ If an address is added to the list, its position SHOULD be determined by
 applying the sorting rules (see {{sorting}}) to the complete list of addresses,
 including those already being attempted. This ensures that address family
 interleaving is maintained correctly regardless of when addresses arrive. For
-example, if a connection attempt to an IPv6 address is already in progress and a
-new IPv4 address is received, the IPv4 address should be placed next in the list
-of addresses to try, ahead of any remaining IPv6 addresses, as it would have
+example, consider a connection attempt in which only IPv6 addresses
+are available initially, and an attempt to one IPv6 address is already in progress.
+Then, when IPv4 addresses are later received, an IPv4 address should be placed next in the list of addresses to attempt
+(to account for interleaving address families) ahead of any remaining IPv6 addresses, as it would have
 been had it been available from the start.
 
 # Supporting IPv6-Mostly and IPv6-Only Networks {#v6only}
