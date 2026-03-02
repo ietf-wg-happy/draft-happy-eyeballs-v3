@@ -717,8 +717,8 @@ of addresses to try.
 
 If an address is added to the list, its position SHOULD be determined by
 applying the sorting rules (see {{sorting}}) to the complete list of addresses,
-including those already being attempted. This ensures that address family
-interleaving is maintained correctly regardless of when addresses arrive. For
+including those previously received. This ensures that sorting rules, such as address family
+interleaving, are maintained correctly regardless of when addresses arrive. For
 example, consider a connection attempt in which only IPv6 addresses
 are available initially, and an attempt to one IPv6 address is already in progress.
 Then, when IPv4 addresses are later received, an IPv4 address should be placed next in the list of addresses to attempt
