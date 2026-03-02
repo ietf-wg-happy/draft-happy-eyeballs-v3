@@ -959,14 +959,23 @@ Table of Contents
 
 10.1.  Path Maximum Transmission Unit Discovery
 
-   For TCP connections, since Happy Eyeballs is only active during the
-   initial handshake and TCP does not pass the initial handshake, issues
-   related to MTU can be masked and go unnoticed during Happy Eyeballs.
-   For QUIC connections, a minimum MTU of at least 1200 bytes [RFC9000],
-   Section 8.1-5 is guaranteed, but there is a chance that larger values
-   may not be available.  Solving this issue is out of scope of this
-   document.  One solution is to use "Packetization Layer Path MTU
-   Discovery" [RFC4821].
+   Connections that use TCP only (without TLS or another protocol on
+   top) perform connection racing only during the TCP handshake.  Such
+   connections can encounter issues where the handshake (using small
+   packets) completes but then large packets are dropped or incorrectly
+   handled by the network due to a small MTU being configured on the
+   network.  Such issues might be specific to IPv6 traffic on the
+   network.
+
+   This problem can also occur when TLS is used, but the larger messages
+   used in many TLS handshakes are often sufficient to ensure maximum-
+   size TCP segments are deliverable.  For QUIC connections, a minimum
+   MTU of at least 1200 bytes [RFC9000], Section 8.1-5 is guaranteed,
+   but there is a chance that larger values may not be available.
+
+   Solving these issues is out of scope of this document.  One suggested
+   approach is to use "Packetization Layer Path MTU Discovery"
+   [RFC4821].
 
 10.2.  Application Layer
 
