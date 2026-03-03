@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-01T02:42:29.233268+00:00",
+  "timestamp": "2026-03-03T02:33:47.830640+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1619,7 +1619,7 @@
       "id": "I_kwDOKH7CuM7Jaefm",
       "title": "Address sorting should include all addresses, including already attempted",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/95",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kvkln",
       "authorAssociation": "NONE",
       "assignees": [
@@ -1630,8 +1630,8 @@
       ],
       "body": "The document is not clear in this regard, in my opinion. If a client performs address sorting only on the remaining addresses (not those already attempted), it can easily create a situation in which HE doesn't behave as expected.\n\nExample:\nThe client receives a negative HTTPS response and a AAAA response containing two IPv6 addresses 2001:db8::2 and 2001:db8::4.\nThis is sufficient to skip the Resolution Delay, so the client continues to address sorting and then starts a connection attempt to let's say 2001:db8::2.\nThen, the response to the A query arrives, containing an IPv4 address 192.0.2.1.\nIf we now perform the address grouping and sorting algorithm only on the remaining addresses (2001:db8::4 and 192.0.2.1), 2001:db8::4 would be sorted before 192.0.2.1.\nThis means that the IPv4 address will be attempted third, not second as intended. For more complex scenarios, the result might be worse.\n\nFurther, I think that already attempted addresses should always be sorted at the beginning of the list, even if they are less preferred than the newly added addresses. I don't have an easy example for this, but if a later arriving DNS response contains an IPv6 address that has higher priority than the previously attempted IPv6 address, it might result in the same situation as the example above.",
       "createdAt": "2025-09-03T09:52:49Z",
-      "updatedAt": "2025-10-14T22:23:15Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T16:50:35Z",
+      "closedAt": "2026-03-02T16:50:35Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -1647,7 +1647,7 @@
       "id": "I_kwDOKH7CuM7VSA_D",
       "title": "Flushing historical data on network changes",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/103",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "nidhijaju",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -1656,8 +1656,8 @@
       "labels": [],
       "body": "\"This historical data ... MUST NOT be used across different network interfaces. The data SHOULD\r\nbe flushed whenever a device changes the network to which it is attached.\"\r\n\r\nThis flush behavior would make history virtually useless on many mobile devices.  It also seems to be unnecessary for the privacy goal.  Can we remove this recommendation?\r\n\r\n_Originally posted by @bemasc in https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/97#discussion_r2457659509_\r\n            ",
       "createdAt": "2025-11-01T18:07:50Z",
-      "updatedAt": "2026-02-25T23:11:48Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T14:16:40Z",
+      "closedAt": "2026-03-02T14:16:40Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -1779,7 +1779,7 @@
       "id": "I_kwDOKH7CuM7WbD0n",
       "title": "I don't understand how different values could be used for MUST values ?",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/107",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gorryfair",
       "authorAssociation": "NONE",
       "assignees": [
@@ -1790,8 +1790,8 @@
       ],
       "body": "In, \"Summary of Configurable Values\", I have a requirement query?\n\nThe text says: \u201c...For that reason, it is expected that these values will change over time. Implementors should feel welcome to use different values without changing this specification.\u201d\n\n- The section contains both \u201cSHOULD\u201d and \u201cMUST\u201d values, I get this for the recommended values, but then I have a hard time understanding how that sentence applies to the \u201cMUST\u201d values.",
       "createdAt": "2025-11-06T20:03:24Z",
-      "updatedAt": "2026-02-25T23:14:02Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T14:12:48Z",
+      "closedAt": "2026-03-02T14:12:48Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -1807,7 +1807,7 @@
       "id": "I_kwDOKH7CuM7WbThP",
       "title": "What is the PMTU issue?",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/108",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gorryfair",
       "authorAssociation": "NONE",
       "assignees": [
@@ -1818,8 +1818,8 @@
       ],
       "body": "The text says: \"For TCP connections, since Happy Eyeballs is only active during the initial handshake and TCP does not pass the initial handshake, issues related to MTU can be masked and go unnoticed during Happy Eyeballs.\"\n\n-- I can believe there might be an \"issue\", but what is the issue, please explain.\n-- If this is about the MSS option, is there an issue for some other options?",
       "createdAt": "2025-11-06T20:20:38Z",
-      "updatedAt": "2026-02-25T23:20:08Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-02T16:45:11Z",
+      "closedAt": "2026-03-02T16:45:11Z",
       "comments": []
     },
     {
@@ -1951,12 +1951,12 @@
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/116",
       "state": "OPEN",
       "author": "bemasc",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "The draft suggests retrying simultaneously with a retransmission timer of a pending attempt, but it doesn't offer any motivation for this.  Is it to minimize radio wakeups by clustering transmissions?  Or perhaps to provide fair RTT racing?",
       "createdAt": "2026-02-27T18:15:43Z",
-      "updatedAt": "2026-02-28T14:42:30Z",
+      "updatedAt": "2026-03-02T15:02:52Z",
       "closedAt": null,
       "comments": [
         {
@@ -1965,6 +1965,13 @@
           "body": "In my opinion it is about providing a fair chance for the original attempt--if it is sooner than the retransmission time, then it will fairly likely be wasteful since the original attempt can still come back and complete. \n\nThe overall goal is to only kick off attempts when they are likely to be needed. ",
           "createdAt": "2026-02-28T14:42:30Z",
           "updatedAt": "2026-02-28T14:42:30Z"
+        },
+        {
+          "author": "bemasc",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "OK, so the real goal is finding a balance point between wasted work on the happy path (second address attempted too early) and wasted time on the sad path (second address attempted too late)?\n\nThat seems like a reasonable thing to try to optimize, but it presumably depends on\n* The amount of \"work\" (client CPU, server RAM, cell data quota, congestion) require to kick off the second attempt (very different for TCP vs. QUIC)\n* The probability of a primary endpoint outage.\n* The packet loss rate.\n* The relative \"cost\" of resources vs. delay.\n\nIt's not obvious to me why this Drake Equation should line up with the default RTO (I guess usually 1 second).",
+          "createdAt": "2026-03-02T15:02:52Z",
+          "updatedAt": "2026-03-02T15:02:52Z"
         }
       ]
     },
@@ -8085,26 +8092,331 @@
       "id": "PR_kwDOKH7CuM7G7dEW",
       "title": "Address sorting should include all addresses, including already attem\u2026",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/118",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "gakiwate",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "\u2026pted",
       "createdAt": "2026-02-27T21:59:29Z",
-      "updatedAt": "2026-02-27T21:59:40Z",
+      "updatedAt": "2026-03-02T16:50:34Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "18383cce63c68697d4b3e4afd19bfffe01910f4e",
       "headRepository": "gakiwate/draft-happy-eyeballs-v3",
       "headRefName": "main",
-      "headRefOid": "6c44436d053512c4bdfebc685a62c71f1c6427d5",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "1b38a79a14010d97f1590d1ee65d64d36e726512",
+      "closedAt": "2026-03-02T16:50:34Z",
+      "mergedAt": "2026-03-02T16:50:34Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7m5tpD",
+          "commit": {
+            "abbreviatedOid": "6c44436"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "Wording suggestions for clarity",
+          "createdAt": "2026-03-02T03:19:29Z",
+          "updatedAt": "2026-03-02T03:30:29Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "```suggestion\nreceived for the corresponding name, if the addresses from the hints are absent from the\nreceived records {{Section 7.3 of SVCB}}.\n```",
+              "createdAt": "2026-03-02T03:19:29Z",
+              "updatedAt": "2026-03-02T03:30:29Z"
+            },
+            {
+              "originalPosition": 30,
+              "body": "```suggestion\ninterleaving is maintained correctly regardless of when addresses arrive. For\nexample, consider a connection attempt in which only IPv6 addresses\nare available initially, and an attempt to one IPv6 address is already in progress.\nThen, when IPv4 addresses are later received, an IPv4 address should be placed next in the list of addresses to attempt\n(to account for interleaving address families) ahead of any remaining IPv6 addresses, as it would have\nbeen had it been available from the start.\n```",
+              "createdAt": "2026-03-02T03:30:14Z",
+              "updatedAt": "2026-03-02T03:30:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7m_9ac",
+          "commit": {
+            "abbreviatedOid": "e91013d"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T11:12:32Z",
+          "updatedAt": "2026-03-02T11:19:24Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "It's not just address families that are being sorted. Can we use a more general term here?",
+              "createdAt": "2026-03-02T11:12:32Z",
+              "updatedAt": "2026-03-02T11:19:24Z"
+            },
+            {
+              "originalPosition": 25,
+              "body": "Should this be\n```suggestion\nincluding those already attempted. This ensures that address family\n```\n?",
+              "createdAt": "2026-03-02T11:13:03Z",
+              "updatedAt": "2026-03-02T11:19:24Z"
+            },
+            {
+              "originalPosition": 31,
+              "body": "```suggestion\n(to account for interleaving address families) ahead of any remaining IPv6 addresses, as if it had been available initially.\n```",
+              "createdAt": "2026-03-02T11:18:40Z",
+              "updatedAt": "2026-03-02T11:19:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7nHAr1",
+          "commit": {
+            "abbreviatedOid": "e91013d"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T16:49:50Z",
+          "updatedAt": "2026-03-02T16:49:50Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "```suggestion\nincluding those previously received. This ensures that sorting rules, such as address family\n```",
+              "createdAt": "2026-03-02T16:49:50Z",
+              "updatedAt": "2026-03-02T16:49:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7nHA-7",
+          "commit": {
+            "abbreviatedOid": "e91013d"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T16:50:01Z",
+          "updatedAt": "2026-03-02T16:50:02Z",
+          "comments": [
+            {
+              "originalPosition": 26,
+              "body": "```suggestion\ninterleaving, are maintained correctly regardless of when addresses arrive. For\n```",
+              "createdAt": "2026-03-02T16:50:01Z",
+              "updatedAt": "2026-03-02T16:50:02Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 119,
+      "id": "PR_kwDOKH7CuM7HOGxp",
+      "title": "Update implementation guidance on delay values",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/119",
+      "state": "MERGED",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [],
+      "body": "Closes #107 \r\n\r\nExplain the latitude implementations have for deviating from recommended values",
+      "createdAt": "2026-03-02T03:36:09Z",
+      "updatedAt": "2026-03-02T14:12:47Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "18383cce63c68697d4b3e4afd19bfffe01910f4e",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfpauly-patch-9",
+      "headRefOid": "e3659d6ffae3f1a26f55d110b7b4f22ec3022eac",
+      "closedAt": "2026-03-02T14:12:47Z",
+      "mergedAt": "2026-03-02T14:12:47Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "4d98d1a270b6ff13fcbf7628e46e241690c5ae39"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7nAKzc",
+          "commit": {
+            "abbreviatedOid": "0cd4060"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-03-02T11:25:23Z",
+          "updatedAt": "2026-03-02T11:25:39Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "```suggestion\nas long as they do not violate any of the normative requirements (such\n```",
+              "createdAt": "2026-03-02T11:25:23Z",
+              "updatedAt": "2026-03-02T11:25:39Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 120,
+      "id": "PR_kwDOKH7CuM7HOKKX",
+      "title": "Update MTU issues",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/120",
+      "state": "MERGED",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [],
+      "body": "Closes #108",
+      "createdAt": "2026-03-02T03:44:17Z",
+      "updatedAt": "2026-03-02T16:45:10Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "18383cce63c68697d4b3e4afd19bfffe01910f4e",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfpauly-patch-10",
+      "headRefOid": "41308e9fa65f8819f0106ef03a152a4999b9eb0e",
+      "closedAt": "2026-03-02T16:45:10Z",
+      "mergedAt": "2026-03-02T16:45:10Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "c1e7bc6bc9a677e55c654512b8a10ec53f5bfd85"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7nAJQv",
+          "commit": {
+            "abbreviatedOid": "499cdb4"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-03-02T11:24:00Z",
+          "updatedAt": "2026-03-02T11:24:05Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "We still don't quite say anything more specific than \"MTU issues\" to describe what's wrong with the network in the scenario above. Would something like \"issues due to a small MTU\" or something of that sort be better?",
+              "createdAt": "2026-03-02T11:24:00Z",
+              "updatedAt": "2026-03-02T11:24:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7nFGkF",
+          "commit": {
+            "abbreviatedOid": "499cdb4"
+          },
+          "author": "bemasc",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T15:20:31Z",
+          "updatedAt": "2026-03-02T15:20:31Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "TLS may dodge this in common configurations, but there's no guarantee that it would.  TLS supports some very small handshakes that could slip under any MTU cliff.\n\n```suggestion\nThis problem can also occur when TLS is used, but the larger\nmessages used in many TLS handshakes are often sufficient to\nensure maximum-size TCP segments are deliverable. For QUIC\nconnections, a minimum MTU of at least 1200 bytes\n```",
+              "createdAt": "2026-03-02T15:20:31Z",
+              "updatedAt": "2026-03-02T15:20:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7nGzw7",
+          "commit": {
+            "abbreviatedOid": "499cdb4"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T16:41:44Z",
+          "updatedAt": "2026-03-02T16:41:44Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "Sounds good",
+              "createdAt": "2026-03-02T16:41:44Z",
+              "updatedAt": "2026-03-02T16:41:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7nG3mM",
+          "commit": {
+            "abbreviatedOid": "499cdb4"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-02T16:44:17Z",
+          "updatedAt": "2026-03-02T16:44:17Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "```suggestion\ndue to a small MTU being configured on the network. Such issues might be specific to IPv6\n```",
+              "createdAt": "2026-03-02T16:44:17Z",
+              "updatedAt": "2026-03-02T16:44:17Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 121,
+      "id": "PR_kwDOKH7CuM7HTNK_",
+      "title": "Add text for returning to same network",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/121",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/103.",
+      "createdAt": "2026-03-02T11:06:51Z",
+      "updatedAt": "2026-03-02T14:16:39Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "18383cce63c68697d4b3e4afd19bfffe01910f4e",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "flushing-network-changes",
+      "headRefOid": "3b6fae9c271b7c9a81157b41356b685369af9448",
+      "closedAt": "2026-03-02T14:16:39Z",
+      "mergedAt": "2026-03-02T14:16:39Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "1fe7371ef3aafb5492a6b1df35d6d755a4c5664b"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7nDsej",
+          "commit": {
+            "abbreviatedOid": "3b6fae9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-03-02T14:16:32Z",
+          "updatedAt": "2026-03-02T14:16:32Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
