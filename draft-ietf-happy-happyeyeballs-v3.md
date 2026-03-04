@@ -73,17 +73,15 @@ which may have different performance and connectivity
 characteristics. Since specific addresses or address families (IPv4
 or IPv6) may be blocked, broken, or sub-optimal on a network, clients
 that attempt multiple connections in parallel have a chance of
-establishing a connection more quickly. This document specifies
-requirements for algorithms that reduce this user-visible delay and
-provides an example algorithm.
+establishing a connection more quickly.
 
-This document defines the algorithm for "Happy Eyeballs", a technique
-for reducing user-visible delays on dual-stack hosts. This
-definition updates the description in {{?HEV2=RFC8305}}, which
+This document specifies requirements for algorithms that reduce this
+user-visible delay and provides an example algorithm. This
+specification updates the description in {{?HEV2=RFC8305}}, which
 itself obsoleted {{?RFC6555}}.
 
-The Happy Eyeballs algorithm of racing connections to resolved
-addresses has several stages to avoid delays to the user whenever
+In general, Happy Eyeballs implementations race connection attempts
+to avoid delays to the user whenever
 possible, while respecting client priorities, such as preferring
 the use of IPv6 or the availability of protocols like HTTP/3 {{?HTTP3=RFC9114}} and
 TLS Encrypted Client Hello {{!ECH=I-D.ietf-tls-esni}}. This document discusses
@@ -91,7 +89,7 @@ how to initiate DNS queries when starting a connection, how to
 sort the list of destination addresses received from DNS answers,
 and how to race the connection attempts.
 
-The major difference between the algorithm defined in this document
+The major difference between the example algorithm defined in this document
 and {{HEV2}} is the addition of support for SVCB / HTTPS resource
 records {{!SVCB=RFC9460}}. SVCB records provide alternative
 endpoints and information about application protocol support, Encrypted
@@ -112,18 +110,24 @@ responses to improve connection establishment.
 
 # Overview
 
-This document defines a method of connection establishment, named the
-"Happy Eyeballs Connection Setup". This approach has several
-distinct phases:
+In this document, {{resolution}}-{{v6only}} describe
+requirements for connection establishment algorithms.  An example
+connection establishment algorithm that complies with
+these requirements is provided in {{algorithm}}.
+
+The requirements are naturally divided into the following topics:
 
 1. Asynchronous resolution of a hostname into destination addresses ({{resolution}})
 
-1. Sorting of the resolved destination addresses ({{sorting}})
+1. Prioritization of the resolved destination addresses ({{prioritization}})
 
-1. Initiation of asynchronous connection attempts ({{connections}})
+1. Initiation of asynchronous connection attempts ({{connection}})
 
 1. Successful establishment of one connection and cancellation of
-other attempts ({{connections}})
+other attempts ({{success}})
+
+1. Additional requirements to support special network configurations
+({{v6only}})
 
 Note that this document assumes that the preference policy for the
 host destination address favors IPv6 over IPv4. IPv6 has many
@@ -180,11 +184,7 @@ logic described above):
 1. AAAA query
 1. A query
 
-## Handling DNS Answers Asynchronously
-
-Once the client receives sufficient answers to its DNS queries, it can
-move onto the phases of sorting addresses ({{sorting}})
-and establishing connections ({{connections}}).
+## Handling DNS Answers Asynchronously {#async-dns}
 
 Implementations SHOULD NOT wait for all answers to return
 before starting the next steps of connection establishment. If one query
@@ -198,13 +198,13 @@ Note that if the platform does not offer an asynchronous DNS API,
 this behavior can be simulated by making separate synchronous queries
 for each record type in parallel.
 
-The client moves onto sorting addresses and establishing connections
-once one of the following condition sets is met:
+The client MUST NOT begin connection establishment until
+one of the following condition sets is met:
 
 Either:
 
 - Some positive (non-empty) address answers have been received AND
-- A postive (non-empty) or negative (empty) answer has been received
+- A positive (non-empty) or negative (empty) answer has been received
 for the preferred address family that was queried AND
 - SVCB/HTTPS service information has been received (or has received
 a negative response)
@@ -246,8 +246,8 @@ another SVCB/HTTPS query for the alias name. ServiceMode records either are
 associated with the original name being queried, in which case their TargetName
 is ".", or are associated with another service name (see {{Section 2.5 of SVCB}}).
 
-The algorithm in this document does not consider service information to be received
-until ServiceMode records are available.
+SVCB/HTTPS service information has not been received until the ServiceMode
+records are available.
 
 ServiceMode records can contain address hints via `ipv6hint` and `ipv4hint`
 parameters. When these are received, they SHOULD be considered as positive
@@ -265,11 +265,15 @@ delayed AAAA, delayed SVCB, SVCB hints providing early answers)
 ## Handling New Answers {#new-answers}
 
 If new records arrive while connection attempts are in progress,
-but before any connection has been established, then any newly
-received addresses are incorporated into the list of available candidate
-addresses (see {{changes}}) and the process of connection attempts will
-continue with the new addresses added, until one connection is
-established.
+but before any connection has been established, the client MAY
+incorporate any newly received addresses into the list of available candidate
+addresses (see {{changes}}). Connection attempts SHOULD be adjusted
+to include the new addresses while minimizing disruption to the
+intended prioritization ({{prioritization}}).
+
+After a connection is established, the client MAY allow pending DNS
+resolutions to complete in order to populate the stub DNS cache
+or otherwise inform future connection attempts.
 
 ## Handling Multiple DNS Server Addresses
 
@@ -295,86 +299,72 @@ If such a limit is required by hardware limitations, the client
 SHOULD use at least one address from each address family from the
 available list.
 
-# Grouping and Sorting Addresses {#sorting}
+# Filtering and Prioritizing Addresses {#prioritization}
 
-Before attempting to connect to any of the resolved destination
-addresses, the client defines the order in which to start the
-attempts. Once the order has been defined, the client can use a
-simple algorithm for racing each option after a short delay (see
-{{connections}}). It is important that the ordered list involve all
-addresses from both families and all protocols that have been received
-by this point, as this allows the client to get the racing effect of
-Happy Eyeballs for the entire list, not just the first IPv4 and first
-IPv6 addresses.
+When attempting connections to resolved addresses, some possible addresses will
+be excluded due to incompatibility or client policy. The remainder will be
+attempted in a carefully managed order. This section describes
+requirements on the order of connection attempts.
 
-The client performs three levels of grouping
-and sorting of addresses based on the DNS answers received.
-Each subsequent level of sorting only changes orders and
-preferences within the previously defined groups.
+All else being equal, the order of connection attempts MUST:
 
-1. Grouping and sorting by application protocol and security requirements ({{application-group}})
-1. Grouping and sorting by service priorities ({{service-group}})
-1. Sorting by destination address preferences ({{address-sorting}})
+* Exclude addresses that are known to be incompatible with the client.
+* Exclude addresses if the resulting connection would not comply with
+the client's security policy.
+* Favor addresses with lower SvcPriority.
+* Favor the client's preferred address family.
+* Comply with Destination Address Selection ({{!RFC6724, Section 6}}) when
+comparing options that differ only by IP address (i.e. same address family and
+service information).
+* Avoid unbounded delay if many addresses of one family
+are resolved, but only the other address family is reachable.
 
-## Grouping By Application Protocols and Security Requirements {#application-group}
+Additionally:
 
-Clients first group based on which application protocols the
-destination endpoints support and which security features
-those endpoints offer. These are based on
-information from SVCB/HTTPS records about application-layer protocols
-("alpn" values) and other parameters like TLS Encrypted Client Hello
-configuration ("ech" values, see {{!SVCB-ECH=I-D.ietf-tls-svcb-ech}}).
+* The order SHOULD prefer IP addresses from A and AAAA records over IP hints
+from SVCB in the same address family (see {{?SVCB, Section 7.3}}).
+* The order SHOULD prefer QUIC over TCP (but see {{app-preferences}} for
+a discussion of exceptions).
+* The order MAY be customized to reflect additional client preferences,
+such as a preference for ECH-enabled endpoints.
 
-For cases where the answers do not include any SVCB/HTTPS information,
-or if all of the answers are associated with the same SVCB/HTTPS record,
-this step is trivial: all answers belong to one group, and the client
-assumes they support the same protocols and security properties.
+## History-Driven Prioritization
 
-However, the client is aware of different sets of destination endpoints
-that advertise different capabilities when it receives multiple distinct
-SVCB/HTTPS records. The client SHOULD separate these
-addresses into different groups, such that all addresses in a
-group share the same application protocols and relevant security
-properties. The specific parameters that are relevant to the client
-depend on the client implementation and application.
+If the client is stateful and has a history of expected round-trip
+times (RTTs) for the routes to access each address, it SHOULD add a
+Destination Address Selection rule between rules 8 and 9 that prefers
+addresses with lower RTTs. If the client keeps track of which
+addresses it used in the past, it SHOULD add another Destination
+Address Selection rule between the RTT rule and rule 9, which prefers
+used addresses over unused ones. This helps servers that use the
+client's IP address during authentication, as is the case for TCP
+Fast Open {{?RFC7413}} and some Hypertext Transport Protocol (HTTP)
+cookies.
 
-Note that some destination addresses might need to be added to
-multiple groups at this stage. For example, consider the following
-HTTPS records:
+This historical data MUST be partitioned using the same
+boundaries used for privacy-sensitive information specific to that endpoint,
+and MUST NOT be used across different network interfaces. The data SHOULD
+be flushed whenever a device changes the network to which it is attached.
+However, if a client can reliably identify a previously attached network,
+it MAY retain and resume using historical data associated with that network
+upon reconnection. Clients that use historical data MUST ensure that clients
+with different historical data will eventually converge toward the same
+behaviors. For example, clients can periodically ignore historical data to
+ensure that fresh addresses are attempted.
 
-~~~
- example.com. 60 IN HTTPS 1 svc1.example.com. (
-     alpn="h3,h2" ipv6hint=2001:db8::2 )
- example.com. 60 IN HTTPS 1 svc2.example.com. (
-     alpn="h2" ipv6hint=2001:db8::4 )
-~~~
-
-In this case, 2001:db8::2 can be used with HTTP/3 and HTTP/2,
-but 2001:db8::4 can only be used with HTTP/2. If the client
-creates a grouping for HTTP/3-capable addresses and
-HTTP/2-capable addresses, 2001:db8::2 would exist in both
-groups (assuming that all other security properties are
-the same).
-
-Connection racing as described in {{connections}} applies
-to different destination address options within one of these groups.
-The logic for prioritizing and falling back between groups
-of addresses with different security properties and protocol
-properties is implementation-defined.
-
-### When to Apply Application Preferences
+## When to Apply Application Preferences {#app-preferences}
 
 Whether or not specific application protocols or security features
-are grouped separately is a client application decision. Clients
-SHOULD avoid grouping and sorting separately in cases where their
+are prioritized over others is a client application decision. Clients
+SHOULD avoid overriding the connection order in cases where their
 use of an application protocol or feature is non-critical.
 
 For example, an HTTP client loading a simple webpage may not see a large
-difference between using HTTP/3 or HTTP/2, and thus can group the ALPNs together
-to respect service-determined priorities where HTTP/3 might be
+difference between using HTTP/3 or HTTP/2, and thus can
+respect service-determined priorities where HTTP/3 might be
 prioritized behind HTTP/2. However, another client might see significant
 performance improvements by using HTTP/3's ability to send unreliable
-frames for its application use-case and will group HTTP/3 before HTTP/2.
+frames for its application use-case and will attempt HTTP/3 before HTTP/2.
 
 Similarly, a particular application might require or strongly prefer the
 use of TLS ECH for privacy-sensitive traffic, while others might
@@ -386,149 +376,38 @@ that such cases are possible. It is possible that services only include
 ECH configurations on SVCB answers that are prioritized behind others
 that don't include ECH configurations; for example, this might be
 used as an experimenation or roll-out strategy. Due to such cases, clients
-ought to not arbitrarily group ECH-containing answers and sort them
-first if they won't use the ECH information, or if the connection would
+ought to not arbitrarily prioritize ECH-containing answers
+if they won't use the ECH information, or if the connection would
 not benefit from the use of ECH. However, for cases where there is a
-reason for an application preference for ECH, the client MAY group
-and prioritize those answers separately. Even though this might conflict
+reason for an application preference for ECH, the client MAY
+prioritize those answers. Even though this might conflict
 with the published service record priorities, any answers published
 by the service are eligible to be used by clients, and clients can
 choose to use them.
 
-## Grouping By Service Priority {#service-group}
+# Connection Establishment {#connection}
 
-The next step of grouping and sorting is to group across different
-services (as defined by SVCB/HTTPS records), and sort these groups
-by priority.
+In order to avoid unreasonable load on networks and servers, the
+client MUST NOT connect to all resolved addresses simultaneously.
+The delay between connection attempts is termed the "Connection
+Attempt Delay".
 
-This step allows server-published priorities to be reflected
-in the client connection establishment algorithm.
+Clients MAY use a fixed or configured value for the Connection
+Attempt Delay. One recommended value for a default
+delay is 250 milliseconds.  Alternatively, clients MAY adjust
+the Connection Attempt Delay based on factors such as:
 
-SVCB {{SVCB}} records indicate a priority for each ServiceMode response.
-This priority applies to any IPv4 or IPv6 address hints in the record
-itself, as well as any addresses received on A or AAAA queries for the
-name in the ServiceMode record. The priority in a SVCB ServiceMode record is
-always greater than 0.
-
-SVCB answers with the lowest numerical value (such as 1) are sorted
-first, and answers with higher numerical values are sorted later.
-
-Note that a SVCB record with the TargetName "." applies to the owner
-name in the record, and the priority of that SVCB record applies to
-any A or AAAA records for the same owner name. These answers are
-sorted according to that SVCB record's priority.
-
-All addresses received from a particular SVCB service (within a group
-as defined in {{application-group}}), either by an associated AAAA
-or A record or address hints, SHOULD be separated into a group by
-the client. These service-based groups SHOULD then be sorted
-using the service priority.
-
-For cases where the answers do not include any SVCB/HTTPS information,
-or if all of the answers are associated with the same SVCB/HTTPS record,
-this step is trivial: all answers belong to one group that has the same
-priority.
-
-When there are multiple services, and thus multiple groups, with the
-same priority, the client SHOULD shuffle these groups randomly.
-
-If there are some SVCB/HTTPS services received, but there are AAAA or A
-records that do not have an associated service (for example, if no
-SVCB/HTTPS record is received for the original name using the "."
-TargetName), the unassociated addresses SHOULD be put in a group
-that is prioritized at the end of the list.
-
-## Sorting Destination Addresses Within Groups {#address-sorting}
-
-Within each group of addresses, after grouping based on the logic
-in {{application-group}} and {{service-group}}, the client sorts
-the addresses based on preference and historical data.
-
-First, the client MUST sort the addresses using Destination Address
-Selection ({{!RFC6724, Section 6}}).
-
-If the client is stateful and has a history of expected round-trip
-times (RTTs) for the routes to access each address, it SHOULD add a
-Destination Address Selection rule between rules 8 and 9 that prefers
-addresses with lower RTTs. If the client keeps track of which
-addresses it used in the past, it SHOULD add another Destination
-Address Selection rule between the RTT rule and rule 9, which prefers
-used addresses over unused ones. This helps servers that use the
-client's IP address during authentication, as is the case for TCP
-Fast Open {{?RFC7413}} and some Hypertext Transport Protocol (HTTP)
-cookies. This historical data MUST be partitioned using the same
-boundaries used for privacy-sensitive information specific to that endpoint,
-and MUST NOT be used across different network interfaces. The data SHOULD
-be flushed whenever a device changes the network to which it is attached.
-However, if a client can reliably identify a previously attached network,
-it MAY retain and resume using historical data associated with that network
-upon reconnection. Clients that use historical data MUST ensure that clients
-with different historical data will eventually converge toward the same
-behaviors. For example, clients can periodically ignore historical data to
-ensure that fresh addresses are attempted.
-
-Next, the client SHOULD modify the ordered list to interleave
-address families. Whichever address family is first in the list
-should be followed by an endpoint of the other address family. For example,
-if the first address in the sorted list is an IPv6 address, then
-the first IPv4 address should be moved up in the list to be second
-in the list. An implementation MAY choose to favor one
-address family more by allowing multiple addresses of that
-family to be attempted before trying the next.
-The number of contiguous addresses of the first address family of
-properties will be referred to as the "Preferred Address Family
-Count" and can be a configurable value. This avoids waiting through a
-long list of addresses from a given address family if connectivity
-over that address family is impaired.
-
-Note that the address selection described in this section only
-applies to destination addresses; Source Address Selection
-({{!RFC6724-UPDATE=I-D.ietf-6man-rfc6724-update, Section 3.2}}) is performed
-once per destination address and is out of scope of this document.
-
-# Connection Attempts {#connections}
-
-Once the list of addresses received up to this point has been
-constructed, the client will attempt to make connections. In order to
-avoid unreasonable network load, connection attempts SHOULD NOT be
-made simultaneously. Instead, one connection attempt to a single
-address is started first, followed by the others, one at a
-time. Starting a new connection attempt does not affect previous
-attempts, as multiple connection attempts may occur in parallel.  Once
-one of the connection attempts succeeds ({{success}}), all other
-connections attempts that have not yet succeeded SHOULD be canceled.
-Any address that was not yet attempted as a connection SHOULD be
-ignored.  At that time, any asynchronous DNS queries MAY be canceled as
-new addresses will not be used for this connection. However, the DNS
-client resolver SHOULD still process DNS replies from the network for
-a short period of time (recommended to be 1 second), as they will
-populate the DNS cache and can be used for subsequent connections.
-
-If grouping addresses by application or security requirements
-({{application-group}}) produced multiple groups, the application
-SHOULD start with connection attempts to the most preferred option.
-The policy for attempting any addresses outside of the most preferred
-group is up to the client implementation and out of scope for this document.
-
-If grouping addresses by service ({{service-group}}) produced multiple
-groups, all of the addresses of the first group SHOULD be started
-before starting attempts using the next group. Attempts across service groups
-SHOULD be allowed to continue in parallel; in effect, the groups
-are flattened into a single list.
-
-A simple implementation can have a fixed delay for how long to wait
-before starting the next connection attempt. This delay is referred to
-as the "Connection Attempt Delay". One recommended value for a default
-delay is 250 milliseconds. A more nuanced implementation's delay
-should correspond to the time when the previous attempt is retrying
+* The time when a previous attempt is retrying
 its handshake (such as sending a second TCP SYN or a second QUIC
-Initial), based on the retransmission timer ({{!RFC6298}},
-{{?RFC9002}}). If the client has historical RTT data gathered from
-other connections to the same host or prefix, it can use this
-information to influence its delay. Note that this algorithm should
-only try to approximate the time of the first handshake packet
-retransmission, and not any further retransmissions that may be
-influenced by exponential timer back off. Clients that support
+Initial) based on a retransmission timer ({{!RFC6298}},
+{{?RFC9002}}).
+* Historical RTT data gathered from other connections to the
+same host or prefix as a pending connection attempt.
+* The expected time to complete additional connection establishment
+steps (e.g., TLS handshake after TCP connection) on a pending
+connection attempt.
+
+Clients that support
 session resumption mechanisms (such as TLS session tickets
 {{?RFC8446}} or QUIC 0-RTT {{?RFC9001}}) SHOULD use the same
 Connection Attempt Delay for resumed connections as for new
@@ -544,17 +423,10 @@ packet-loss rates. The Connection Attempt Delay SHOULD have an upper
 bound, referred to as the "Maximum Connection Attempt Delay". The
 current recommended value is 2 seconds.
 
-The Connection Attempt Delay is used to set a timer, referred to as
-the "Next Connection Attempt Timer". Whenever this timer fires and
-a connection has not been successfully established, the next
-connection attempt starts, and the timer either is reset to a new
-delay value or, in the case of the end of the list being reached,
-is cancelled. Note that the delay value can be different for each
-connection attempt (depending on the protocol being used and
-the estimated RTT).
-
 ## Determining successful connection establishment {#success}
 
+Once one of the connection attempts succeeds, all other
+connections attempts that have not yet succeeded SHOULD be canceled.
 The determination of when a connection attempt has successfully
 completed (and other attempts can be cancelled) ultimately depends
 on the client application's interpretation of the connection
@@ -564,7 +436,7 @@ the TCP or QUIC handshake), but can involve other higher-level
 handshakes or state checks as well.
 
 Client connections that use TCP only (without TLS or another protocol
-on top, such as for unencrypted HTTP connections) will determine
+on top, such as for unencrypted HTTP connections) might determine
 successful establishment based on completing the TCP handshake
 only. When TLS is used on top of of TCP (such as for encrypted HTTP
 connections), clients SHOULD wait for the TLS handshake to
@@ -582,18 +454,7 @@ establishment was successful. For example, clients generally validate that
 the server's certificate provided via TLS is trusted, and that operation can
 be asynchronous.
 
-In cases where the connection establishment determination goes beyond
-the initial transport handshake, the Next Connection Attempt Timer
-ought to be adjusted after the initial transport handshake is completed.
-When the connection establishment makes progress, but has not completed,
-the timer SHOULD be extended to a new value that represents an estimated
-time for the full connection establishment to complete.
-
-For example, consider a case where connection establishment involves
-both a TCP handshake and a TLS handshake. If the timer is initially set
-to be roughly at the time when a TCP SYN packet would be retransmitted,
-and the TCP handshake completes before the timer fires, the timer should
-be adjusted to allow for the time in which the TLS handshake could complete.
+## Connection attempts waiting for SVCB
 
 While transport layer handshakes generally do not have restrictions on
 attempts to establish a connection, some cryptographic handshakes may
@@ -606,37 +467,7 @@ might switch to SVCB-reliant connection establishment during the
 process, the client MUST wait for SVCB records before proceeding with the
 cryptographic handshake.
 
-## Handling Application Layer Protocol Negotiation (ALPN)
-
-The `alpn` and `no-default-alpn` SvcParamKeys in SVCB records indicate the
-"SVCB ALPN set," which specifies the underlying transport protocols
-supported by the associated service endpoint. When the client requests
-SVCB records, it SHOULD perform the procedure specified in {{Section 7.1.2
-of SVCB}} to determine the underlying transport protocols that both
-the client and the service endpoint support. The client SHOULD NOT
-attempt to make a connection to a service endpoint whose SVCB ALPN set
-does not contain any protocols that the client supports. For example,
-suppose the client is an HTTP client that only supports TCP-based
-versions such as HTTP/1.1 and HTTP/2, and it receives the following
-HTTPS record:
-
-~~~
- example.com. 60 IN HTTPS 1 svc1.example.com. (
-     alpn="h3" no-default-alpn ipv6hint=2001:db8::2 )
-~~~
-
-In this case, attempting a connection to 2001:db8::2 or any other
-address resolved for `svc1.example.com` would be incorrect because the
-record indicates that `svc1.example.com` only supports HTTP/3, based on
-the ALPN value of "h3".
-
-If the client is an HTTP client that supports both Alt-Svc
-{{?AltSvc=RFC7838}} and SVCB (HTTPS) records, the client SHOULD ensure
-that connection attempts are consistent with both the Alt-Svc
-parameters and the SVCB ALPN set, as specified in {{Section 9.3 of
-SVCB}}.
-
-## Dropping or Pending Connection Attempts
+### Dropping or Pending Connection Attempts
 
 Some situations related to handling SVCB responses can
 require connection attempts to be dropped, or pended until
@@ -699,32 +530,6 @@ performance (like `tls-supported-groups` {{?I-D.ietf-tls-key-share-prediction}})
 but only aim to save round trips. The other TLS groups
 can be discovered through the TLS handshake itself, instead
 of SVCB, and thus do not require waiting for SVCB responses.
-
-# DNS Answer Changes During Happy Eyeballs Connection Setup {#changes}
-
-If, during the course of connection establishment, the DNS answers
-change by either adding resolved addresses (for example due to DNS
-push notifications {{?RFC8765}}) or removing previously resolved
-addresses (for example, due to expiry of the TTL on that DNS record),
-the client should react based on its current progress. Additionally, addresses
-from SVCB IP hints SHOULD be removed from the list once A and AAAA records are
-received for the corresponding name, if the addresses from the hints are absent from the
-received records {{Section 7.3 of SVCB}}.
-
-If an address is removed from the list that already had a connection
-attempt started, the connection attempt SHOULD NOT be canceled, but
-rather be allowed to continue. If the removed address had not yet
-had a connection attempt started, it SHOULD be removed from the list
-of addresses to try.
-
-If an address is added to the list, its position SHOULD be determined by
-applying the sorting rules (see {{sorting}}) to the complete list of addresses,
-including those previously received. This ensures that sorting rules, such as address family
-interleaving, are maintained correctly regardless of when addresses arrive. For
-example, consider a connection attempt in which only IPv6 addresses
-are available initially, and an attempt to one IPv6 address is already in progress.
-Then, when IPv4 addresses are later received, an IPv4 address should be placed next in the list of addresses to attempt
-(to account for interleaving address families) ahead of any remaining IPv6 addresses, as if it had been available initially.
 
 # Supporting IPv6-Mostly and IPv6-Only Networks {#v6only}
 
@@ -856,10 +661,30 @@ resolve the A record using the company's resolver and then locally
 synthesize an IPv6 address, as if the resolved IPv4 address were
 provided by the application ({{literals}}).
 
-# Summary of Configurable Values
+# Example: The Happy Eyeballs Algorithm {#algorithm}
 
-The values that may be configured as defaults on a client for use in
-Happy Eyeballs are as follows:
+This section presents the Happy Eyeballs Algorithm, a
+connection algorithm that complies with the requirements of
+{{resolution}}-{{v6only}} and reflects implementation experience.
+The initial inputs to this algorithm are a URI scheme, hostname, and
+optional port number.  Ultimately, the algorithm produces a single
+working connection as the result.
+
+TODO: Some elements of the algorithm are missing.
+
+## Configuration Parameters
+
+The algorithm requires knowledge of several relevant configuration
+parameters.
+
+### System Parameters
+
+- Include A Queries: True if the system has any non-link local route for IPv4.
+- Include AAAA Queries: True if the system has any non-link local route for IPv6.
+- Preferred Family: The system's preferred address family if there is
+a corresponding default route; otherwise the other family.
+
+## Algorithm Parameters
 
 - Resolution Delay ({{resolution}}): The time to wait for AAAA and/or SVCB/HTTPS
 records after receiving an A record. Recommended to be 50 milliseconds.
@@ -870,7 +695,7 @@ that should be attempted before attempting the next address family.
 Recommended to be 1; 2 may be used to more aggressively favor a
 particular combination of address family and protocol.
 
-- Connection Attempt Delay ({{connections}}): The time to wait between
+- Default Connection Attempt Delay ({{connections}}): The time to wait between
 connection attempts in the absence of RTT data. Recommended to be
 250 milliseconds.
 
@@ -895,6 +720,280 @@ will change over time. Implementors MAY use values different from the
 recommended values listed above, without changing this specification,
 as long as they do not violate any of the normative requirements (such
 as minimum delays).
+
+## Resolution {#example-resolution}
+
+Given a scheme, hostname, and port number, the client initiates the
+following resolution procedures immediately, in this order:
+
+* SVCB/HTTPS resolution for the scheme, hostname, and port.  This includes
+any required followup queries.
+  - After reaching a ServiceMode record, followup queries respect the
+  "Include A Queries" and "Include AAAA Queries" configuration options.
+* AAAA-record resolution for the hostname, if "Include AAAA Queries" is True.
+* A-record resolution for the hostname, if "Include A Queries" is True.
+
+The client also starts a timer for the Resolution Delay.
+
+The results are collected. Once the resolution requirements from {{async-dns}}
+are met, connection establishment can proceed.
+
+## Grouping and Sorting Addresses {#sorting}
+
+Before attempting to connect to any of the resolved destination
+addresses, the client defines the order in which to start the
+attempts. Once the order has been defined, the client can use a
+simple algorithm for racing each option after a short delay (see
+{{connections}}). It is important that the ordered list involve all
+addresses from both families and all protocols that have been received
+by this point, as this allows the client to get the racing effect of
+Happy Eyeballs for the entire list, not just the first IPv4 and first
+IPv6 addresses.
+
+The client performs three levels of grouping
+and sorting of addresses based on the DNS answers received.
+Each subsequent level of sorting only changes orders and
+preferences within the previously defined groups.
+
+1. Grouping and sorting by application protocol and security requirements ({{application-group}})
+1. Grouping and sorting by service priorities ({{service-group}})
+1. Sorting by destination address preferences ({{address-sorting}})
+
+### Grouping By Application Protocols and Security Requirements {#application-group}
+
+Clients first group based on which application protocols the
+destination endpoints support and which security features
+those endpoints offer. These are based on
+information from SVCB/HTTPS records about application-layer protocols
+("alpn" values) and other parameters like TLS Encrypted Client Hello
+configuration ("ech" values, see {{!SVCB-ECH=I-D.ietf-tls-svcb-ech}}).
+
+For cases where the answers do not include any SVCB/HTTPS information,
+or if all of the answers are associated with the same SVCB/HTTPS record,
+this step is trivial: all answers belong to one group, and the client
+assumes they support the same protocols and security properties.
+
+However, the client is aware of different sets of destination endpoints
+that advertise different capabilities when it receives multiple distinct
+SVCB/HTTPS records. The client separates these
+addresses into different groups, such that all addresses in a
+group share the same application protocols and relevant security
+properties. The specific parameters that are relevant to the client
+depend on the client implementation and application.
+
+Note that some destination addresses might need to be added to
+multiple groups at this stage. For example, consider the following
+HTTPS records:
+
+~~~
+ example.com. 60 IN HTTPS 1 svc1.example.com. (
+     alpn="h3,h2" ipv6hint=2001:db8::2 )
+ example.com. 60 IN HTTPS 1 svc2.example.com. (
+     alpn="h2" ipv6hint=2001:db8::4 )
+~~~
+
+In this case, 2001:db8::2 can be used with HTTP/3 and HTTP/2,
+but 2001:db8::4 can only be used with HTTP/2. If the client
+creates a grouping for HTTP/3-capable addresses and
+HTTP/2-capable addresses, 2001:db8::2 would exist in both
+groups (assuming that all other security properties are
+the same).
+
+Connection racing as described in {{connections}} applies
+to different destination address options within one of these groups.
+The logic for prioritizing and falling back between groups
+of addresses with different security properties and protocol
+properties is implementation-defined.
+
+### Grouping By Service Priority {#service-group}
+
+The next step of grouping and sorting is to group across different
+services (as defined by SVCB/HTTPS records), and sort these groups
+by priority.
+
+This step allows server-published priorities to be reflected
+in the client connection establishment algorithm.
+
+SVCB {{SVCB}} records indicate a priority for each ServiceMode response.
+This priority applies to any IPv4 or IPv6 address hints in the record
+itself, as well as any addresses received on A or AAAA queries for the
+name in the ServiceMode record. The priority in a SVCB ServiceMode record is
+always greater than 0.
+
+SVCB answers with the lowest numerical value (such as 1) are sorted
+first, and answers with higher numerical values are sorted later.
+
+Note that a SVCB record with the TargetName "." applies to the owner
+name in the record, and the priority of that SVCB record applies to
+any A or AAAA records for the same owner name. These answers are
+sorted according to that SVCB record's priority.
+
+All addresses received from a particular SVCB service (within a group
+as defined in {{application-group}}), either by an associated AAAA
+or A record or address hints, SHOULD be separated into a group by
+the client. These service-based groups SHOULD then be sorted
+using the service priority.
+
+For cases where the answers do not include any SVCB/HTTPS information,
+or if all of the answers are associated with the same SVCB/HTTPS record,
+this step is trivial: all answers belong to one group that has the same
+priority.
+
+When there are multiple services, and thus multiple groups, with the
+same priority, the client shuffles these groups randomly.
+
+If there are some SVCB/HTTPS services received, but there are AAAA or A
+records that do not have an associated service (for example, if no
+SVCB/HTTPS record is received for the original name using the "."
+TargetName), the unassociated addresses SHOULD be put in a group
+that is prioritized at the end of the list.
+
+### Sorting Destination Addresses Within Groups {#address-sorting}
+
+Within each group of addresses, after grouping based on the logic
+in {{application-group}} and {{service-group}}, the client sorts
+the addresses based on preference and historical data.
+
+First, the client sorts the addresses using Destination Address
+Selection ({{!RFC6724, Section 6}}).
+
+Next, the client modifies the ordered list to interleave
+address families. Whichever address family is first in the list
+should be followed by an endpoint of the other address family. For example,
+if the first address in the sorted list is an IPv6 address, then
+the first IPv4 address should be moved up in the list to be second
+in the list. An implementation may choose to favor one
+address family more by allowing multiple addresses of that
+family to be attempted before trying the next.
+The number of contiguous addresses of the first address family of
+properties is configurable via the "Preferred Address Family
+Count". This avoids waiting through a
+long list of addresses from a given address family if connectivity
+over that address family is impaired.
+
+Note that the address selection described in this section only
+applies to destination addresses; Source Address Selection
+({{!RFC6724-UPDATE=I-D.ietf-6man-rfc6724-update, Section 3.2}}) is performed
+once per destination address and is out of scope of this document.
+
+## Connection Attempts {#connections}
+
+Once the list of addresses received up to this point has been
+constructed, the client will attempt to make connections. In order to
+avoid unreasonable network load, connection attempts are not
+made simultaneously. Instead, one connection attempt to a single
+address is started first, followed by the others, one at a
+time. Starting a new connection attempt does not affect previous
+attempts, as multiple connection attempts may occur in parallel.  Once
+one of the connection attempts succeeds ({{success}}), all other
+connections attempts that have not yet succeeded are canceled.
+Any address that was not yet attempted as a connection is
+ignored.  At that time, any asynchronous DNS queries will be canceled as
+new addresses will not be used for this connection. However, the DNS
+client resolver will still process DNS replies from the network for
+a short period of time (recommended to be 1 second), as they will
+populate the DNS cache and can be used for subsequent connections.
+
+If grouping addresses by application or security requirements
+({{application-group}}) produced multiple groups, the application
+will start with connection attempts to the most preferred option.
+The policy for attempting any addresses outside of the most preferred
+group is up to the client implementation and out of scope for this document.
+
+If grouping addresses by service ({{service-group}}) produced multiple
+groups, all of the addresses of the first group will be started
+before starting attempts using the next group. Attempts across service groups
+will be allowed to continue in parallel; in effect, the groups
+are flattened into a single list.
+
+By default, the client waits for the "Default Connection Attempt Delay"
+before starting the next connection attempt. If a previous attempt is retrying
+its handshake (such as sending a second TCP SYN or a second QUIC
+Initial), based on the retransmission timer ({{!RFC6298}},
+{{?RFC9002}}), the client sets the Connection Attempt Delay to
+this value, subject to the Minimum and Maximum Connection Attempt
+Delay parameters. Note that this algorithm should
+only try to approximate the time of the first handshake packet
+retransmission, and not any further retransmissions that may be
+influenced by exponential timer back off.
+
+The Connection Attempt Delay is used to set a timer, referred to as
+the "Next Connection Attempt Timer". Whenever this timer fires and
+a connection has not been successfully established, the next
+connection attempt starts, and the timer either is reset to a new
+delay value or, in the case of the end of the list being reached,
+is cancelled. Note that the delay value can be different for each
+connection attempt (depending on the protocol being used and
+the estimated RTT).
+
+In cases where the connection establishment determination goes beyond
+the initial transport handshake, the Next Connection Attempt Timer
+is adjusted after the initial transport handshake is completed.
+When the connection establishment makes progress, but has not completed,
+the timer is extended to a new value that represents an estimated
+time for the full connection establishment to complete.
+
+For example, consider a case where connection establishment involves
+both a TCP handshake and a TLS handshake. If the timer is initially set
+to be roughly at the time when a TCP SYN packet would be retransmitted,
+and the TCP handshake completes before the timer fires, the timer is
+adjusted to allow for the time in which the TLS handshake could complete.
+
+### Handling Application Layer Protocol Negotiation (ALPN)
+
+The `alpn` and `no-default-alpn` SvcParamKeys in SVCB records indicate the
+"SVCB ALPN set," which specifies the underlying transport protocols
+supported by the associated service endpoint. When the client requests
+SVCB records, it performs the procedure specified in {{Section 7.1.2
+of SVCB}} to determine the underlying transport protocols that both
+the client and the service endpoint support. The client does not
+attempt to make a connection to a service endpoint whose SVCB ALPN set
+does not contain any protocols that the client supports. For example,
+suppose the client is an HTTP client that only supports TCP-based
+versions such as HTTP/1.1 and HTTP/2, and it receives the following
+HTTPS record:
+
+~~~
+ example.com. 60 IN HTTPS 1 svc1.example.com. (
+     alpn="h3" no-default-alpn ipv6hint=2001:db8::2 )
+~~~
+
+In this case, attempting a connection to 2001:db8::2 or any other
+address resolved for `svc1.example.com` would be incorrect because the
+record indicates that `svc1.example.com` only supports HTTP/3, based on
+the ALPN value of "h3".
+
+If the client is an HTTP client that supports both Alt-Svc
+{{?AltSvc=RFC7838}} and SVCB (HTTPS) records, the client restrict itself
+to connection attempts that are consistent with both the Alt-Svc
+parameters and the SVCB ALPN set, as specified in {{Section 9.3 of
+SVCB}}.
+
+## DNS Answer Changes During Happy Eyeballs Connection Setup {#changes}
+
+If, during the course of connection establishment, the DNS answers
+change by either adding resolved addresses (for example due to DNS
+push notifications {{?RFC8765}}) or removing previously resolved
+addresses (for example, due to expiry of the TTL on that DNS record),
+the client reacts based on its current progress. Additionally, addresses
+from SVCB IP hints are removed from the list once A and AAAA records are
+received for the corresponding name, if the addresses from the hints are absent from the
+received records {{Section 7.3 of SVCB}}.
+
+If an address is removed from the list that already had a connection
+attempt started, the connection attempt is not canceled, but
+rather be allowed to continue. If the removed address had not yet
+had a connection attempt started, it is removed from the list
+of addresses to try.
+
+If an address is added to the list, its position is determined by
+applying the sorting rules (see {{sorting}}) to the complete list of addresses,
+including those previously received. This ensures that sorting rules, such as address family
+interleaving, are maintained correctly regardless of when addresses arrive. For
+example, consider a connection attempt in which only IPv6 addresses
+are available initially, and an attempt to one IPv6 address is already in progress.
+Then, when IPv4 addresses are later received, an IPv4 address should be placed next in the list of addresses to attempt
+(to account for interleaving address families) ahead of any remaining IPv6 addresses, as if it had been available initially.
 
 # Limitations
 
