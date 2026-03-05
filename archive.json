@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-03T02:33:47.830640+00:00",
+  "timestamp": "2026-03-05T02:29:20.575271+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -8417,6 +8417,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 122,
+      "id": "PR_kwDOKH7CuM7H-gWa",
+      "title": "Refactor to separate requirements from algorithm",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/122",
+      "state": "OPEN",
+      "author": "bemasc",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This draft's abstract and introduction, and the WG's charter, indicate that the draft should provide requirements and an example algorithm.  Thus far, the draft has not really done that. The existing text is mostly describing an algorithm, sometimes via general requirements and sometimes via very specific instructions.\r\n\r\nThis PR attempts a clean separation between the requirements and the example algorithm.  Most of the changes are relocations of existing text with only minor edits.  Normative language has been removed from the example algorithm (which is not normative) and consolidated in new requirements paragraphs where appropriate. Some new text is added to make aspects of the example algorithm explicit (rather than implied from the requirements).\r\n\r\nTo avoid entangling too many concerns, this PR does not attempt to de-duplicate duplicated guidance, or to adjust any normative recommendation.  It also does not attempt to complete the full specification of the example algorithm, which can be seen to have several missing pieces after removing the requirements, or to resolve other unrelated issues.",
+      "createdAt": "2026-03-04T20:13:02Z",
+      "updatedAt": "2026-03-04T20:22:10Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
+      "headRepository": "bemasc/draft-happy-eyeballs-v3",
+      "headRefName": "refactor-requirements",
+      "headRefOid": "dcff168e0de03afe7bbcd9b219c2397ca0f1efbe",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
