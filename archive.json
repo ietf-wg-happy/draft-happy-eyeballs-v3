@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-05T02:29:20.575271+00:00",
+  "timestamp": "2026-03-08T02:32:56.686944+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -8428,9 +8428,9 @@
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
-      "body": "This draft's abstract and introduction, and the WG's charter, indicate that the draft should provide requirements and an example algorithm.  Thus far, the draft has not really done that. The existing text is mostly describing an algorithm, sometimes via general requirements and sometimes via very specific instructions.\r\n\r\nThis PR attempts a clean separation between the requirements and the example algorithm.  Most of the changes are relocations of existing text with only minor edits.  Normative language has been removed from the example algorithm (which is not normative) and consolidated in new requirements paragraphs where appropriate. Some new text is added to make aspects of the example algorithm explicit (rather than implied from the requirements).\r\n\r\nTo avoid entangling too many concerns, this PR does not attempt to de-duplicate duplicated guidance, or to adjust any normative recommendation.  It also does not attempt to complete the full specification of the example algorithm, which can be seen to have several missing pieces after removing the requirements, or to resolve other unrelated issues.",
+      "body": "This draft's abstract and introduction indicate that the draft should provide requirements and an example algorithm.  Thus far, the draft has not really done that. The existing text is mostly describing an algorithm, sometimes via general requirements and sometimes via very specific instructions.\r\n\r\nThis PR attempts a clean separation between the requirements and the example algorithm.  Most of the changes are relocations of existing text with only minor edits.  Normative language has been removed from the example algorithm (which is not normative) and consolidated in new requirements paragraphs where appropriate. Some new text is added to make aspects of the example algorithm explicit (rather than implied from the requirements).\r\n\r\nTo avoid entangling too many concerns, this PR does not attempt to de-duplicate duplicated guidance, or to adjust any normative recommendation.  It also does not attempt to complete the full specification of the example algorithm, which can be seen to have several missing pieces after removing the requirements, or to resolve other unrelated issues.",
       "createdAt": "2026-03-04T20:13:02Z",
-      "updatedAt": "2026-03-04T20:22:10Z",
+      "updatedAt": "2026-03-06T17:38:08Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
@@ -8442,7 +8442,154 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM7ofC7E",
+          "commit": {
+            "abbreviatedOid": "dcff168"
+          },
+          "author": "danwing",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-06T00:24:58Z",
+          "updatedAt": "2026-03-06T00:29:40Z",
+          "comments": [
+            {
+              "originalPosition": 114,
+              "body": "for TCP and SCTP, \"has been established\" means the connection is in the ESTABLISHED state.  QUIC doesn't have that state. \n\n```suggestion\nbut before any connection has been fully established for bi-directional communication, the client MAY\n```",
+              "createdAt": "2026-03-06T00:24:58Z",
+              "updatedAt": "2026-03-06T00:29:40Z"
+            },
+            {
+              "originalPosition": 120,
+              "body": "```suggestion\nAfter a connection is established, the client MAY retry or allow pending DNS\n```",
+              "createdAt": "2026-03-06T00:25:49Z",
+              "updatedAt": "2026-03-06T00:29:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7ouIUG",
+          "commit": {
+            "abbreviatedOid": "dcff168"
+          },
+          "author": "bemasc",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-06T15:30:25Z",
+          "updatedAt": "2026-03-06T15:30:26Z",
+          "comments": [
+            {
+              "originalPosition": 114,
+              "body": "This text is pre-existing so I don't know if it makes sense to change it in this PR.  (This PR is primarily intended as a refactor.)\n\nIf we do change this text, I think the actual criterion here is not strictly \"connection established\", but rather \"success\", which is a term of art in this document:\n\n```suggestion\nbut before any connection has succeeded ({{success}}), the client MAY\n```",
+              "createdAt": "2026-03-06T15:30:25Z",
+              "updatedAt": "2026-03-06T15:31:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7ouP0n",
+          "commit": {
+            "abbreviatedOid": "dcff168"
+          },
+          "author": "bemasc",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-06T15:35:20Z",
+          "updatedAt": "2026-03-06T15:35:20Z",
+          "comments": [
+            {
+              "originalPosition": 120,
+              "body": "I'm not sure this is necessary.  In my view, retries are a natural part of any \"DNS resolution\".  If we think this needs to be made explicit, I would phrase it like:\n\n```\nAfter a connection is established, the client MAY allow pending DNS resolutions\nto complete, and MAY retry failed resolutions, in order to populate the stub DNS cache\n```",
+              "createdAt": "2026-03-06T15:35:20Z",
+              "updatedAt": "2026-03-06T15:35:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7owDFV",
+          "commit": {
+            "abbreviatedOid": "dcff168"
+          },
+          "author": "danwing",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-06T17:02:05Z",
+          "updatedAt": "2026-03-06T17:02:05Z",
+          "comments": [
+            {
+              "originalPosition": 114,
+              "body": "\"Success\" would be great. I agree it's an edit to be done elsewhere. I only happened to notice it while reviewing the refactor.",
+              "createdAt": "2026-03-06T17:02:05Z",
+              "updatedAt": "2026-03-06T17:02:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7owFkj",
+          "commit": {
+            "abbreviatedOid": "dcff168"
+          },
+          "author": "danwing",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-06T17:04:19Z",
+          "updatedAt": "2026-03-06T17:04:20Z",
+          "comments": [
+            {
+              "originalPosition": 120,
+              "body": "I also view retries as normal, but seems helpful to make explicit that retries are allowed (and somewhat expected, especially to capture the intent -- which is to help subsequent connection attempts be more educated by maybe retrieving SVCB / HTTPS that didn't arrive early enough this time to influence happy eyeballs.",
+              "createdAt": "2026-03-06T17:04:20Z",
+              "updatedAt": "2026-03-06T17:04:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7owkhV",
+          "commit": {
+            "abbreviatedOid": "dcff168"
+          },
+          "author": "bemasc",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-06T17:30:56Z",
+          "updatedAt": "2026-03-06T17:30:56Z",
+          "comments": [
+            {
+              "originalPosition": 120,
+              "body": "OK, in that case maybe something like\r\n\r\n```\r\nAfter a connection is established, the client MAY allow pending DNS resolutions\r\nto complete, including retries as needed, in order to populate the stub DNS cache\r\n```",
+              "createdAt": "2026-03-06T17:30:56Z",
+              "updatedAt": "2026-03-06T17:30:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM7owrxV",
+          "commit": {
+            "abbreviatedOid": "dcff168"
+          },
+          "author": "danwing",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-06T17:38:08Z",
+          "updatedAt": "2026-03-06T17:38:08Z",
+          "comments": [
+            {
+              "originalPosition": 120,
+              "body": "Perfection",
+              "createdAt": "2026-03-06T17:38:08Z",
+              "updatedAt": "2026-03-06T17:38:08Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
