@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-08T02:32:56.686944+00:00",
+  "timestamp": "2026-03-15T02:47:34.276918+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -8430,7 +8430,7 @@
       "labels": [],
       "body": "This draft's abstract and introduction indicate that the draft should provide requirements and an example algorithm.  Thus far, the draft has not really done that. The existing text is mostly describing an algorithm, sometimes via general requirements and sometimes via very specific instructions.\r\n\r\nThis PR attempts a clean separation between the requirements and the example algorithm.  Most of the changes are relocations of existing text with only minor edits.  Normative language has been removed from the example algorithm (which is not normative) and consolidated in new requirements paragraphs where appropriate. Some new text is added to make aspects of the example algorithm explicit (rather than implied from the requirements).\r\n\r\nTo avoid entangling too many concerns, this PR does not attempt to de-duplicate duplicated guidance, or to adjust any normative recommendation.  It also does not attempt to complete the full specification of the example algorithm, which can be seen to have several missing pieces after removing the requirements, or to resolve other unrelated issues.",
       "createdAt": "2026-03-04T20:13:02Z",
-      "updatedAt": "2026-03-06T17:38:08Z",
+      "updatedAt": "2026-03-15T01:51:50Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
@@ -8441,7 +8441,22 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "To help with reviewing this, I've pulled this over to generate a rendered version, [here](https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/tfp/bemasc/refactor-requirements/draft-ietf-happy-happyeyeballs-v3.html), and a diff [here](https://author-tools.ietf.org/api/iddiff?url_1=https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/draft-ietf-happy-happyeyeballs-v3.txt&url_2=https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/tfp/bemasc/refactor-requirements/draft-ietf-happy-happyeyeballs-v3.txt).\r\n\r\n",
+          "createdAt": "2026-03-15T01:41:26Z",
+          "updatedAt": "2026-03-15T01:41:26Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The text in the abstract and intro is inherited from HEv2. I think one question we should address is if that breakdown it sets up is correct, or if the solution is to change the framing. The notion of the algorithm being an example is only mentioned in these places, and is not, for example, part of the WG charter.\r\n\r\nMy main concern with splitting things is making it harder to see the flow \u2014 the steps of resolution, sorting, grouping, and connecting are pretty core and fundamental to understanding the algorithm.\r\n\r\nAnother way to approach this is to define the algorithm as the main flow of the doc, as it is, and then extract the normative bits to summarize near the end.",
+          "createdAt": "2026-03-15T01:51:50Z",
+          "updatedAt": "2026-03-15T01:51:50Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOKH7CuM7ofC7E",
