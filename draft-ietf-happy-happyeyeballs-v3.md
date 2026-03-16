@@ -684,7 +684,7 @@ parameters.
 - Preferred Family: The system's preferred address family if there is
 a corresponding default route; otherwise the other family.
 
-## Algorithm Parameters
+### Algorithm Parameters
 
 - Resolution Delay ({{resolution}}): The time to wait for AAAA and/or SVCB/HTTPS
 records after receiving an A record. Recommended to be 50 milliseconds.
