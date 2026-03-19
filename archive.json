@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-17T02:31:19.034897+00:00",
+  "timestamp": "2026-03-19T02:38:07.080696+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1942,9 +1942,24 @@
       ],
       "body": "The draft uses the word \"address\" throughout.  However, in many cases this is inaccurate or confusing.  For example, TCP and QUIC connections may be attempted to the same \"IP address\".  It is even conceivable (albeit unusual) that two competing connections could be attempted to the same \"transport address\" (IP+port+protocol).\n\nSVCB uses the term \"endpoint\" to distinguish this from the IP address.  (ICE uses the term \"candidate\".)  A similar term is needed in this draft.",
       "createdAt": "2026-02-27T17:38:51Z",
-      "updatedAt": "2026-03-16T06:37:05Z",
+      "updatedAt": "2026-03-18T22:19:37Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "mxinden",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "For what my opinion is worth, I am in favor of \"endpoint\". We use \"endpoint\" throughout https://github.com/mozilla/happy-eyeballs.",
+          "createdAt": "2026-03-17T09:55:57Z",
+          "updatedAt": "2026-03-17T09:55:57Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yeah, I also like \"endpoint\". That's also what we use in our code!\n\nNote that many places in the text are literally talking about IP addresses, so some of those need to stay.",
+          "createdAt": "2026-03-18T22:19:37Z",
+          "updatedAt": "2026-03-18T22:19:37Z"
+        }
+      ]
     },
     {
       "number": 116,
@@ -1997,6 +2012,38 @@
       "body": "[RFC 3901bis Section 4.3](https://www.ietf.org/archive/id/draft-ietf-dnsop-3901bis-17.html#name-guidelines-for-dns-stub-res) discusses how DNS stub resolvers should behave in dual-stack setups.  This draft can reference that text but should not attempt to instruct stub resolvers on how to behave.",
       "createdAt": "2026-02-27T20:56:12Z",
       "updatedAt": "2026-02-27T20:56:12Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 123,
+      "id": "I_kwDOKH7CuM7z6X3s",
+      "title": "Change \"interface\" to \"PvD\"",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/123",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "As discussed at IETF 125, we should talk about provisioning domains more than specific interfaces.",
+      "createdAt": "2026-03-18T01:40:40Z",
+      "updatedAt": "2026-03-18T01:40:40Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 124,
+      "id": "I_kwDOKH7CuM7z7f8_",
+      "title": "Section-10.1 :  Why is there a specific IPv6 MTU problem?",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/124",
+      "state": "OPEN",
+      "author": "gorryfair",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Why is this IPv6-specific and what does this text allude to: \"Such issues might be specific to IPv6 traffic on the network.\"\n- Can the text describe the nature of this issue? Is it related to the size of the packet-header?",
+      "createdAt": "2026-03-18T03:27:04Z",
+      "updatedAt": "2026-03-18T03:27:34Z",
       "closedAt": null,
       "comments": []
     }
