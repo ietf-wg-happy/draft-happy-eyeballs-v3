@@ -146,10 +146,54 @@ addresses by sending DNS queries and collecting the answers.
 This section describes how a client initiates DNS queries
 and asynchronously handles the answers.
 
-## Sending DNS Queries
+## Requirements
 
-Clients first need to determine which DNS resource records
-they will include in queries for a named host.
+Hostname resolution is subject to many relevant requirements from other
+specifications, including:
+
+* {{!I-D.draft-ietf-dnsop-3901bis, Section 4.3}}: Guidelines for DNS Stub Resolvers.
+* Various sections of {{SVCB}}, including Section 3 (Client Behavior) and Section 9 (Using Service Bindings with HTTP).
+
+Additionally, in this specification:
+
+* Resolution MUST retrieve IP address records for all connected address families.
+* Resolution SHOULD retrieve IPv4 address records on IPv6-only devices with local synthesis, in order to tolerate certain broken server configurations (see {{broken}}).
+* Resolution SHOULD make some DNS records available before all resolutions have completed, to improve performance.
+
+## Procedural Model
+
+We model hostname resolution as an abstract procedure using the following types:
+
+DNSQuestion:
+
+* Owner Name: A DNS name.
+* Type: A DNS Resource Record Type.
+
+DNSRDataSet:
+
+* An unordered collection of RData in a format determined by the Type.
+
+DNSResult:
+
+* Question: A DNSQuestion.
+* Result: A DNSRDataSet or an error.
+* SecurityLevel: Indicates the security properties of the transport (e.g. authenticated to a trusted resolver, confidential) and the DNSSEC validation status of the result.
+
+DNSResolveHostname():
+
+* Inputs:
+   - Hostname: A URI "Host" ({{?RFC3986, Section 3.2.2}}) that represents a DNS domain name.
+   - SVCBScheme (optional): A URI scheme for use with SVCB QNAME construction.
+   - SVCBPort (optional): A port number for use with SVCB QNAME construction.
+* Output: A cancelable finite stream of DNSResults.  DNSQuestions in the stream do not repeat.
+* Configuration:
+   - RequiredAddressFamilies: IPv4, IPv6, or both.
+   - PreferredAddressFamily: IPv4 or IPv6. (default: IPv6)
+
+## Configuration
+
+Clients first need to determine the address families for which
+they require IP records for the Hostname.
 
 This decision is based on if client has "connectivity" using IPv4 and IPv6.
 In this case, "connectivity" for an address family is defined
@@ -165,111 +209,37 @@ out queries for both AAAA and A records, or only a query for AAAA
 records, depending on the network configuration. See {{v6only}}
 for more discussion of handling IPv6-mostly and IPv6-only networks.
 
-In addition to requesting AAAA and A records, depending on which
-application is establishing the connection, clients can request
+## Sending DNS Queries
+
+If a SVCBScheme is specified, DNSResolveHostname also requests
 either SVCB or HTTPS records {{SVCB}}. For applications using
 HTTP or HTTPS (including applications using WebSockets), the
-client SHOULD send a query for HTTPS records.
+SVCBScheme is "http" or "https" ({{SVCB, Section 9.6}}).
 
-All of the DNS queries SHOULD be made as soon after one another as
-possible. The order in which the queries are sent SHOULD be as
+All of the DNS queries are issued as soon after one another as
+possible. The order in which the queries are sent is as
 follows (omitting any query that doesn't apply based on the
 logic described above):
 
-1. SVCB or HTTPS query
+1. SVCB or HTTPS query using Port Prefix Naming ({{SVCB, Section 2.3}}).
 1. AAAA query
 1. A query
 
-## Handling DNS Answers Asynchronously
-
-Once the client receives sufficient answers to its DNS queries, it can
-move onto the phases of sorting addresses ({{sorting}})
-and establishing connections ({{connections}}).
-
-Implementations SHOULD NOT wait for all answers to return
-before starting the next steps of connection establishment. If one query
-fails or takes significantly longer to return, waiting for
-those answers can significantly delay connection
-establishment that could otherwise proceed with already received answers.
-
-Therefore, the client SHOULD treat DNS resolution as asynchronous,
-processing different record types independently.
-Note that if the platform does not offer an asynchronous DNS API,
-this behavior can be simulated by making separate synchronous queries
-for each record type in parallel.
-
-The client moves onto sorting addresses and establishing connections
-once one of the following condition sets is met:
-
-Either:
-
-- Some positive (non-empty) address answers have been received AND
-- A postive (non-empty) or negative (empty) answer has been received
-for the preferred address family that was queried AND
-- SVCB/HTTPS service information has been received (or has received
-a negative response)
-
-Or:
-
-- Some positive (non-empty) address answers have been received AND
-- A resolution time delay has passed after which other answers have
-not been received
-
-Positive answers can be addresses received either from AAAA or A
-records, or address hints received directly in SVCB/HTTPS records.
-
-Negative answers are exclusively responses to AAAA or A records
-that contain no addresses (with or without an error like NXDOMAIN).
-If all answers come back with negative answers, the
-connection establishment will fail or need to wait until other answers
-are received.
-
-On networks that have both default routes for IPv6 and IPv4, IPv6 is
-assumed to be the preferred address family. If only one of IPv6 or IPv4 has
-a default route, that address family should be considered the preferred address
-family for progressing the algorithm.
-
-The resolution time delay is a short time that provides a chance
-to receive preferred addresses (via AAAA records) along
-with service information (via SVCB/HTTPS records). This accounts
-for the case where the AAAA or SVCB/HTTPS records follow the
-A records by a few milliseconds. This delay is referred to as
-the "Resolution Delay".
-
-The RECOMMENDED value for the Resolution Delay is 50 milliseconds.
-
 ### Resolving SVCB/HTTPS Aliases and Targets
 
-SVCB and HTTPS records describe information for network services. Individual
-records are either AliasMode or ServiceMode records, where AliasMode requires
-another SVCB/HTTPS query for the alias name. ServiceMode records either are
-associated with the original name being queried, in which case their TargetName
-is ".", or are associated with another service name (see {{Section 2.5 of SVCB}}).
+SVCB and HTTPS records describe information for network services. Each
+record requires at least one followup query to a specified TargetName.
+(see {{Section 3 of SVCB}}).  Depending on whether the record is in
+ServiceMode or AliasMode, the followup queries may be of type SVCB,
+A, and/or AAAA.
 
-The algorithm in this document does not consider service information to be received
-until ServiceMode records are available.
-
-ServiceMode records can contain address hints via `ipv6hint` and `ipv4hint`
-parameters. When these are received, they SHOULD be considered as positive
-non-empty answers for the purpose of the algorithm when A and AAAA records
-corresponding to the TargetName are not available yet. Note that clients are
-still required to issue A and AAAA queries for those TargetNames if they haven't
-yet received those records. When those records are received, they replace the hints
-and update the available set of responses as new answers (see {{new-answers}}).
+DNSResolveHostname() does not close its output stream until all such followup
+queries are complete.
 
 ### Examples
 
 TODO: Provide examples of various scenarios (simple dual stack, SVCB,
 delayed AAAA, delayed SVCB, SVCB hints providing early answers)
-
-## Handling New Answers {#new-answers}
-
-If new records arrive while connection attempts are in progress,
-but before any connection has been established, then any newly
-received addresses are incorporated into the list of available candidate
-addresses (see {{changes}}) and the process of connection attempts will
-continue with the new addresses added, until one connection is
-established.
 
 ## Handling Multiple DNS Server Addresses
 
@@ -296,6 +266,10 @@ SHOULD use at least one address from each address family from the
 available list.
 
 # Grouping and Sorting Addresses {#sorting}
+
+Once the client receives sufficient answers to its DNS queries, it can
+move onto the phases of sorting addresses ({{sorting}})
+and establishing connections ({{connections}}).
 
 Before attempting to connect to any of the resolved destination
 addresses, the client defines the order in which to start the
@@ -553,6 +527,60 @@ is cancelled. Note that the delay value can be different for each
 connection attempt (depending on the protocol being used and
 the estimated RTT).
 
+## Accumulating DNS Answers
+
+Implementations SHOULD NOT wait for all answers to return
+before starting the next steps of connection establishment. If one query
+fails or takes significantly longer to return, waiting for
+those answers can significantly delay connection
+establishment that could otherwise proceed with already received answers.
+
+Therefore, the client SHOULD treat DNS resolution as asynchronous,
+processing different record types independently.
+Note that if the platform does not offer an asynchronous DNS API,
+this behavior can be simulated by making separate synchronous queries
+for each record type in parallel.
+
+The client moves onto sorting addresses and establishing connections
+once one of the following condition sets is met:
+
+Either:
+
+- Some positive (non-empty) address answers have been received AND
+- A postive (non-empty) or negative (empty) answer has been received
+for the preferred address family that was queried AND
+- SVCB/HTTPS service information has been received (or has received
+a negative response)
+
+Or:
+
+- Some positive (non-empty) address answers have been received AND
+- A resolution time delay has passed after which other answers have
+not been received
+
+Positive answers can be addresses received either from AAAA or A
+records, or address hints received directly in SVCB/HTTPS records.
+
+Negative answers are exclusively responses to AAAA or A records
+that contain no addresses (with or without an error like NXDOMAIN).
+If all answers come back with negative answers, the
+connection establishment will fail or need to wait until other answers
+are received.
+
+On networks that have both default routes for IPv6 and IPv4, IPv6 is
+assumed to be the preferred address family. If only one of IPv6 or IPv4 has
+a default route, that address family should be considered the preferred address
+family for progressing the algorithm.
+
+The resolution time delay is a short time that provides a chance
+to receive preferred addresses (via AAAA records) along
+with service information (via SVCB/HTTPS records). This accounts
+for the case where the AAAA or SVCB/HTTPS records follow the
+A records by a few milliseconds. This delay is referred to as
+the "Resolution Delay".
+
+The RECOMMENDED value for the Resolution Delay is 50 milliseconds.
+
 ## Determining successful connection establishment {#success}
 
 The determination of when a connection attempt has successfully
@@ -640,7 +668,7 @@ SVCB}}.
 
 Some situations related to handling SVCB responses can
 require connection attempts to be dropped, or pended until
-SVCB responses return.
+SVCB's ServiceMode record resolution is complete.
 
 {{Section 3.1 of SVCB}} describes client behavior for handling
 resolution failures when responses are "cryptographically protected"
