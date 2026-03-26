@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-19T02:38:07.080696+00:00",
+  "timestamp": "2026-03-26T02:43:08.863291+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -8683,6 +8683,32 @@
           ]
         }
       ]
+    },
+    {
+      "number": 125,
+      "id": "PR_kwDOKH7CuM7NKLxb",
+      "title": "Reorganize the Resolution section",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/125",
+      "state": "OPEN",
+      "author": "bemasc",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This change reorganizes the Resolution section to separate\r\n\r\n1. The requirements on resolution.\r\n2. A model of the inputs and output of resolution as a subroutine.\r\n3. Algorithm instructions on how to build a compliant implementation of this model.\r\n\r\nIf we can agree on a convention of this kind, we can apply a similar division to each stage of the algorithm.\r\n\r\nPossible benefits of this arrangement:\r\n* Later stages of the algorithm can refer unambiguously to the outputs of the earlier stages.\r\n* Implementations that follow the spec closely can more easily compare their code against the abstract model.\r\n* Implementations that take a different structural approach can more easily check that they are meeting the applicable requirements.\r\n\r\nThe section on how to handle asynchronous DNS answers is moved to the Connection section, as that is where this logic would be implemented.  If we extend this approach to that section, that text would evolve to separate requirements and make the proposed algorithm more explicit.\r\n\r\nThis is an alternative to https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/122.",
+      "createdAt": "2026-03-24T22:57:05Z",
+      "updatedAt": "2026-03-24T22:57:06Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
+      "headRepository": "bemasc/draft-happy-eyeballs-v3",
+      "headRefName": "refactor-resolution",
+      "headRefOid": "2d064043faa5e69ee5d62018a6a11c5140df4069",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
