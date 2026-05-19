@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-26T02:43:08.863291+00:00",
+  "timestamp": "2026-05-19T03:56:22.314277+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -8113,7 +8113,7 @@
       "labels": [],
       "body": "Clients should use the same delay for resumed connections as for new connections.\r\n\r\nProposed text for #106.\r\n\r\nFixes #106.",
       "createdAt": "2026-02-09T10:26:01Z",
-      "updatedAt": "2026-02-26T03:21:30Z",
+      "updatedAt": "2026-05-17T17:53:21Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "f9fae351b5bbbb58107fe624a0677f1e9911ed2d",
@@ -8139,6 +8139,32 @@
           "body": "",
           "createdAt": "2026-02-25T23:06:35Z",
           "updatedAt": "2026-02-25T23:06:35Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABAKXT0A",
+          "commit": {
+            "abbreviatedOid": "7aa6473"
+          },
+          "author": "Zaincasper69",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "Well u can notice",
+          "createdAt": "2026-05-17T16:41:27Z",
+          "updatedAt": "2026-05-17T16:41:27Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABAKjsQg",
+          "commit": {
+            "abbreviatedOid": "7aa6473"
+          },
+          "author": "Zaincasper69",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "Ok",
+          "createdAt": "2026-05-17T17:53:21Z",
+          "updatedAt": "2026-05-17T17:53:21Z",
           "comments": []
         }
       ]
