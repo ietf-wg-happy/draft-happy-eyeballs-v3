@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-19T03:56:22.314277+00:00",
+  "timestamp": "2026-05-28T03:58:47.833731+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -8734,6 +8734,75 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 126,
+      "id": "PR_kwDOKH7CuM7fnTKo",
+      "title": "Allow short-circuiting Connection Attempt Delay on DNS answer change",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/126",
+      "state": "OPEN",
+      "author": "gakiwate",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "When DNS answers change mid-setup and no in-progress attempt has\r\nsucceeded, allow the client to cancel the running Connection Attempt\r\nDelay timer and start the next attempt immediately, since the timer\r\nwas sized against a now-stale address list.",
+      "createdAt": "2026-05-26T23:41:00Z",
+      "updatedAt": "2026-05-27T17:21:05Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
+      "headRepository": "gakiwate/draft-happy-eyeballs-v3",
+      "headRefName": "main",
+      "headRefOid": "758919a6194a9e7d7c7ce92355afc0ae77c5b515",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Good call on finding this problem. Regarding the proposed solution, I think it would be best to still make sure there is a delay between connection attempts.  Perhaps something like this?\r\n\r\n> If the DNS answers change while a Connection Attempt Delay timer is running and no in-progress connection attempt has yet succeeded, the client can end up waiting on a timer that was sized against a stale view of the available addresses. To avoid this, clients SHOULD recompute the timer duration when they receive DNS answers, and fire it immediately if the new fire time is in the past.",
+          "createdAt": "2026-05-27T02:20:24Z",
+          "updatedAt": "2026-05-27T02:20:24Z"
+        },
+        {
+          "author": "mxinden",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Out of curiosity @gakiwate, can you expand on your use-case? Why do your DNS answers change frequently mid-setup? Is this due to DNS cache usage followed by re-validation?\r\n\r\nFor what it is worth, the majority (75th percentile) of Firefox DNS resolution finishes before the resolution time delay (50ms), i.e. waits for HTTPS record and preferred address record.\r\n\r\nhttps://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_dns_resolution_time/explore\r\n\r\nIn addition, up to the 75th percentile, the first connection attempt wins.\r\n\r\nhttps://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_winning_attempt_index/explore\r\n\r\nFeel free to ignore the above. Not opposed to the change. I don't think, at least for now, it is necessary for Firefox.",
+          "createdAt": "2026-05-27T13:25:16Z",
+          "updatedAt": "2026-05-27T13:25:16Z"
+        },
+        {
+          "author": "gakiwate",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Out of curiosity @gakiwate, can you expand on your use-case? Why do your DNS answers change frequently mid-setup? Is this due to DNS cache usage followed by re-validation?\r\n> \r\n> For what it is worth, the majority (75th percentile) of Firefox DNS resolution finishes before the resolution time delay (50ms), i.e. waits for HTTPS record and preferred address record.\r\n> \r\n> https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_dns_resolution_time/explore\r\n> \r\n> In addition, up to the 75th percentile, the first connection attempt wins.\r\n> \r\n> https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_winning_attempt_index/explore\r\n> \r\n> Feel free to ignore the above. Not opposed to the change. I don't think, at least for now, it is necessary for Firefox.\r\n\r\n@mxinden mDNSResponder does long-running asynchronous queries which updates with \"Add\", \"Remove\" events when the answer changes. If a query is active _and_ the TTL is about to expire, then mDNSResponder will preemptively refresh the cache which may change answers mid setup. So it does not happen frequently but does happen.",
+          "createdAt": "2026-05-27T16:29:52Z",
+          "updatedAt": "2026-05-27T16:29:52Z"
+        },
+        {
+          "author": "gakiwate",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Good call on finding this problem. Regarding the proposed solution, I think it would be best to still make sure there is a delay between connection attempts. Perhaps something like this?\r\n> \r\n> > If the DNS answers change while a Connection Attempt Delay timer is running and no in-progress connection attempt has yet succeeded, the client can end up waiting on a timer that was sized against a stale view of the available addresses. To avoid this, clients SHOULD recompute the timer duration when they receive DNS answers, and fire it immediately if the new fire time is in the past.\r\n\r\nThe revised text looks good to me. ",
+          "createdAt": "2026-05-27T16:30:34Z",
+          "updatedAt": "2026-05-27T16:30:34Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@DavidSchinazi I like your point, but I think the behavior should be a bit more nuanced.\r\n\r\n- If we get the DNS update and we've only just started the first connection attempt (like 5ms ago), immediately kicking off the new attempts will be too chatty on the network and there's a decent chance the original attempt will work.\r\n- However, if we get the DNS update and we've just started the third connection attempt (also 5ms ago) but the first attempt was already 600ms ago or something, then there's good reason to think the old list was stale; waiting longer for the third connection attempt to get far enough may be wasted time.\r\n\r\nSo the question is about what the recomputation does \u2014 if it was always about the time to the next connection attempt, there wouldn't be any change to the current algorithm. I think we _should_ be more aggressive in this case than we would otherwise be, particularly for cases where we're further into the connection attempt list. We could just have a tunable for a global cap on time after which we let the new answers supersede old timers.",
+          "createdAt": "2026-05-27T17:00:16Z",
+          "updatedAt": "2026-05-27T17:00:16Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I see. Yeah that scenario makes sense. Not sure how to wordsmith that though",
+          "createdAt": "2026-05-27T17:21:05Z",
+          "updatedAt": "2026-05-27T17:21:05Z"
+        }
+      ],
       "reviews": []
     }
   ]
