@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-28T03:58:47.833731+00:00",
+  "timestamp": "2026-06-09T03:53:54.349161+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -7554,7 +7554,7 @@
       ],
       "body": "Closes #64 ",
       "createdAt": "2025-10-20T03:57:38Z",
-      "updatedAt": "2025-11-21T21:02:24Z",
+      "updatedAt": "2026-06-08T18:21:53Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
@@ -7572,6 +7572,20 @@
           "body": "As mentioned in Montreal, I'm very uncomfortable with this concept.  This substantially changes client behavior in ways that likely violates various RFCs and introduces significant risks.  There's also no way for operators to prevent its use.  \r\n\r\nUnlike DNS Serve Stale (which is for reliability and only kicks in when there are ambiguous failures), this kicks in all the time for performance reasons.  Just having a valid cert isn't good enough to avoid some of the major operational challenges this introduces.  For example:\r\n\r\n* When a CDN operator removes a cluster from DNS rotation then traffic will keep showing up to it well past the DNS TTLs.  This creates operational challenges for draining prior to maintenance, and could also result in increased errors (eg, just because the TLS connection succeeded doesn't mean that the HTTP/1.1 connection won't get broken mid operation when a server restarts).\r\n\r\n* This causes problems for multi-CDN setups as well as DNS-based load balancers.  If traffic keeps showing up well past DNS TTLs then it can make things impossible to move. \r\n\r\n* This causes problems when a site operator has switched between vendors or environments or hasn't deprovisioned the old one.  Traffic may keep showing up to the old environment.\r\n\r\n* This introduces security and privacy risks in cloud environments where IPs get frequently reused.  For example, SNI at least will be getting leaked to other operators.  Some cloud environments will reuse IPv4 addresses within hours after having been released.\r\n\r\nIf anything this really needs to be its own separate draft, and we need to think through how we put controls and guardrails in-place to mitigate some of these issues.\r\n\r\nSome possible ways to improve this may be:\r\n\r\n* Consider prefresh instead (eg, re-resolve shortly before the DNS TTL expires)\r\n* Have well-defined bounds on this that are tied to the TTL (eg, you can use for some function of the TTL?)\r\n* Have a SvcParam which can signal how long the DNS answers associated with the endpoint can be used for past their TTL.\r\n",
           "createdAt": "2025-11-21T21:02:24Z",
           "updatedAt": "2025-11-21T21:02:24Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This draft covers the Optimistic DNS behavior: https://www.ietf.org/archive/id/draft-gakiwate-dnsop-optimistic-dns-00.html\r\n\r\nWe can just reference that approach informatively from this doc",
+          "createdAt": "2026-06-07T21:55:52Z",
+          "updatedAt": "2026-06-07T21:55:52Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "SGTM",
+          "createdAt": "2026-06-08T18:21:53Z",
+          "updatedAt": "2026-06-08T18:21:53Z"
         }
       ],
       "reviews": [
