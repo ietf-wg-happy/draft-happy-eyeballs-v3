@@ -271,6 +271,20 @@ addresses (see {{changes}}) and the process of connection attempts will
 continue with the new addresses added, until one connection is
 established.
 
+## Handling Answer Expiry
+
+Previously received DNS answers might expire (hit their TTL)
+while connection attempts are still in progress. A Happy Eyeballs
+client MAY trigger new DNS queries to fetch non-expired answers
+if the newly expired answers have not yet led to a successful connection.
+Addition of any new answers is handled as described in {{new-answers}}.
+
+Additionally, the fact that Happy Eyeballs enables clients to handle
+updates to the resolved address list asynchronously opens up the ability
+to use expired answers "optimistically" while waiting for non-expired
+answers. This approach is called "optimistic DNS", and is described
+in {{?OPTIMISTIC-DNS=I-D.gakiwate-dnsop-optimistic-dns}}.
+
 ## Handling Multiple DNS Server Addresses
 
 If multiple DNS server addresses are configured for the current
