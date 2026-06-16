@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-09T03:53:54.349161+00:00",
+  "timestamp": "2026-06-16T04:47:45.535093+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -7554,7 +7554,7 @@
       ],
       "body": "Closes #64 ",
       "createdAt": "2025-10-20T03:57:38Z",
-      "updatedAt": "2026-06-08T18:21:53Z",
+      "updatedAt": "2026-06-15T20:06:51Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
@@ -7586,6 +7586,13 @@
           "body": "SGTM",
           "createdAt": "2026-06-08T18:21:53Z",
           "updatedAt": "2026-06-08T18:21:53Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Proposing here https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/127",
+          "createdAt": "2026-06-15T20:06:51Z",
+          "updatedAt": "2026-06-15T20:06:51Z"
         }
       ],
       "reviews": [
@@ -8818,6 +8825,59 @@
         }
       ],
       "reviews": []
+    },
+    {
+      "number": 127,
+      "id": "PR_kwDOKH7CuM7mtnSx",
+      "title": "Discuss address expiry, reference optimistic DNS",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/127",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #64 \r\nReplaces #100",
+      "createdAt": "2026-06-15T20:06:31Z",
+      "updatedAt": "2026-06-15T23:33:05Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfpauly-patch-11",
+      "headRefOid": "eddb60cae3a849ab890560414acb5ad43fd566d9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABDFee6A",
+          "commit": {
+            "abbreviatedOid": "eddb60c"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-15T23:30:27Z",
+          "updatedAt": "2026-06-15T23:33:05Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "What about the in-progress attempts to expired addresses? Should those be left open or aborted?",
+              "createdAt": "2026-06-15T23:30:27Z",
+              "updatedAt": "2026-06-15T23:33:05Z"
+            },
+            {
+              "originalPosition": 8,
+              "body": "When should the HE client trigger new DNS queries? If it's too early it could run afoul of [Zeno\u2019s Paradox](https://www.ietf.org/archive/id/draft-gakiwate-dnsop-optimistic-dns-00.html#section-4). If it's too late, the previous attempt might have already been aborted (depends on answer to previous comment)",
+              "createdAt": "2026-06-15T23:32:04Z",
+              "updatedAt": "2026-06-15T23:33:05Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
