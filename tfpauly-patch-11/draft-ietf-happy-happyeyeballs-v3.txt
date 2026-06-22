@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 17 December 2026                                        N. Jaju
+Expires: 24 December 2026                                        N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                            15 June 2026
+                                                            22 June 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 December 2026.
+   This Internet-Draft will expire on 24 December 2026.
 
 Copyright Notice
 
@@ -337,8 +337,10 @@ Table of Contents
 
    Previously received DNS answers might expire (hit their TTL) while
    connection attempts are still in progress.  A Happy Eyeballs client
-   MAY trigger new DNS queries to fetch non-expired answers if the newly
-   expired answers have not yet led to a successful connection.
+   will not cancel those ongoing attempts when the answers expire.
+   However, the client MAY trigger new DNS queries to fetch non-expired
+   answers after the original records have expired, in the case in which
+   the original answers have not yet led to a successful connection.
    Addition of any new answers is handled as described in Section 4.3.
 
    Additionally, the fact that Happy Eyeballs enables clients to handle
