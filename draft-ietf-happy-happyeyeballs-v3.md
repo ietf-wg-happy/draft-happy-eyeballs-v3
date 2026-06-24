@@ -532,7 +532,10 @@ If grouping addresses by service ({{service-group}}) produced multiple
 groups, all of the addresses of the first group SHOULD be started
 before starting attempts using the next group. Attempts across service groups
 SHOULD be allowed to continue in parallel; in effect, the groups
-are flattened into a single list.
+are flattened into a single list. The intent of these groups is to
+strictly prioritize the most preferred service. Therefore, if a higher
+priority group has many addresses, there is a potential for long
+delays before falling back to lower priority groups.
 
 A simple implementation can have a fixed delay for how long to wait
 before starting the next connection attempt. This delay is referred to
