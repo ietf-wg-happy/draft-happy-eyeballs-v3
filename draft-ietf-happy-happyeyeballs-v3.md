@@ -277,7 +277,10 @@ Previously received DNS answers might expire (exceed their TTL)
 while connection attempts are still in progress. A Happy Eyeballs client will not cancel those ongoing attempts when the answers
 expire. However, the client MAY trigger new DNS queries to fetch non-expired answers after the original records have expired,
 in the case in which the original answers have not yet led to a successful connection.
-Addition of any new answers is handled as described in {{new-answers}}.
+Addition of any new answers is handled as described in {{new-answers}} and {{changes}}; that is, ongoing connection attempts
+will not be cancelled, but any address for which a connection
+attempt had not yet been started that is no longer in the resolved
+address list will be removed.
 
 Additionally, the fact that Happy Eyeballs enables clients to handle
 updates to the resolved address list asynchronously enables
