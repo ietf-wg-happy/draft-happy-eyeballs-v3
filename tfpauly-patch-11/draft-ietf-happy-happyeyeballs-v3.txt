@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 24 December 2026                                        N. Jaju
+Expires: 26 December 2026                                        N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                            22 June 2026
+                                                            24 June 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 December 2026.
+   This Internet-Draft will expire on 26 December 2026.
 
 Copyright Notice
 
@@ -86,7 +86,7 @@ Table of Contents
        4.2.1.  Resolving SVCB/HTTPS Aliases and Targets
        4.2.2.  Examples
      4.3.  Handling New Answers
-     4.4.  Handling Answer Expiry
+     4.4.  Handling Expired Answers
      4.5.  Handling Multiple DNS Server Addresses
    5.  Grouping and Sorting Addresses
      5.1.  Grouping By Application Protocols and Security Requirements
@@ -333,9 +333,9 @@ Table of Contents
    continue with the new addresses added, until one connection is
    established.
 
-4.4.  Handling Answer Expiry
+4.4.  Handling Expired Answers
 
-   Previously received DNS answers might expire (hit their TTL) while
+   Previously received DNS answers might expire (exceed their TTL) while
    connection attempts are still in progress.  A Happy Eyeballs client
    will not cancel those ongoing attempts when the answers expire.
    However, the client MAY trigger new DNS queries to fetch non-expired
@@ -344,10 +344,10 @@ Table of Contents
    Addition of any new answers is handled as described in Section 4.3.
 
    Additionally, the fact that Happy Eyeballs enables clients to handle
-   updates to the resolved address list asynchronously opens up the
-   ability to use expired answers "optimistically" while waiting for
-   non-expired answers.  This approach is called "optimistic DNS", and
-   is described in [OPTIMISTIC-DNS].
+   updates to the resolved address list asynchronously enables the use
+   of expired answers "optimistically" while waiting for non-expired
+   answers.  This approach is called "optimistic DNS", and is described
+   in [OPTIMISTIC-DNS].
 
 4.5.  Handling Multiple DNS Server Addresses
 
