@@ -542,11 +542,11 @@ Table of Contents
    Fast Open [RFC7413] and some Hypertext Transport Protocol (HTTP)
    cookies.  This historical data MUST be partitioned using the same
    boundaries used for privacy-sensitive information specific to that
-   endpoint, and MUST NOT be used across different network interfaces.
-   The data SHOULD be flushed whenever a device changes the network to
-   which it is attached.  However, if a client can reliably identify a
-   previously attached network, it MAY retain and resume using
-   historical data associated with that network upon reconnection.
+   endpoint, and MUST NOT be used across different Provisioning Domains
+   (PvDs) [RFC7556].  The data SHOULD be flushed whenever a device
+   changes the PvD to which it is attached.  However, if a client can
+   reliably identify a previously attached PvD, it MAY retain and resume
+   using historical data associated with that PvD upon reconnection.
    Clients that use historical data MUST ensure that clients with
    different historical data will eventually converge toward the same
    behaviors.  For example, clients can periodically ignore historical
@@ -1210,6 +1210,10 @@ Table of Contents
    [RFC7413]  Cheng, Y., Chu, J., Radhakrishnan, S., and A. Jain, "TCP
               Fast Open", RFC 7413, DOI 10.17487/RFC7413, December 2014,
               <https://www.rfc-editor.org/rfc/rfc7413>.
+
+   [RFC7556]  Anipko, D., Ed., "Multiple Provisioning Domain
+              Architecture", RFC 7556, DOI 10.17487/RFC7556, June 2015,
+              <https://www.rfc-editor.org/rfc/rfc7556>.
 
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
