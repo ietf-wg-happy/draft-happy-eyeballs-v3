@@ -305,7 +305,7 @@ Note that this preference for IPv6 is not referring to the sending of
 AAAA or A queries, but rather the address of the DNS server itself
 and the IP version used to transport DNS messages.
 
-Also in keeping with Happy Eyeballs, when DNS queries are sent
+Also in accordance with Happy Eyeballs, when DNS queries are sent to
 a particular resolver address and do not receive responses, that
 address MAY be marked as penalized and queries can be sent to
 other DNS server addresses.
