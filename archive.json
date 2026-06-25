@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-23T03:54:46.023823+00:00",
+  "timestamp": "2026-06-25T03:57:04.643682+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -72,6 +72,11 @@
       "name": "ready to close",
       "description": "",
       "color": "ed1ea8"
+    },
+    {
+      "name": "IPv6",
+      "description": "",
+      "color": "1dd4da"
     }
   ],
   "issues": [
@@ -626,10 +631,12 @@
       "author": "momoka0122y",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "IPv6"
+      ],
       "body": "This was dismissed on https://github.com/tfpauly/draft-happy-eyeballs-v3/issues/18 but today I just found it in RFC6052. (I didn't notice this until now since i was only reading RFC7050 and RFC6146)\r\n\r\n```\r\n[3.1](https://datatracker.ietf.org/doc/html/rfc6052#section-3.1).  Restrictions on the Use of the Well-Known Prefix\r\n\r\n   The Well-Known Prefix MUST NOT be used to represent non-global IPv4\r\n   addresses, such as those defined in [[RFC1918](https://datatracker.ietf.org/doc/html/rfc1918)] or listed in Section 3\r\n   of [RFC5735].  Address translators MUST NOT translate packets in\r\n   which an address is composed of the Well-Known Prefix and a non-\r\n   global IPv4 address; they MUST drop these packets.\r\n```\r\n\r\nIf you think this part is not necessary because it is already documented here I understand, but I think it is very informational if it is in this document. (As I did not know this was a MUST NOT until today)",
       "createdAt": "2023-11-04T13:49:19Z",
-      "updatedAt": "2023-11-04T13:49:19Z",
+      "updatedAt": "2026-06-25T00:11:33Z",
       "closedAt": null,
       "comments": []
     },
@@ -825,10 +832,12 @@
       "author": "furry13",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "IPv6"
+      ],
       "body": "This is an open question I do not have an answer for yet - I guess the arguments can be made for both approaches..\r\n\r\nSo if an IPv6-mostly network provides DNS64, then a dual-stack host talking to an IPv4-only destination would have a choice between:\r\n\r\n* a synthesized IPv6 address which will be routed via NAT64\r\n* a native IPv4 path\r\n\r\n(we have a similar discussion in https://datatracker.ietf.org/doc/draft-link-v6ops-claton/: shall CLAT be enabled if both PLAT and IPv4 are available?)",
       "createdAt": "2024-03-18T23:06:41Z",
-      "updatedAt": "2025-12-11T21:43:54Z",
+      "updatedAt": "2026-06-24T23:58:51Z",
       "closedAt": null,
       "comments": [
         {
@@ -1211,7 +1220,7 @@
       "id": "I_kwDOKH7CuM6dQbCR",
       "title": "Describe handling expired / optimistic DNS",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/64",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -1220,8 +1229,8 @@
       "labels": [],
       "body": "Clients can remember expired DNS answers (also called \"optimistic DNS\"), and try expired answers in parallel with requesting new DNS answers. This needs to be folded into the happy eyeballs algorithm.",
       "createdAt": "2024-11-06T14:55:08Z",
-      "updatedAt": "2026-02-25T20:49:19Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-24T16:04:03Z",
+      "closedAt": "2026-06-24T16:04:03Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -1239,7 +1248,7 @@
         },
         {
           "author": "bemasc",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "In general, I am opposed to TTL stretching in HAPPY.  TTL stretching should require an explicit \"opt-in\" from the domain, which is out of scope for HAPPY.",
           "createdAt": "2025-12-01T15:15:08Z",
           "updatedAt": "2025-12-01T15:15:08Z"
@@ -1253,14 +1262,14 @@
         },
         {
           "author": "gakiwate",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "We can also limit the use of expired DNS entries only when combined with TLS. The TLS requirement can help assuage most security considerations.",
           "createdAt": "2026-02-25T19:32:34Z",
           "updatedAt": "2026-02-25T19:32:34Z"
         },
         {
           "author": "bemasc",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "@gakiwate Yes, DNS TTL stretching is even worse without TLS, but the primary concern is about the deleterious impact on traffic steering and reconfiguration, not security.\n\nBottom line: HAPPY shouldn't redefine the rules of the DNS game without consulting DNSOP.\n\n@mxinden Yes, some clients do stretch TTL by a few minutes.  We tolerate this level of noncompliance, but that doesn't make it a good behavior.  Historically, this stretching was introduced because getaddrinfo() (et. al.) don't expose the TTL, and many clients didn't have stub caches.  That left browsers with a choice between heuristic caching (with expiration times chosen to limit, but not eliminate, TTL stretching) or no local caching at all.\n\nIn HEv3, we assume that the DNS TTL is known, so we are not limited to browser-style heuristic caching.  Today, most devices already have TTL-respecting stub caches.",
           "createdAt": "2026-02-25T20:10:56Z",
           "updatedAt": "2026-02-25T20:49:19Z"
@@ -1481,10 +1490,12 @@
       "author": "philsbln",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "IPv6"
+      ],
       "body": "Section 8 suggests synthesizing NAT64-addresses in IPv6 only/mostly in cases without 464XLAT being used.\nWhile in the 464XLAT case NAT64 is clearly treated as IPv4, Section 8 does not suggest whether from A-records self-synthesized addresses should be treated as IPv4.\n\nNote that this issue is related to #42 but suggests a totally different outcome.\nBeyond that\u2026 in the all-in case with DNS64 and 464XLAT, should DNS64 synthesized AAAAs be detected and somehow treated special?",
       "createdAt": "2025-07-19T16:07:18Z",
-      "updatedAt": "2025-07-19T16:07:18Z",
+      "updatedAt": "2026-06-24T23:58:51Z",
       "closedAt": null,
       "comments": []
     },
@@ -1581,10 +1592,12 @@
       "author": "oskar456",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "IPv6"
+      ],
       "body": "I think there are some issues with section 8 (Supporting IPv6-Mostly and IPv6-Only Networks). Some of them are already discussed in issues #32, #42, and #87, maybe others but I think a complex review of this section is necessary.\n\nHere are my notes of what I think is not correct:\n  \n -  The title should not mention IPv6-mostly but should mention NAT64. IPv6-mostly refers to the network setup side, on the host this manifests itself either as dual stack (if DHCP Option 108 is not supported) or as IPv6-only. If the IPv6-mostly network is in the dual stack mode then nothing from Section 8 applies.\n - Section 8 introduction mentions that it is intended only for platforms not supporting 464XLAT. In a long term, this would be possibly a very small minority of platforms. So I wonder whether it is worth implementing all the features from this section for only a very tiny amount of use cases. Having said that I believe that even on platforms with CLAT, the HE library should instead use the mitigations from Section 8 and avoid using CLAT (I believe this is the way the Apple ecosystem works already).\n - \"A simple heuristic to detect one of these networks is to check if the network offers routable IPv6 addressing, does not offer routable IPv4 addressing, and offers a DNS resolver address.\" - that does detect IPv6-only network but not NAT64. The whole section is about mitigating issues with accessing IPv4 resources over NAT64, so the heuristic here needs to somehow detect NAT64 presence.\n - Section 8.2 \"Discovering and Utilizing PREF64\" should probably be the first one as this forms the foundation of detecting NAT64 network and also obtaining enough data to perform other mitigations.\n - Section 8.3 \"Supporting DNS64\" is wrong: \"If PREF64 is not available and the NAT64 prefix cannot be discovered, clients SHOULD assume the network is relying on DNS64 for IPv4-to-IPv6 address synthesis\" -  if the NAT64 prefix cannot be discovered, then the client cannot assume anything else than that there is no NAT64 in the network. Without discovered NAT64 prefix, all the mitigations mentioned in Section 8 cannot work. I believe this section could be easily dropped, it does not bring any new information.\n - It is not clear whether the mitigation of the VPN issue in Section 8.5 should also use \"Last Resort Local Synthesis Delay\" or not.\n - I think there should be a section summarising the algorithm, because just from the text, it is hard to figure out what exactly should happen. I am still wrapping my head around a proper solution supporting at the same time dual-stack, NAT64/DNS64 and NAT64/PREF64 (without DNS64) - that last one is quite tricky.\n\nThe issue is that if there would be network with NAT64 without DNS64, under current text, every single connection to IPv4-only destination would be penalised by \"Last Resort Local Synthesis Delay\". This is unacceptable. There might be an exception that you don't apply this delay if AAAA query returned empty answer, but you will still be dependant on every AAAA query properly finishing.\nI don't think the \"Last Resort Local Synthesis Delay\" is necessary. If the system uses 464XLAT, it would do A queries for every single hostname without any delay and it would not cause any overload of the DNS. \n\nMaybe the proper solution would be \"undo and redo DNS64\" like this:\n  1. detect PREF64 (either RA option or RFC 7050)\n  2. no PREF64 - business as usual.\n  3. if there is PREF64:\n      a. Start doing A queries even if there is no IPv4 connectivity\n      b. Every time you receive AAAA answer, try to undo the DNS64. If it was possible, consider both A and AAAA queries finished with no IPv6 addresses and IPv4 addresses extracted from the AAAA answers.\n      c. For each connection towards an IPv4 destination:\n           1. if covered via a specific route not going towards CLAT, send natively (this is needed for the VPN case)\n           2. if covered only by route towards CLAT, combine the destination with the detected PREF64 and create IPv6 packet.",
       "createdAt": "2025-07-24T17:39:35Z",
-      "updatedAt": "2025-07-25T07:35:41Z",
+      "updatedAt": "2026-06-24T23:58:52Z",
       "closedAt": null,
       "comments": [
         {
@@ -1888,7 +1901,7 @@
       "labels": [],
       "body": "Hey guys, I'm trying to figure out how to implement happy eyeballs for QUIC.\n\nOne of the differences between QUIC and TCP/TLS is that the first flight has a CPU cost in the form of TLS secret generation. If you create two separate QUIC connections, one for IPv4 and one for IPv6, you will pay this cost twice unless the delay between connections is sufficiently large enough.\n\nAlternatively, if the QUIC client sends a copy of the Initial packet over both IPv4 and IPv6, I believe you can avoid this duplicate work. The packets being transmitted over IPv4 and IPv6 would be the same. The server would finish the handshake using the earliest (or both?) socket family.\n\nDoes this make sense? Is there any guidance on if happy eyeballs should happen at the transport or application level for QUIC?",
       "createdAt": "2026-02-06T00:49:04Z",
-      "updatedAt": "2026-02-09T09:43:13Z",
+      "updatedAt": "2026-06-24T08:15:31Z",
       "closedAt": null,
       "comments": [
         {
@@ -1897,6 +1910,13 @@
           "body": "> Alternatively, if the QUIC client sends a copy of the Initial packet over both IPv4 and IPv6, I believe you can avoid this duplicate work. The packets being transmitted over IPv4 and IPv6 would be the same. The server would finish the handshake using the earliest (or both?) socket family.\n\nFor what my opinion is worth, I consider this an optimization not worth specifying in the document.\n\nWe (Mozilla) expect the majority of connections to succeed on the first attempt, and thus will not introduce such optimizations (for now).\n\n> Is there any guidance on if happy eyeballs should happen at the transport or application level for QUIC?\n\nThe draft is currently specified at both the transport level (TCP) and application level (here TLS), see e.g.:\n\nhttps://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/blob/f9fae351b5bbbb58107fe624a0677f1e9911ed2d/draft-ietf-happy-happyeyeballs-v3.md?plain=1#L560-L571",
           "createdAt": "2026-02-09T09:43:13Z",
           "updatedAt": "2026-02-09T09:43:13Z"
+        },
+        {
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, the draft indicates that racing between attempts should continue up through TLS and QUIC, but it can apply even to plaintext TCP connections as well.\n\nI'd second @mxinden's point: the idea behind delaying between attempts is to make the vast majority of connections succeed on the first attempt.\n\nI'm not sure if there are additional privacy considerations around repeating the exact same QUIC Client Initial to multiple endpoints, but it seems worth being careful in that area.",
+          "createdAt": "2026-06-24T08:15:31Z",
+          "updatedAt": "2026-06-24T08:15:31Z"
         }
       ]
     },
@@ -1905,17 +1925,19 @@
       "id": "I_kwDOKH7CuM7ozDLp",
       "title": "Clarify service-group attempt ordering",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/113",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "Vaisman",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "nidhijaju"
+      ],
       "labels": [
         "discuss"
       ],
       "body": "Section 6 says \"all of the addresses of the first group SHOULD be started before starting attempts using the next group.\"\nIs interleaving across service-priority groups acceptable for faster fallback?\nWith 4+ addresses in the first group and CAD=250ms, the next group may be delayed by ~1s.",
       "createdAt": "2026-02-06T09:05:27Z",
-      "updatedAt": "2026-02-25T23:17:30Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-24T22:46:02Z",
+      "closedAt": "2026-06-24T22:46:02Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -2006,29 +2028,43 @@
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/117",
       "state": "OPEN",
       "author": "bemasc",
-      "authorAssociation": "NONE",
-      "assignees": [],
-      "labels": [],
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [
+        "discuss"
+      ],
       "body": "[RFC 3901bis Section 4.3](https://www.ietf.org/archive/id/draft-ietf-dnsop-3901bis-17.html#name-guidelines-for-dns-stub-res) discusses how DNS stub resolvers should behave in dual-stack setups.  This draft can reference that text but should not attempt to instruct stub resolvers on how to behave.",
       "createdAt": "2026-02-27T20:56:12Z",
-      "updatedAt": "2026-02-27T20:56:12Z",
+      "updatedAt": "2026-06-24T23:47:01Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think that referencing RFC 3901bis Section 4.3 is fine, and we should also reference destination selection from RFC 6724 (which is doing the main real work there), but neither of those provide guidance on preferring IPv6. I think we should still maintain that SHOULD and discuss failing over, as this is already normative text from RFC 8305.",
+          "createdAt": "2026-06-24T23:46:55Z",
+          "updatedAt": "2026-06-24T23:46:55Z"
+        }
+      ]
     },
     {
       "number": 123,
       "id": "I_kwDOKH7CuM7z6X3s",
       "title": "Change \"interface\" to \"PvD\"",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/123",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "nidhijaju"
+      ],
       "labels": [],
       "body": "As discussed at IETF 125, we should talk about provisioning domains more than specific interfaces.",
       "createdAt": "2026-03-18T01:40:40Z",
-      "updatedAt": "2026-03-18T01:40:40Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-24T22:45:21Z",
+      "closedAt": "2026-06-24T22:45:20Z",
       "comments": []
     },
     {
@@ -2039,11 +2075,48 @@
       "state": "OPEN",
       "author": "gorryfair",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "tfpauly"
+      ],
       "labels": [],
       "body": "Why is this IPv6-specific and what does this text allude to: \"Such issues might be specific to IPv6 traffic on the network.\"\n- Can the text describe the nature of this issue? Is it related to the size of the packet-header?",
       "createdAt": "2026-03-18T03:27:04Z",
-      "updatedAt": "2026-03-18T03:27:34Z",
+      "updatedAt": "2026-06-24T23:35:56Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Note: This text was added in https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/120.",
+          "createdAt": "2026-06-24T07:45:55Z",
+          "updatedAt": "2026-06-24T07:45:55Z"
+        },
+        {
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "body": "On 24/06/2026 09:46, Nidhi Jaju wrote:\n> *nidhijaju* left a comment (ietf-wg-happy/draft-happy-eyeballs-v3#124) \n> <https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/124#issuecomment-4787016440>\n>\n> Note: This text was added in #120 \n> <https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/120>.\n>\n> \u2014\n> Reply to this email directly, view it on GitHub \n> <https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/124?email_source=notifications&email_token=ABYLLESBLI45FL5AKTVVIOL5BOBMRA5CNFSNUABFM5UWIORPF5TWS5BNNB2WEL2JONZXKZKDN5WW2ZLOOQXTINZYG4YDCNRUGQYKM4TFMFZW63VGMF2XI2DPOKSWK5TFNZ2KYZTPN52GK4S7MNWGSY3L#issuecomment-4787016440>, \n> or unsubscribe \n> <https://github.com/notifications/unsubscribe-auth/ABYLLESXFRDMJI7SC2JNFO35BOBMRAVCNFSNUABFKJSXA33TNF2G64TZHM3DOOJTHE3DAMRUHNEXG43VMU5TIMBZGI2DMMBYGYZ2C5QC>.\n> You are receiving this because you authored the thread.Message ID: \n> ***@***.***>\n>\nI still don't understand the origins or generallity of the statement \n\"Such issues might be specific to IPv6\".\n\nMaybe I am missing something, so what is it that makes a TCP session \nover IPv6 fail to recieve packets of the received MSS?\n\nGorry\n",
+          "createdAt": "2026-06-24T16:34:11Z",
+          "updatedAt": "2026-06-24T16:34:11Z"
+        }
+      ]
+    },
+    {
+      "number": 130,
+      "id": "I_kwDOKH7CuM8AAAABGn4B0A",
+      "title": "Clarify \"algorithm\" vs \"example algorithm\"",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/130",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Currently the abstract and intro say this (which was taken from HEv2):\n\n> This document specifies requirements for algorithms that reduce this user-visible delay and provides an example algorithm.\n\nThis doesn't really match the text since this isn't specifying an example algorithm as much as a particular procedure to follow.",
+      "createdAt": "2026-06-25T00:10:04Z",
+      "updatedAt": "2026-06-25T00:10:04Z",
       "closedAt": null,
       "comments": []
     }
@@ -7543,7 +7616,7 @@
       "id": "PR_kwDOKH7CuM6ujZBI",
       "title": "Describe optimistic DNS",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/100",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -7554,14 +7627,14 @@
       ],
       "body": "Closes #64 ",
       "createdAt": "2025-10-20T03:57:38Z",
-      "updatedAt": "2026-06-15T20:06:51Z",
+      "updatedAt": "2026-06-24T16:04:25Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "bf7ebd11d9d60b57e9286dcfcdf8f85d3647fba1",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfp/optimistic-dns",
       "headRefOid": "b4d57ada5db230ae0361f940d5095df5a7f28070",
-      "closedAt": null,
+      "closedAt": "2026-06-24T16:04:25Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -7593,6 +7666,13 @@
           "body": "Proposing here https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/127",
           "createdAt": "2026-06-15T20:06:51Z",
           "updatedAt": "2026-06-15T20:06:51Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Superseded by #127 ",
+          "createdAt": "2026-06-24T16:04:25Z",
+          "updatedAt": "2026-06-24T16:04:25Z"
         }
       ],
       "reviews": [
@@ -8769,7 +8849,7 @@
       "labels": [],
       "body": "When DNS answers change mid-setup and no in-progress attempt has\r\nsucceeded, allow the client to cancel the running Connection Attempt\r\nDelay timer and start the next attempt immediately, since the timer\r\nwas sized against a now-stale address list.",
       "createdAt": "2026-05-26T23:41:00Z",
-      "updatedAt": "2026-05-27T17:21:05Z",
+      "updatedAt": "2026-06-24T07:33:50Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
@@ -8822,6 +8902,13 @@
           "body": "I see. Yeah that scenario makes sense. Not sure how to wordsmith that though",
           "createdAt": "2026-05-27T17:21:05Z",
           "updatedAt": "2026-05-27T17:21:05Z"
+        },
+        {
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It makes sense to adjust based on new information that's arrived, in general.\r\n\r\nIn this case, however, doesn't the current text calculate the timer delay based on information about the attempt that has already started, i.e. roughly when we'd expect to retransmit the initial packet for that address? Why would we re-adjust the timer for that attempt just because the addresses that are next up in line are different, when they didn't factor into the timer value in the first place?\r\n\r\nIf the new address are much more likely to succeed (e.g. are fresh instead of stale answers), then I think it makes sense to more immediately start the attempts to the new addresses.",
+          "createdAt": "2026-06-24T07:33:50Z",
+          "updatedAt": "2026-06-24T07:33:50Z"
         }
       ],
       "reviews": []
@@ -8831,24 +8918,26 @@
       "id": "PR_kwDOKH7CuM7mtnSx",
       "title": "Discuss address expiry, reference optimistic DNS",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/127",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #64 \r\nReplaces #100",
       "createdAt": "2026-06-15T20:06:31Z",
-      "updatedAt": "2026-06-22T15:52:23Z",
+      "updatedAt": "2026-06-24T16:04:02Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfpauly-patch-11",
-      "headRefOid": "7679bcba98b0719c91132ff5943b672d7409ba7d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "660c561cbd773e1385f5e39c0b872b688685da6b",
+      "closedAt": "2026-06-24T16:04:02Z",
+      "mergedAt": "2026-06-24T16:04:01Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "24202db1d456164150a4005e98fe955bc6046e1f"
+      },
       "comments": [],
       "reviews": [
         {
@@ -8976,8 +9065,278 @@
               "updatedAt": "2026-06-22T15:52:23Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABD6J-uQ",
+          "commit": {
+            "abbreviatedOid": "7679bcb"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Great, thanks!",
+          "createdAt": "2026-06-23T21:37:24Z",
+          "updatedAt": "2026-06-23T21:37:24Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABD8fF1g",
+          "commit": {
+            "abbreviatedOid": "7679bcb"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Overall lgtm",
+          "createdAt": "2026-06-24T06:44:05Z",
+          "updatedAt": "2026-06-24T06:50:07Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\nPreviously received DNS answers might expire (exceed their TTL)\n```",
+              "createdAt": "2026-06-24T06:44:05Z",
+              "updatedAt": "2026-06-24T06:50:07Z"
+            },
+            {
+              "originalPosition": 10,
+              "body": "Can we add some text to clarify the behavior of any expired answers that we have not yet started an attempt for?",
+              "createdAt": "2026-06-24T06:47:35Z",
+              "updatedAt": "2026-06-24T06:50:07Z"
+            },
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\nupdates to the resolved address list asynchronously enables\nthe use of expired answers \"optimistically\" while waiting for non-expired\n```",
+              "createdAt": "2026-06-24T06:48:54Z",
+              "updatedAt": "2026-06-24T06:50:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABD8zXMg",
+          "commit": {
+            "abbreviatedOid": "7679bcb"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-24T07:31:16Z",
+          "updatedAt": "2026-06-24T07:31:16Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Since we have \"Handling New Answers\" section, how about:\n```suggestion\n## Handling Expired Answers\n```\n",
+              "createdAt": "2026-06-24T07:31:16Z",
+              "updatedAt": "2026-06-24T07:31:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABD8zfmg",
+          "commit": {
+            "abbreviatedOid": "7679bcb"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-24T07:31:29Z",
+          "updatedAt": "2026-06-24T07:31:30Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "In {#changes} we say:\n\n> If an address is removed from the list that already had a connection\nattempt started, the connection attempt SHOULD NOT be canceled, but\nrather be allowed to continue. If the removed address had not yet\nhad a connection attempt started, it SHOULD be removed from the list\nof addresses to try.\n\nShould we use \"SHOULD NOT\" in the same way? Also, as nidhijaju mentioned below, should answers that are expired and have not yet been attempted also have wording similar to {#changes}?",
+              "createdAt": "2026-06-24T07:31:30Z",
+              "updatedAt": "2026-06-24T07:31:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABD8zrbQ",
+          "commit": {
+            "abbreviatedOid": "7679bcb"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-24T07:31:49Z",
+          "updatedAt": "2026-06-24T07:31:49Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEAdNaA",
+          "commit": {
+            "abbreviatedOid": "b9da5e2"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-24T16:01:20Z",
+          "updatedAt": "2026-06-24T16:01:20Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "I think we should just inherit the #changes behavior \u2014 ongoing connection attempts SHOULD NOT be cancelled, and expired answers that are no longer in the new list that we didn't start SHOULD be removed.",
+              "createdAt": "2026-06-24T16:01:20Z",
+              "updatedAt": "2026-06-24T16:01:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEAeAYQ",
+          "commit": {
+            "abbreviatedOid": "b9da5e2"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-24T16:03:14Z",
+          "updatedAt": "2026-06-24T16:03:15Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "```suggestion\nAddition of any new answers is handled as described in {{new-answers}} and {{changes}}; that is, ongoing connection attempts\nwill not be cancelled, but any address for which a connection\nattempt had not yet been started that is no longer in the resolved\naddress list will be removed.\n```",
+              "createdAt": "2026-06-24T16:03:15Z",
+              "updatedAt": "2026-06-24T16:03:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEAeJ0Q",
+          "commit": {
+            "abbreviatedOid": "660c561"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-24T16:03:34Z",
+          "updatedAt": "2026-06-24T16:03:35Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "Updated the text!",
+              "createdAt": "2026-06-24T16:03:34Z",
+              "updatedAt": "2026-06-24T16:03:35Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 128,
+      "id": "PR_kwDOKH7CuM7qAitn",
+      "title": "Add note to clarify service priority",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/128",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #113. ",
+      "createdAt": "2026-06-24T08:07:51Z",
+      "updatedAt": "2026-06-24T22:46:03Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "clarify-service-priority",
+      "headRefOid": "5170d03c1c2e8d7cb8f8ba7033d5e4880162511e",
+      "closedAt": "2026-06-24T22:46:01Z",
+      "mergedAt": "2026-06-24T22:46:01Z",
+      "mergedBy": "nidhijaju",
+      "mergeCommit": {
+        "oid": "d1131922e277ab2ca540a358281d9d42ecfec883"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABECWKFA",
+          "commit": {
+            "abbreviatedOid": "5170d03"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-24T20:50:35Z",
+          "updatedAt": "2026-06-24T20:50:35Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 129,
+      "id": "PR_kwDOKH7CuM7qBSqE",
+      "title": "Replace interface with PvD",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/129",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I can also replace \"network\" with PvD in many more places, but I wasn't sure if that added clarity.\r\n\r\nCloses #123.",
+      "createdAt": "2026-06-24T08:41:47Z",
+      "updatedAt": "2026-06-24T22:45:21Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "interfaces-pvds",
+      "headRefOid": "1d94d9b1393600b31173786849cf3c9df94de11e",
+      "closedAt": "2026-06-24T22:45:20Z",
+      "mergedAt": "2026-06-24T22:45:20Z",
+      "mergedBy": "nidhijaju",
+      "mergeCommit": {
+        "oid": "943b39e84a25f27516229230c04083f6cb5d390f"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABECVxFA",
+          "commit": {
+            "abbreviatedOid": "1d94d9b"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM",
+          "createdAt": "2026-06-24T20:49:48Z",
+          "updatedAt": "2026-06-24T20:49:48Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 131,
+      "id": "PR_kwDOKH7CuM7qY3CE",
+      "title": "Simplify abstract/intro definition of Happy Eyeballs",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/131",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Closes #130 \r\n\r\nRather than settings up a dichotomy of \"requirements\" and \"example algorithm\" that isn't really used, just say that this document defines Happy Eyeballs.",
+      "createdAt": "2026-06-25T03:41:34Z",
+      "updatedAt": "2026-06-25T03:41:34Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfpauly-patch-12",
+      "headRefOid": "4bc4589ad24ee33b167bfd26cdd018d8bea39f4f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
