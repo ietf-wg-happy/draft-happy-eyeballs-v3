@@ -1222,7 +1222,7 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-grouping-and-sorting-addres" class="internal xref">Grouping and Sorting Addresses</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-grouping-and-sorting-endpoi" class="internal xref">Grouping and Sorting Endpoints</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
                 <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-grouping-by-application-pro" class="internal xref">Grouping By Application Protocols and Security Requirements</a></p>
@@ -1236,7 +1236,7 @@ document updates the algorithm description in RFC 8305.<a href="#section-abstrac
                 <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-grouping-by-service-priorit" class="internal xref">Grouping By Service Priority</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
-                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-sorting-destination-address" class="internal xref">Sorting Destination Addresses Within Groups</a></p>
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-sorting-destination-endpoin" class="internal xref">Sorting Destination Endpoints Within Groups</a></p>
 </li>
             </ul>
 </li>
@@ -1340,7 +1340,7 @@ for reducing user-visible delays on dual-stack hosts. This
 definition updates the description in <span>[<a href="#HEV2" class="cite xref">HEV2</a>]</span>, which
 itself obsoleted <span>[<a href="#RFC6555" class="cite xref">RFC6555</a>]</span>.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">The Happy Eyeballs algorithm of racing connections to resolved
-addresses has several stages to avoid delays to the user whenever
+endpoints has several stages to avoid delays to the user whenever
 possible, while respecting client priorities, such as preferring
 the use of IPv6 or the availability of protocols like HTTP/3 <span>[<a href="#HTTP3" class="cite xref">HTTP3</a>]</span> and
 TLS Encrypted Client Hello <span>[<a href="#ECH" class="cite xref">ECH</a>]</span>. This document discusses
@@ -1383,10 +1383,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 distinct phases:<a href="#section-3-1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-3-2">
 <li id="section-3-2.1">
-          <p id="section-3-2.1.1">Asynchronous resolution of a hostname into destination addresses (<a href="#resolution" class="auto internal xref">Section 4</a>)<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.1.1">Asynchronous resolution of a hostname into destination endpoints (<a href="#resolution" class="auto internal xref">Section 4</a>)<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-3-2.2">
-          <p id="section-3-2.2.1">Sorting of the resolved destination addresses (<a href="#sorting" class="auto internal xref">Section 5</a>)<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
+          <p id="section-3-2.2.1">Sorting of the resolved destination endpoints (<a href="#sorting" class="auto internal xref">Section 5</a>)<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-3-2.3">
           <p id="section-3-2.3.1">Initiation of asynchronous connection attempts (<a href="#connections" class="auto internal xref">Section 6</a>)<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
@@ -1397,7 +1397,7 @@ other attempts (<a href="#connections" class="auto internal xref">Section 6</a>)
 </li>
       </ol>
 <p id="section-3-3">Note that this document assumes that the preference policy for the
-host destination address favors IPv6 over IPv4. IPv6 has many
+destination address family favors IPv6 over IPv4. IPv6 has many
 desirable properties designed to be improvements over IPv4
 <span>[<a href="#IPV6" class="cite xref">IPV6</a>]</span>.<a href="#section-3-3" class="pilcrow">¶</a></p>
 <p id="section-3-4">This document also assumes that the preference policy favors QUIC over
@@ -1413,9 +1413,9 @@ recommendations in this document can be easily adapted.<a href="#section-3-5" cl
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-hostname-resolution" class="section-name selfRef">Hostname Resolution</a>
       </h2>
 <p id="section-4-1">When a client is trying to establish a connection to a named host,
-it needs to determine which destination IP addresses it can use
-to reach the host. The client resolves the hostname into IP
-addresses by sending DNS queries and collecting the answers.
+it needs to determine which destination endpoint it can use
+to establish a connection. The client resolves the endpoints
+by sending DNS queries and collecting the answers.
 This section describes how a client initiates DNS queries
 and asynchronously handles the answers.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <div id="sending-dns-queries">
@@ -1465,7 +1465,7 @@ logic described above):<a href="#section-4.1-5" class="pilcrow">¶</a></p>
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-handling-dns-answers-asynch" class="section-name selfRef">Handling DNS Answers Asynchronously</a>
         </h3>
 <p id="section-4.2-1">Once the client receives sufficient answers to its DNS queries, it can
-move onto the phases of sorting addresses (<a href="#sorting" class="auto internal xref">Section 5</a>)
+move onto the phases of sorting endpoints (<a href="#sorting" class="auto internal xref">Section 5</a>)
 and establishing connections (<a href="#connections" class="auto internal xref">Section 6</a>).<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2-2">Implementations <span class="bcp14">SHOULD NOT</span> wait for all answers to return
 before starting the next steps of connection establishment. If one query
@@ -1477,7 +1477,7 @@ processing different record types independently.
 Note that if the platform does not offer an asynchronous DNS API,
 this behavior can be simulated by making separate synchronous queries
 for each record type in parallel.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
-<p id="section-4.2-4">The client moves onto sorting addresses and establishing connections
+<p id="section-4.2-4">The client moves onto sorting endpoints and establishing connections
 once one of the following condition sets is met:<a href="#section-4.2-4" class="pilcrow">¶</a></p>
 <p id="section-4.2-5">Either:<a href="#section-4.2-5" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1503,10 +1503,10 @@ a negative response)<a href="#section-4.2-6.3.1" class="pilcrow">¶</a></p>
 not been received<a href="#section-4.2-8.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.2-9">Positive answers can be addresses received either from AAAA or A
-records, or address hints received directly in SVCB/HTTPS records.<a href="#section-4.2-9" class="pilcrow">¶</a></p>
+<p id="section-4.2-9">Positive answers can be IP addresses received either from AAAA or A
+records, or IP address hints received directly in SVCB/HTTPS records.<a href="#section-4.2-9" class="pilcrow">¶</a></p>
 <p id="section-4.2-10">Negative answers are exclusively responses to AAAA or A records
-that contain no addresses (with or without an error like NXDOMAIN).
+that contain no IP addresses (with or without an error like NXDOMAIN).
 If all answers come back with negative answers, the
 connection establishment will fail or need to wait until other answers
 are received.<a href="#section-4.2-10" class="pilcrow">¶</a></p>
@@ -1533,7 +1533,7 @@ associated with the original name being queried, in which case their TargetName
 is ".", or are associated with another service name (see <span><a href="https://rfc-editor.org/rfc/rfc9460#section-2.5" class="relref">Section 2.5</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>).<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
 <p id="section-4.2.1-2">The algorithm in this document does not consider service information to be received
 until ServiceMode records are available.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-3">ServiceMode records can contain address hints via <code>ipv6hint</code> and <code>ipv4hint</code>
+<p id="section-4.2.1-3">ServiceMode records can contain IP address hints via <code>ipv6hint</code> and <code>ipv4hint</code>
 parameters. When these are received, they <span class="bcp14">SHOULD</span> be considered as positive
 non-empty answers for the purpose of the algorithm when A and AAAA records
 corresponding to the TargetName are not available yet. Note that clients are
@@ -1560,9 +1560,9 @@ delayed AAAA, delayed SVCB, SVCB hints providing early answers)<a href="#section
         </h3>
 <p id="section-4.3-1">If new records arrive while connection attempts are in progress,
 but before any connection has been established, then any newly
-received addresses are incorporated into the list of available candidate
-addresses (see <a href="#changes" class="auto internal xref">Section 7</a>) and the process of connection attempts will
-continue with the new addresses added, until one connection is
+received endpoints are incorporated into the list of available candidate
+endpoints (see <a href="#changes" class="auto internal xref">Section 7</a>) and the process of connection attempts will
+continue with the new endpoints added, until one connection is
 established.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1576,11 +1576,11 @@ while connection attempts are still in progress. A Happy Eyeballs client will no
 expire. However, the client <span class="bcp14">MAY</span> trigger new DNS queries to fetch non-expired answers after the original records have expired,
 in the case in which the original answers have not yet led to a successful connection.
 Addition of any new answers is handled as described in <a href="#new-answers" class="auto internal xref">Section 4.3</a> and <a href="#changes" class="auto internal xref">Section 7</a>; that is, ongoing connection attempts
-will not be cancelled, but any address for which a connection
+will not be cancelled, but any endpoint for which a connection
 attempt had not yet been started that is no longer in the resolved
-address list will be removed.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+endpoint list will be removed.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
 <p id="section-4.4-2">Additionally, the fact that Happy Eyeballs enables clients to handle
-updates to the resolved address list asynchronously enables
+updates to the resolved endpoint list asynchronously enables
 the use of expired answers "optimistically" while waiting for non-expired
 answers. This approach is called "optimistic DNS", and is described
 in <span>[<a href="#OPTIMISTIC-DNS" class="cite xref">OPTIMISTIC-DNS</a>]</span>.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
@@ -1616,20 +1616,20 @@ available list.<a href="#section-4.5-3" class="pilcrow">¶</a></p>
 </div>
 <div id="sorting">
 <section id="section-5">
-      <h2 id="name-grouping-and-sorting-addres">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-grouping-and-sorting-addres" class="section-name selfRef">Grouping and Sorting Addresses</a>
+      <h2 id="name-grouping-and-sorting-endpoi">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-grouping-and-sorting-endpoi" class="section-name selfRef">Grouping and Sorting Endpoints</a>
       </h2>
 <p id="section-5-1">Before attempting to connect to any of the resolved destination
-addresses, the client defines the order in which to start the
+endpoints, the client defines the order in which to start the
 attempts. Once the order has been defined, the client can use a
 simple algorithm for racing each option after a short delay (see
 <a href="#connections" class="auto internal xref">Section 6</a>). It is important that the ordered list involve all
-addresses from both families and all protocols that have been received
+endpoints from both address families and all protocols that have been received
 by this point, as this allows the client to get the racing effect of
 Happy Eyeballs for the entire list, not just the first IPv4 and first
 IPv6 addresses.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <p id="section-5-2">The client performs three levels of grouping
-and sorting of addresses based on the DNS answers received.
+and sorting of endpoints based on the DNS answers received.
 Each subsequent level of sorting only changes orders and
 preferences within the previously defined groups.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-5-3">
@@ -1640,7 +1640,7 @@ preferences within the previously defined groups.<a href="#section-5-2" class="p
           <p id="section-5-3.2.1">Grouping and sorting by service priorities (<a href="#service-group" class="auto internal xref">Section 5.2</a>)<a href="#section-5-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-5-3.3">
-          <p id="section-5-3.3.1">Sorting by destination address preferences (<a href="#address-sorting" class="auto internal xref">Section 5.3</a>)<a href="#section-5-3.3.1" class="pilcrow">¶</a></p>
+          <p id="section-5-3.3.1">Sorting by destination endpoint preferences (<a href="#endpoint-sorting" class="auto internal xref">Section 5.3</a>)<a href="#section-5-3.3.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
 <div id="application-group">
@@ -1661,11 +1661,11 @@ assumes they support the same protocols and security properties.<a href="#sectio
 <p id="section-5.1-3">However, the client is aware of different sets of destination endpoints
 that advertise different capabilities when it receives multiple distinct
 SVCB/HTTPS records. The client <span class="bcp14">SHOULD</span> separate these
-addresses into different groups, such that all addresses in a
+endpoints into different groups, such that all endpoints in a
 group share the same application protocols and relevant security
 properties. The specific parameters that are relevant to the client
 depend on the client implementation and application.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
-<p id="section-5.1-4">Note that some destination addresses might need to be added to
+<p id="section-5.1-4">Note that some destination endpoints might need to be added to
 multiple groups at this stage. For example, consider the following
 HTTPS records:<a href="#section-5.1-4" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5.1-5">
@@ -1678,14 +1678,14 @@ HTTPS records:<a href="#section-5.1-4" class="pilcrow">¶</a></p>
 </div>
 <p id="section-5.1-6">In this case, 2001:db8::2 can be used with HTTP/3 and HTTP/2,
 but 2001:db8::4 can only be used with HTTP/2. If the client
-creates a grouping for HTTP/3-capable addresses and
-HTTP/2-capable addresses, 2001:db8::2 would exist in both
+creates a grouping for HTTP/3-capable endpoints and
+HTTP/2-capable endpoints, 2001:db8::2 would exist in both
 groups (assuming that all other security properties are
 the same).<a href="#section-5.1-6" class="pilcrow">¶</a></p>
 <p id="section-5.1-7">Connection racing as described in <a href="#connections" class="auto internal xref">Section 6</a> applies
-to different destination address options within one of these groups.
+to different destination endpoint options within one of these groups.
 The logic for prioritizing and falling back between groups
-of addresses with different security properties and protocol
+of endpoints with different security properties and protocol
 properties is implementation-defined.<a href="#section-5.1-7" class="pilcrow">¶</a></p>
 <div id="when-to-apply-application-preferences">
 <section id="section-5.1.1">
@@ -1744,7 +1744,7 @@ first, and answers with higher numerical values are sorted later.<a href="#secti
 name in the record, and the priority of that SVCB record applies to
 any A or AAAA records for the same owner name. These answers are
 sorted according to that SVCB record's priority.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
-<p id="section-5.2-6">All addresses received from a particular SVCB service (within a group
+<p id="section-5.2-6">All endpoints received from a particular SVCB service (within a group
 as defined in <a href="#application-group" class="auto internal xref">Section 5.1</a>), either by an associated AAAA
 or A record or address hints, <span class="bcp14">SHOULD</span> be separated into a group by
 the client. These service-based groups <span class="bcp14">SHOULD</span> then be sorted
@@ -1758,23 +1758,23 @@ same priority, the client <span class="bcp14">SHOULD</span> shuffle these groups
 <p id="section-5.2-9">If there are some SVCB/HTTPS services received, but there are AAAA or A
 records that do not have an associated service (for example, if no
 SVCB/HTTPS record is received for the original name using the "."
-TargetName), the unassociated addresses <span class="bcp14">SHOULD</span> be put in a group
-that is prioritized at the end of the list.<a href="#section-5.2-9" class="pilcrow">¶</a></p>
+TargetName), the unassociated addresses <span class="bcp14">SHOULD</span> be put in a group of
+endpoints that is prioritized at the end of the list.<a href="#section-5.2-9" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="address-sorting">
+<div id="endpoint-sorting">
 <section id="section-5.3">
-        <h3 id="name-sorting-destination-address">
-<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-sorting-destination-address" class="section-name selfRef">Sorting Destination Addresses Within Groups</a>
+        <h3 id="name-sorting-destination-endpoin">
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-sorting-destination-endpoin" class="section-name selfRef">Sorting Destination Endpoints Within Groups</a>
         </h3>
-<p id="section-5.3-1">Within each group of addresses, after grouping based on the logic
+<p id="section-5.3-1">Within each group of endpoints, after grouping based on the logic
 in <a href="#application-group" class="auto internal xref">Section 5.1</a> and <a href="#service-group" class="auto internal xref">Section 5.2</a>, the client sorts
-the addresses based on preference and historical data.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
-<p id="section-5.3-2">First, the client <span class="bcp14">MUST</span> sort the addresses using Destination Address
+the endpoints based on preference and historical data.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-2">First, the client <span class="bcp14">MUST</span> sort the endpoints using Destination Address
 Selection (<span>[<a href="#RFC6724" class="cite xref">RFC6724</a>], <a href="https://rfc-editor.org/rfc/rfc6724#section-6" class="relref">Section 6</a></span>).<a href="#section-5.3-2" class="pilcrow">¶</a></p>
 <p id="section-5.3-3">If the client is stateful and has a history of expected round-trip
-times (RTTs) for the routes to access each address, it <span class="bcp14">SHOULD</span> add a
-Destination Address Selection rule between rules 8 and 9 that prefers
+times (RTTs) for the routes to access each endpoint's IP address,
+it <span class="bcp14">SHOULD</span> add a Destination Address Selection rule between rules 8 and 9 that prefers
 addresses with lower RTTs. If the client keeps track of which
 addresses it used in the past, it <span class="bcp14">SHOULD</span> add another Destination
 Address Selection rule between the RTT rule and rule 9, which prefers
@@ -1795,17 +1795,17 @@ that fresh addresses are attempted.<a href="#section-5.3-3" class="pilcrow">¶</
 <p id="section-5.3-4">Next, the client <span class="bcp14">SHOULD</span> modify the ordered list to interleave
 address families. Whichever address family is first in the list
 should be followed by an endpoint of the other address family. For example,
-if the first address in the sorted list is an IPv6 address, then
-the first IPv4 address should be moved up in the list to be second
+if the first endpoint in the sorted list has an IPv6 address, then
+the first IPv4 endpoint should be moved up in the list to be second
 in the list. An implementation <span class="bcp14">MAY</span> choose to favor one
 address family more by allowing multiple addresses of that
 family to be attempted before trying the next.
-The number of contiguous addresses of the first address family of
+The number of contiguous endpoints of the first address family of
 properties will be referred to as the "Preferred Address Family
 Count" and can be a configurable value. This avoids waiting through a
-long list of addresses from a given address family if connectivity
+long list of endpoints for a given address family if connectivity
 over that address family is impaired.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
-<p id="section-5.3-5">Note that the address selection described in this section only
+<p id="section-5.3-5">Note that the endpoint selection described in this section only
 applies to destination addresses; Source Address Selection
 (<span>[<a href="#RFC6724-UPDATE" class="cite xref">RFC6724-UPDATE</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-6man-rfc6724-update-25#section-3.2" class="relref">Section 3.2</a></span>) is performed
 once per destination address and is out of scope of this document.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
@@ -1818,33 +1818,33 @@ once per destination address and is out of scope of this document.<a href="#sect
       <h2 id="name-connection-attempts">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-connection-attempts" class="section-name selfRef">Connection Attempts</a>
       </h2>
-<p id="section-6-1">Once the list of addresses received up to this point has been
+<p id="section-6-1">Once the list of endpoints received up to this point has been
 constructed, the client will attempt to make connections. In order to
 avoid unreasonable network load, connection attempts <span class="bcp14">SHOULD NOT</span> be
 made simultaneously. Instead, one connection attempt to a single
-address is started first, followed by the others, one at a
+endpoint is started first, followed by the others, one at a
 time. Starting a new connection attempt does not affect previous
 attempts, as multiple connection attempts may occur in parallel.  Once
 one of the connection attempts succeeds (<a href="#success" class="auto internal xref">Section 6.1</a>), all other
 connections attempts that have not yet succeeded <span class="bcp14">SHOULD</span> be canceled.
-Any address that was not yet attempted as a connection <span class="bcp14">SHOULD</span> be
+Any endpoint that was not yet attempted as a connection <span class="bcp14">SHOULD</span> be
 ignored.  At that time, any asynchronous DNS queries <span class="bcp14">MAY</span> be canceled as
-new addresses will not be used for this connection. However, the DNS
+new endpoints will not be used for this connection. However, the DNS
 client resolver <span class="bcp14">SHOULD</span> still process DNS replies from the network for
 a short period of time (recommended to be 1 second), as they will
 populate the DNS cache and can be used for subsequent connections.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">If grouping addresses by application or security requirements
+<p id="section-6-2">If grouping endpoints by application or security requirements
 (<a href="#application-group" class="auto internal xref">Section 5.1</a>) produced multiple groups, the application
 <span class="bcp14">SHOULD</span> start with connection attempts to the most preferred option.
-The policy for attempting any addresses outside of the most preferred
+The policy for attempting any endpoints outside of the most preferred
 group is up to the client implementation and out of scope for this document.<a href="#section-6-2" class="pilcrow">¶</a></p>
-<p id="section-6-3">If grouping addresses by service (<a href="#service-group" class="auto internal xref">Section 5.2</a>) produced multiple
-groups, all of the addresses of the first group <span class="bcp14">SHOULD</span> be started
+<p id="section-6-3">If grouping endpoints by service (<a href="#service-group" class="auto internal xref">Section 5.2</a>) produced multiple
+groups, all of the endpoints of the first group <span class="bcp14">SHOULD</span> be started
 before starting attempts using the next group. Attempts across service groups
 <span class="bcp14">SHOULD</span> be allowed to continue in parallel; in effect, the groups
 are flattened into a single list. The intent of these groups is to
 strictly prioritize the most preferred service. Therefore, if a higher
-priority group has many addresses, there is a potential for long
+priority group has many endpoints, there is a potential for long
 delays before falling back to lower priority groups.<a href="#section-6-3" class="pilcrow">¶</a></p>
 <p id="section-6-4">A simple implementation can have a fixed delay for how long to wait
 before starting the next connection attempt. This delay is referred to
@@ -2039,26 +2039,26 @@ of SVCB, and thus do not require waiting for SVCB responses.<a href="#section-6.
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-dns-answer-changes-during-h" class="section-name selfRef">DNS Answer Changes During Happy Eyeballs Connection Setup</a>
       </h2>
 <p id="section-7-1">If, during the course of connection establishment, the DNS answers
-change by either adding resolved addresses (for example due to DNS
+change by either adding resolved endpoints (for example due to DNS
 push notifications <span>[<a href="#RFC8765" class="cite xref">RFC8765</a>]</span>) or removing previously resolved
-addresses (for example, due to expiry of the TTL on that DNS record),
-the client should react based on its current progress. Additionally, addresses
+endpoints (for example, due to expiry of the TTL on that DNS record),
+the client should react based on its current progress. Additionally, endpoints
 from SVCB IP hints <span class="bcp14">SHOULD</span> be removed from the list once A and AAAA records are
-received for the corresponding name, if the addresses from the hints are absent from the
+received for the corresponding name, if the endpoints from the hints are absent from the
 received records <span><a href="https://rfc-editor.org/rfc/rfc9460#section-7.3" class="relref">Section 7.3</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">If an address is removed from the list that already had a connection
+<p id="section-7-2">If an endpoint is removed from the list that already had a connection
 attempt started, the connection attempt <span class="bcp14">SHOULD NOT</span> be canceled, but
-rather be allowed to continue. If the removed address had not yet
+rather be allowed to continue. If the removed endpoint had not yet
 had a connection attempt started, it <span class="bcp14">SHOULD</span> be removed from the list
-of addresses to try.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">If an address is added to the list, its position <span class="bcp14">SHOULD</span> be determined by
-applying the sorting rules (see <a href="#sorting" class="auto internal xref">Section 5</a>) to the complete list of addresses,
+of endpoints to try.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">If an endpoint is added to the list, its position <span class="bcp14">SHOULD</span> be determined by
+applying the sorting rules (see <a href="#sorting" class="auto internal xref">Section 5</a>) to the complete list of endpoints,
 including those previously received. This ensures that sorting rules, such as address family
-interleaving, are maintained correctly regardless of when addresses arrive. For
+interleaving, are maintained correctly regardless of when endpoints arrive. For
 example, consider a connection attempt in which only IPv6 addresses
-are available initially, and an attempt to one IPv6 address is already in progress.
-Then, when IPv4 addresses are later received, an IPv4 address should be placed next in the list of addresses to attempt
-(to account for interleaving address families) ahead of any remaining IPv6 addresses, as if it had been available initially.<a href="#section-7-3" class="pilcrow">¶</a></p>
+are available initially, and an attempt to one IPv6 address endpoint is already in progress.
+Then, when IPv4 addresses are later received, an IPv4 address endpoint should be placed next in the list of endpoints to attempt
+(to account for interleaving address families) ahead of any remaining IPv6 address endpoints, as if it had been available initially.<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="v6only">
@@ -2226,7 +2226,7 @@ records after receiving an A record. Recommended to be 50 milliseconds.<a href="
 </li>
         <li class="normal" id="section-9-2.2">
           <p id="section-9-2.2.1">Preferred Address Family Count (<a href="#sorting" class="auto internal xref">Section 5</a>): The number of
-addresses belonging to the preferred address family (such as IPv6)
+endpoints belonging to the preferred address family (such as IPv6)
 that should be attempted before attempting the next address family.
 Recommended to be 1; 2 may be used to more aggressively favor a
 particular combination of address family and protocol.<a href="#section-9-2.2.1" class="pilcrow">¶</a></p>
@@ -2297,7 +2297,7 @@ approach is to use "Packetization Layer Path MTU Discovery" <span>[<a href="#RFC
         <h3 id="name-application-layer">
 <a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-application-layer" class="section-name selfRef">Application Layer</a>
         </h3>
-<p id="section-10.2-1">If the DNS returns multiple addresses for different application
+<p id="section-10.2-1">If the DNS returns multiple endpoints for different application
 servers, the application itself may not be operational and functional
 on all of them. Common examples include Transport Layer Security
 (TLS) and HTTP.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
