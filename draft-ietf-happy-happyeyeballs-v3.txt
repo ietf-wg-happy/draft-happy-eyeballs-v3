@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 26 December 2026                                        N. Jaju
+Expires: 27 December 2026                                        N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                            24 June 2026
+                                                            25 June 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 December 2026.
+   This Internet-Draft will expire on 27 December 2026.
 
 Copyright Notice
 
@@ -1059,10 +1059,8 @@ Table of Contents
 13.1.  Normative References
 
    [ECH]      Rescorla, E., Oku, K., Sullivan, N., and C. A. Wood, "TLS
-              Encrypted Client Hello", Work in Progress, Internet-Draft,
-              draft-ietf-tls-esni-25, 14 June 2025,
-              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
-              esni-25>.
+              Encrypted Client Hello", RFC 9849, DOI 10.17487/RFC9849,
+              March 2026, <https://www.rfc-editor.org/rfc/rfc9849>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1140,11 +1138,10 @@ Table of Contents
               Resource Records)", RFC 9460, DOI 10.17487/RFC9460,
               November 2023, <https://www.rfc-editor.org/rfc/rfc9460>.
 
-   [SVCB-ECH] Schwartz, B. M., Bishop, M., and E. Nygren, "Bootstrapping
-              TLS Encrypted ClientHello with DNS Service Bindings", Work
-              in Progress, Internet-Draft, draft-ietf-tls-svcb-ech-08,
-              16 June 2025, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-tls-svcb-ech-08>.
+   [SVCB-ECH] Schwartz, B., Bishop, M., and E. Nygren, "Bootstrapping
+              TLS Encrypted ClientHello with DNS Service Bindings",
+              RFC 9848, DOI 10.17487/RFC9848, March 2026,
+              <https://www.rfc-editor.org/rfc/rfc9848>.
 
 13.2.  Informative References
 
