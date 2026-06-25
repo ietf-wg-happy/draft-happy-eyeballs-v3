@@ -86,7 +86,7 @@ The Happy Eyeballs algorithm of racing connections to resolved
 addresses has several stages to avoid delays to the user whenever
 possible, while respecting client priorities, such as preferring
 the use of IPv6 or the availability of protocols like HTTP/3 {{?HTTP3=RFC9114}} and
-TLS Encrypted Client Hello {{!ECH=I-D.ietf-tls-esni}}. This document discusses
+TLS Encrypted Client Hello {{!ECH=RFC9849}}. This document discusses
 how to initiate DNS queries when starting a connection, how to
 sort the list of destination addresses received from DNS answers,
 and how to race the connection attempts.
@@ -340,7 +340,7 @@ destination endpoints support and which security features
 those endpoints offer. These are based on
 information from SVCB/HTTPS records about application-layer protocols
 ("alpn" values) and other parameters like TLS Encrypted Client Hello
-configuration ("ech" values, see {{!SVCB-ECH=I-D.ietf-tls-svcb-ech}}).
+configuration ("ech" values, see {{!SVCB-ECH=RFC9848}}).
 
 For cases where the answers do not include any SVCB/HTTPS information,
 or if all of the answers are associated with the same SVCB/HTTPS record,
