@@ -83,7 +83,7 @@ definition updates the description in {{?HEV2=RFC8305}}, which
 itself obsoleted {{?RFC6555}}.
 
 The Happy Eyeballs algorithm of racing connections to resolved
-addresses has several stages to avoid delays to the user whenever
+endpoints has several stages to avoid delays to the user whenever
 possible, while respecting client priorities, such as preferring
 the use of IPv6 or the availability of protocols like HTTP/3 {{?HTTP3=RFC9114}} and
 TLS Encrypted Client Hello {{!ECH=I-D.ietf-tls-esni}}. This document discusses
@@ -116,9 +116,9 @@ This document defines a method of connection establishment, named the
 "Happy Eyeballs Connection Setup". This approach has several
 distinct phases:
 
-1. Asynchronous resolution of a hostname into destination addresses ({{resolution}})
+1. Asynchronous resolution of a hostname into destination endpoints ({{resolution}})
 
-1. Sorting of the resolved destination addresses ({{sorting}})
+1. Sorting of the resolved destination endpoints ({{sorting}})
 
 1. Initiation of asynchronous connection attempts ({{connections}})
 
@@ -126,7 +126,7 @@ distinct phases:
 other attempts ({{connections}})
 
 Note that this document assumes that the preference policy for the
-host destination address favors IPv6 over IPv4. IPv6 has many
+destination address family favors IPv6 over IPv4. IPv6 has many
 desirable properties designed to be improvements over IPv4
 {{?IPV6=RFC8200}}.
 
@@ -140,9 +140,9 @@ recommendations in this document can be easily adapted.
 # Hostname Resolution {#resolution}
 
 When a client is trying to establish a connection to a named host,
-it needs to determine which destination IP addresses it can use
-to reach the host. The client resolves the hostname into IP
-addresses by sending DNS queries and collecting the answers.
+it needs to determine which destination endpoint it can use
+to establish a connection. The client resolves the endpoints
+by sending DNS queries and collecting the answers.
 This section describes how a client initiates DNS queries
 and asynchronously handles the answers.
 
@@ -183,7 +183,7 @@ logic described above):
 ## Handling DNS Answers Asynchronously
 
 Once the client receives sufficient answers to its DNS queries, it can
-move onto the phases of sorting addresses ({{sorting}})
+move onto the phases of sorting endpoints ({{sorting}})
 and establishing connections ({{connections}}).
 
 Implementations SHOULD NOT wait for all answers to return
@@ -198,7 +198,7 @@ Note that if the platform does not offer an asynchronous DNS API,
 this behavior can be simulated by making separate synchronous queries
 for each record type in parallel.
 
-The client moves onto sorting addresses and establishing connections
+The client moves onto sorting endpoints and establishing connections
 once one of the following condition sets is met:
 
 Either:
@@ -215,11 +215,11 @@ Or:
 - A resolution time delay has passed after which other answers have
 not been received
 
-Positive answers can be addresses received either from AAAA or A
-records, or address hints received directly in SVCB/HTTPS records.
+Positive answers can be IP addresses received either from AAAA or A
+records, or IP address hints received directly in SVCB/HTTPS records.
 
 Negative answers are exclusively responses to AAAA or A records
-that contain no addresses (with or without an error like NXDOMAIN).
+that contain no IP addresses (with or without an error like NXDOMAIN).
 If all answers come back with negative answers, the
 connection establishment will fail or need to wait until other answers
 are received.
@@ -249,7 +249,7 @@ is ".", or are associated with another service name (see {{Section 2.5 of SVCB}}
 The algorithm in this document does not consider service information to be received
 until ServiceMode records are available.
 
-ServiceMode records can contain address hints via `ipv6hint` and `ipv4hint`
+ServiceMode records can contain IP address hints via `ipv6hint` and `ipv4hint`
 parameters. When these are received, they SHOULD be considered as positive
 non-empty answers for the purpose of the algorithm when A and AAAA records
 corresponding to the TargetName are not available yet. Note that clients are
@@ -266,9 +266,9 @@ delayed AAAA, delayed SVCB, SVCB hints providing early answers)
 
 If new records arrive while connection attempts are in progress,
 but before any connection has been established, then any newly
-received addresses are incorporated into the list of available candidate
-addresses (see {{changes}}) and the process of connection attempts will
-continue with the new addresses added, until one connection is
+received endpoints are incorporated into the list of available candidate
+endpoints (see {{changes}}) and the process of connection attempts will
+continue with the new endpoints added, until one connection is
 established.
 
 ## Handling Expired Answers
@@ -278,12 +278,12 @@ while connection attempts are still in progress. A Happy Eyeballs client will no
 expire. However, the client MAY trigger new DNS queries to fetch non-expired answers after the original records have expired,
 in the case in which the original answers have not yet led to a successful connection.
 Addition of any new answers is handled as described in {{new-answers}} and {{changes}}; that is, ongoing connection attempts
-will not be cancelled, but any address for which a connection
+will not be cancelled, but any endpoint for which a connection
 attempt had not yet been started that is no longer in the resolved
-address list will be removed.
+endpoint list will be removed.
 
 Additionally, the fact that Happy Eyeballs enables clients to handle
-updates to the resolved address list asynchronously enables
+updates to the resolved endpoint list asynchronously enables
 the use of expired answers "optimistically" while waiting for non-expired
 answers. This approach is called "optimistic DNS", and is described
 in {{?OPTIMISTIC-DNS=I-D.gakiwate-dnsop-optimistic-dns}}.
@@ -312,26 +312,26 @@ If such a limit is required by hardware limitations, the client
 SHOULD use at least one address from each address family from the
 available list.
 
-# Grouping and Sorting Addresses {#sorting}
+# Grouping and Sorting Endpoints {#sorting}
 
 Before attempting to connect to any of the resolved destination
-addresses, the client defines the order in which to start the
+endpoints, the client defines the order in which to start the
 attempts. Once the order has been defined, the client can use a
 simple algorithm for racing each option after a short delay (see
 {{connections}}). It is important that the ordered list involve all
-addresses from both families and all protocols that have been received
+endpoints from both address families and all protocols that have been received
 by this point, as this allows the client to get the racing effect of
 Happy Eyeballs for the entire list, not just the first IPv4 and first
 IPv6 addresses.
 
 The client performs three levels of grouping
-and sorting of addresses based on the DNS answers received.
+and sorting of endpoints based on the DNS answers received.
 Each subsequent level of sorting only changes orders and
 preferences within the previously defined groups.
 
 1. Grouping and sorting by application protocol and security requirements ({{application-group}})
 1. Grouping and sorting by service priorities ({{service-group}})
-1. Sorting by destination address preferences ({{address-sorting}})
+1. Sorting by destination endpoint preferences ({{endpoint-sorting}})
 
 ## Grouping By Application Protocols and Security Requirements {#application-group}
 
@@ -350,12 +350,12 @@ assumes they support the same protocols and security properties.
 However, the client is aware of different sets of destination endpoints
 that advertise different capabilities when it receives multiple distinct
 SVCB/HTTPS records. The client SHOULD separate these
-addresses into different groups, such that all addresses in a
+endpoints into different groups, such that all endpoints in a
 group share the same application protocols and relevant security
 properties. The specific parameters that are relevant to the client
 depend on the client implementation and application.
 
-Note that some destination addresses might need to be added to
+Note that some destination endpoints might need to be added to
 multiple groups at this stage. For example, consider the following
 HTTPS records:
 
@@ -368,15 +368,15 @@ HTTPS records:
 
 In this case, 2001:db8::2 can be used with HTTP/3 and HTTP/2,
 but 2001:db8::4 can only be used with HTTP/2. If the client
-creates a grouping for HTTP/3-capable addresses and
-HTTP/2-capable addresses, 2001:db8::2 would exist in both
+creates a grouping for HTTP/3-capable endpoints and
+HTTP/2-capable endpoints, 2001:db8::2 would exist in both
 groups (assuming that all other security properties are
 the same).
 
 Connection racing as described in {{connections}} applies
-to different destination address options within one of these groups.
+to different destination endpoint options within one of these groups.
 The logic for prioritizing and falling back between groups
-of addresses with different security properties and protocol
+of endpoints with different security properties and protocol
 properties is implementation-defined.
 
 ### When to Apply Application Preferences
@@ -435,7 +435,7 @@ name in the record, and the priority of that SVCB record applies to
 any A or AAAA records for the same owner name. These answers are
 sorted according to that SVCB record's priority.
 
-All addresses received from a particular SVCB service (within a group
+All endpoints received from a particular SVCB service (within a group
 as defined in {{application-group}}), either by an associated AAAA
 or A record or address hints, SHOULD be separated into a group by
 the client. These service-based groups SHOULD then be sorted
@@ -452,21 +452,21 @@ same priority, the client SHOULD shuffle these groups randomly.
 If there are some SVCB/HTTPS services received, but there are AAAA or A
 records that do not have an associated service (for example, if no
 SVCB/HTTPS record is received for the original name using the "."
-TargetName), the unassociated addresses SHOULD be put in a group
-that is prioritized at the end of the list.
+TargetName), the unassociated addresses SHOULD be put in a group of
+endpoints that is prioritized at the end of the list.
 
-## Sorting Destination Addresses Within Groups {#address-sorting}
+## Sorting Destination Endpoints Within Groups {#endpoint-sorting}
 
-Within each group of addresses, after grouping based on the logic
+Within each group of endpoints, after grouping based on the logic
 in {{application-group}} and {{service-group}}, the client sorts
-the addresses based on preference and historical data.
+the endpoints based on preference and historical data.
 
-First, the client MUST sort the addresses using Destination Address
+First, the client MUST sort the endpoints using Destination Address
 Selection ({{!RFC6724, Section 6}}).
 
 If the client is stateful and has a history of expected round-trip
-times (RTTs) for the routes to access each address, it SHOULD add a
-Destination Address Selection rule between rules 8 and 9 that prefers
+times (RTTs) for the routes to access each endpoint's IP address,
+it SHOULD add a Destination Address Selection rule between rules 8 and 9 that prefers
 addresses with lower RTTs. If the client keeps track of which
 addresses it used in the past, it SHOULD add another Destination
 Address Selection rule between the RTT rule and rule 9, which prefers
@@ -488,53 +488,53 @@ that fresh addresses are attempted.
 Next, the client SHOULD modify the ordered list to interleave
 address families. Whichever address family is first in the list
 should be followed by an endpoint of the other address family. For example,
-if the first address in the sorted list is an IPv6 address, then
-the first IPv4 address should be moved up in the list to be second
+if the first endpoint in the sorted list has an IPv6 address, then
+the first IPv4 endpoint should be moved up in the list to be second
 in the list. An implementation MAY choose to favor one
 address family more by allowing multiple addresses of that
 family to be attempted before trying the next.
-The number of contiguous addresses of the first address family of
+The number of contiguous endpoints of the first address family of
 properties will be referred to as the "Preferred Address Family
 Count" and can be a configurable value. This avoids waiting through a
-long list of addresses from a given address family if connectivity
+long list of endpoints for a given address family if connectivity
 over that address family is impaired.
 
-Note that the address selection described in this section only
+Note that the endpoint selection described in this section only
 applies to destination addresses; Source Address Selection
 ({{!RFC6724-UPDATE=I-D.ietf-6man-rfc6724-update, Section 3.2}}) is performed
 once per destination address and is out of scope of this document.
 
 # Connection Attempts {#connections}
 
-Once the list of addresses received up to this point has been
+Once the list of endpoints received up to this point has been
 constructed, the client will attempt to make connections. In order to
 avoid unreasonable network load, connection attempts SHOULD NOT be
 made simultaneously. Instead, one connection attempt to a single
-address is started first, followed by the others, one at a
+endpoint is started first, followed by the others, one at a
 time. Starting a new connection attempt does not affect previous
 attempts, as multiple connection attempts may occur in parallel.  Once
 one of the connection attempts succeeds ({{success}}), all other
 connections attempts that have not yet succeeded SHOULD be canceled.
-Any address that was not yet attempted as a connection SHOULD be
+Any endpoint that was not yet attempted as a connection SHOULD be
 ignored.  At that time, any asynchronous DNS queries MAY be canceled as
-new addresses will not be used for this connection. However, the DNS
+new endpoints will not be used for this connection. However, the DNS
 client resolver SHOULD still process DNS replies from the network for
 a short period of time (recommended to be 1 second), as they will
 populate the DNS cache and can be used for subsequent connections.
 
-If grouping addresses by application or security requirements
+If grouping endpoints by application or security requirements
 ({{application-group}}) produced multiple groups, the application
 SHOULD start with connection attempts to the most preferred option.
-The policy for attempting any addresses outside of the most preferred
+The policy for attempting any endpoints outside of the most preferred
 group is up to the client implementation and out of scope for this document.
 
-If grouping addresses by service ({{service-group}}) produced multiple
-groups, all of the addresses of the first group SHOULD be started
+If grouping endpoints by service ({{service-group}}) produced multiple
+groups, all of the endpoints of the first group SHOULD be started
 before starting attempts using the next group. Attempts across service groups
 SHOULD be allowed to continue in parallel; in effect, the groups
 are flattened into a single list. The intent of these groups is to
 strictly prioritize the most preferred service. Therefore, if a higher
-priority group has many addresses, there is a potential for long
+priority group has many endpoints, there is a potential for long
 delays before falling back to lower priority groups.
 
 A simple implementation can have a fixed delay for how long to wait
@@ -724,28 +724,28 @@ of SVCB, and thus do not require waiting for SVCB responses.
 # DNS Answer Changes During Happy Eyeballs Connection Setup {#changes}
 
 If, during the course of connection establishment, the DNS answers
-change by either adding resolved addresses (for example due to DNS
+change by either adding resolved endpoints (for example due to DNS
 push notifications {{?RFC8765}}) or removing previously resolved
-addresses (for example, due to expiry of the TTL on that DNS record),
-the client should react based on its current progress. Additionally, addresses
+endpoints (for example, due to expiry of the TTL on that DNS record),
+the client should react based on its current progress. Additionally, endpoints
 from SVCB IP hints SHOULD be removed from the list once A and AAAA records are
-received for the corresponding name, if the addresses from the hints are absent from the
+received for the corresponding name, if the endpoints from the hints are absent from the
 received records {{Section 7.3 of SVCB}}.
 
-If an address is removed from the list that already had a connection
+If an endpoint is removed from the list that already had a connection
 attempt started, the connection attempt SHOULD NOT be canceled, but
-rather be allowed to continue. If the removed address had not yet
+rather be allowed to continue. If the removed endpoint had not yet
 had a connection attempt started, it SHOULD be removed from the list
-of addresses to try.
+of endpoints to try.
 
-If an address is added to the list, its position SHOULD be determined by
-applying the sorting rules (see {{sorting}}) to the complete list of addresses,
+If an endpoint is added to the list, its position SHOULD be determined by
+applying the sorting rules (see {{sorting}}) to the complete list of endpoints,
 including those previously received. This ensures that sorting rules, such as address family
-interleaving, are maintained correctly regardless of when addresses arrive. For
+interleaving, are maintained correctly regardless of when endpoints arrive. For
 example, consider a connection attempt in which only IPv6 addresses
-are available initially, and an attempt to one IPv6 address is already in progress.
-Then, when IPv4 addresses are later received, an IPv4 address should be placed next in the list of addresses to attempt
-(to account for interleaving address families) ahead of any remaining IPv6 addresses, as if it had been available initially.
+are available initially, and an attempt to one IPv6 address endpoint is already in progress.
+Then, when IPv4 addresses are later received, an IPv4 address endpoint should be placed next in the list of endpoints to attempt
+(to account for interleaving address families) ahead of any remaining IPv6 address endpoints, as if it had been available initially.
 
 # Supporting IPv6-Mostly and IPv6-Only Networks {#v6only}
 
@@ -886,7 +886,7 @@ Happy Eyeballs are as follows:
 records after receiving an A record. Recommended to be 50 milliseconds.
 
 - Preferred Address Family Count ({{sorting}}): The number of
-addresses belonging to the preferred address family (such as IPv6)
+endpoints belonging to the preferred address family (such as IPv6)
 that should be attempted before attempting the next address family.
 Recommended to be 1; 2 may be used to more aggressively favor a
 particular combination of address family and protocol.
@@ -944,7 +944,7 @@ approach is to use "Packetization Layer Path MTU Discovery" {{!RFC4821}}.
 
 ## Application Layer
 
-If the DNS returns multiple addresses for different application
+If the DNS returns multiple endpoints for different application
 servers, the application itself may not be operational and functional
 on all of them. Common examples include Transport Layer Security
 (TLS) and HTTP.
