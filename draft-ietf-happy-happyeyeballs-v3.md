@@ -296,7 +296,7 @@ over IPv4 or IPv6. This is discussed in
 {{Section 4.3 of ?I-D.ietf-dnsop-3901bis}}, which points to
 Destination Address Selection as defined in {{!RFC6724}}.
 
-In keeping with the Happy Eyeballs approach, an implementation
+In accordance with the Happy Eyeballs approach, an implementation
 of a stub resolver that supports Happy Eyeballs SHOULD additionally
 prefer using IPv6 resolver addresses when possible. This can be
 accomplished by sorting IPv6 addresses first prior to running
