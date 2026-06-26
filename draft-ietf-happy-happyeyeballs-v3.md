@@ -58,10 +58,10 @@ which may have different performance and connectivity
 characteristics. Since specific addresses or address families (IPv4
 or IPv6) may be blocked, broken, or sub-optimal on a network, clients
 that attempt multiple connections in parallel have a chance of
-establishing a connection more quickly. This document specifies
-requirements for algorithms that reduce this user-visible delay and
-provides an example algorithm, referred to as "Happy Eyeballs". This
-document updates the algorithm description in RFC 8305.
+establishing a connection more quickly. This document defines the
+algorithm for "Happy Eyeballs", a technique for reducing user-visible
+delays on dual-stack hosts. This document updates the algorithm
+in RFC 8305.
 
 --- middle
 
@@ -73,9 +73,7 @@ which may have different performance and connectivity
 characteristics. Since specific addresses or address families (IPv4
 or IPv6) may be blocked, broken, or sub-optimal on a network, clients
 that attempt multiple connections in parallel have a chance of
-establishing a connection more quickly. This document specifies
-requirements for algorithms that reduce this user-visible delay and
-provides an example algorithm.
+establishing a connection more quickly.
 
 This document defines the algorithm for "Happy Eyeballs", a technique
 for reducing user-visible delays on dual-stack hosts. This
