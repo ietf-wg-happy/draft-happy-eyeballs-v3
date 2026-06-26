@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 27 December 2026                                        N. Jaju
+Expires: 28 December 2026                                        N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                            25 June 2026
+                                                            26 June 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -22,10 +22,10 @@ Abstract
    characteristics.  Since specific addresses or address families (IPv4
    or IPv6) may be blocked, broken, or sub-optimal on a network, clients
    that attempt multiple connections in parallel have a chance of
-   establishing a connection more quickly.  This document specifies
-   requirements for algorithms that reduce this user-visible delay and
-   provides an example algorithm, referred to as "Happy Eyeballs".  This
-   document updates the algorithm description in RFC 8305.
+   establishing a connection more quickly.  This document defines the
+   algorithm for "Happy Eyeballs", a technique for reducing user-visible
+   delays on dual-stack hosts.  This document updates the algorithm in
+   RFC 8305.
 
 About This Document
 
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 December 2026.
+   This Internet-Draft will expire on 28 December 2026.
 
 Copyright Notice
 
@@ -125,9 +125,7 @@ Table of Contents
    characteristics.  Since specific addresses or address families (IPv4
    or IPv6) may be blocked, broken, or sub-optimal on a network, clients
    that attempt multiple connections in parallel have a chance of
-   establishing a connection more quickly.  This document specifies
-   requirements for algorithms that reduce this user-visible delay and
-   provides an example algorithm.
+   establishing a connection more quickly.
 
    This document defines the algorithm for "Happy Eyeballs", a technique
    for reducing user-visible delays on dual-stack hosts.  This
