@@ -290,13 +290,23 @@ in {{?OPTIMISTIC-DNS=I-D.gakiwate-dnsop-optimistic-dns}}.
 
 If multiple DNS server addresses are configured for the current
 network, the client may have the option of sending its DNS queries
-over IPv4 or IPv6. In keeping with the Happy Eyeballs approach,
-queries SHOULD be sent over IPv6 first (note that this is not
-referring to the sending of AAAA or A queries, but rather the address
-of the DNS server itself and IP version used to transport DNS
-messages). If DNS queries sent to the IPv6 address do not receive
-responses, that address may be marked as penalized and queries can be
-sent to other DNS server addresses.
+over IPv4 or IPv6. This is discussed in
+{{Section 4.3 of ?I-D.ietf-dnsop-3901bis}}, which points to
+Destination Address Selection as defined in {{!RFC6724}}.
+
+In accordance with the Happy Eyeballs approach, an implementation
+of a stub resolver that supports Happy Eyeballs SHOULD additionally
+prefer using IPv6 resolver addresses when possible. This can be
+accomplished by sorting IPv6 addresses first prior to running
+the Destination Address Selection sorting from {{!RFC6724, Section 6}}.
+Note that this preference for IPv6 is not referring to the sending of
+AAAA or A queries, but rather the address of the DNS server itself
+and the IP version used to transport DNS messages.
+
+Also in accordance with Happy Eyeballs, when DNS queries are sent to
+a particular resolver address and do not receive responses, that
+address MAY be marked as penalized and queries can be sent to
+other DNS server addresses.
 
 As native IPv6 deployments become more prevalent and IPv4 addresses
 are exhausted, it is expected that IPv6 connectivity will have
@@ -304,11 +314,11 @@ preferential treatment within networks. If a DNS server is
 configured to be accessible over IPv6, IPv6 should be assumed to be
 the preferred address family.
 
-Client systems SHOULD NOT have an explicit limit to the number of DNS
-servers that can be configured, either manually or by the network.
-If such a limit is required by hardware limitations, the client
-SHOULD use at least one address from each address family from the
-available list.
+Client systems that implement Happy Eyeballs SHOULD NOT have an explicit
+limit to the number of DNS servers that can be configured, either
+manually or by the network. If such a limit is required by hardware
+limitations, the client SHOULD use at least one address from each
+address family from the available list.
 
 # Grouping and Sorting Endpoints {#sorting}
 
