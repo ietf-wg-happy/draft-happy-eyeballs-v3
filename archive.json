@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-25T03:57:04.643682+00:00",
+  "timestamp": "2026-06-28T04:11:47.585017+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1953,7 +1953,7 @@
       "id": "I_kwDOKH7CuM7ui4up",
       "title": "Use of the word \"address\"",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/115",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bemasc",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -1964,8 +1964,8 @@
       ],
       "body": "The draft uses the word \"address\" throughout.  However, in many cases this is inaccurate or confusing.  For example, TCP and QUIC connections may be attempted to the same \"IP address\".  It is even conceivable (albeit unusual) that two competing connections could be attempted to the same \"transport address\" (IP+port+protocol).\n\nSVCB uses the term \"endpoint\" to distinguish this from the IP address.  (ICE uses the term \"candidate\".)  A similar term is needed in this draft.",
       "createdAt": "2026-02-27T17:38:51Z",
-      "updatedAt": "2026-03-18T22:19:37Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-25T13:18:32Z",
+      "closedAt": "2026-06-25T13:18:32Z",
       "comments": [
         {
           "author": "mxinden",
@@ -2081,7 +2081,7 @@
       "labels": [],
       "body": "Why is this IPv6-specific and what does this text allude to: \"Such issues might be specific to IPv6 traffic on the network.\"\n- Can the text describe the nature of this issue? Is it related to the size of the packet-header?",
       "createdAt": "2026-03-18T03:27:04Z",
-      "updatedAt": "2026-06-24T23:35:56Z",
+      "updatedAt": "2026-06-25T04:00:41Z",
       "closedAt": null,
       "comments": [
         {
@@ -2097,6 +2097,13 @@
           "body": "On 24/06/2026 09:46, Nidhi Jaju wrote:\n> *nidhijaju* left a comment (ietf-wg-happy/draft-happy-eyeballs-v3#124) \n> <https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/124#issuecomment-4787016440>\n>\n> Note: This text was added in #120 \n> <https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/120>.\n>\n> \u2014\n> Reply to this email directly, view it on GitHub \n> <https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/124?email_source=notifications&email_token=ABYLLESBLI45FL5AKTVVIOL5BOBMRA5CNFSNUABFM5UWIORPF5TWS5BNNB2WEL2JONZXKZKDN5WW2ZLOOQXTINZYG4YDCNRUGQYKM4TFMFZW63VGMF2XI2DPOKSWK5TFNZ2KYZTPN52GK4S7MNWGSY3L#issuecomment-4787016440>, \n> or unsubscribe \n> <https://github.com/notifications/unsubscribe-auth/ABYLLESXFRDMJI7SC2JNFO35BOBMRAVCNFSNUABFKJSXA33TNF2G64TZHM3DOOJTHE3DAMRUHNEXG43VMU5TIMBZGI2DMMBYGYZ2C5QC>.\n> You are receiving this because you authored the thread.Message ID: \n> ***@***.***>\n>\nI still don't understand the origins or generallity of the statement \n\"Such issues might be specific to IPv6\".\n\nMaybe I am missing something, so what is it that makes a TCP session \nover IPv6 fail to recieve packets of the received MSS?\n\nGorry\n",
           "createdAt": "2026-06-24T16:34:11Z",
           "updatedAt": "2026-06-24T16:34:11Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@gorryfair \"such issues\" here is referring to the preceding sentences. In context:\n\n> Connections that use TCP only (without TLS or another protocol on top) perform connection racing only during the TCP handshake. Such connections can encounter issues where the handshake (using small packets) completes but then large packets are dropped or incorrectly handled by the network due to a small MTU being configured on the network. Such issues might be specific to IPv6 traffic on the network.\n\nThe scenario this is referring to is one in which a network drops packets over a certain size, and the IPv6 header size can induce the error in some cases where it doesn't show up for IPv4. \n\n@DavidSchinazi do you recall some of the brokenness we had seen originally around this?",
+          "createdAt": "2026-06-25T04:00:41Z",
+          "updatedAt": "2026-06-25T04:00:41Z"
         }
       ]
     },
@@ -2105,7 +2112,7 @@
       "id": "I_kwDOKH7CuM8AAAABGn4B0A",
       "title": "Clarify \"algorithm\" vs \"example algorithm\"",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/130",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -2116,8 +2123,8 @@
       ],
       "body": "Currently the abstract and intro say this (which was taken from HEv2):\n\n> This document specifies requirements for algorithms that reduce this user-visible delay and provides an example algorithm.\n\nThis doesn't really match the text since this isn't specifying an example algorithm as much as a particular procedure to follow.",
       "createdAt": "2026-06-25T00:10:04Z",
-      "updatedAt": "2026-06-25T00:10:04Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-26T04:16:18Z",
+      "closedAt": "2026-06-26T04:16:18Z",
       "comments": []
     }
   ],
@@ -8849,7 +8856,7 @@
       "labels": [],
       "body": "When DNS answers change mid-setup and no in-progress attempt has\r\nsucceeded, allow the client to cancel the running Connection Attempt\r\nDelay timer and start the next attempt immediately, since the timer\r\nwas sized against a now-stale address list.",
       "createdAt": "2026-05-26T23:41:00Z",
-      "updatedAt": "2026-06-24T07:33:50Z",
+      "updatedAt": "2026-06-25T19:07:28Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
@@ -8909,6 +8916,13 @@
           "body": "It makes sense to adjust based on new information that's arrived, in general.\r\n\r\nIn this case, however, doesn't the current text calculate the timer delay based on information about the attempt that has already started, i.e. roughly when we'd expect to retransmit the initial packet for that address? Why would we re-adjust the timer for that attempt just because the addresses that are next up in line are different, when they didn't factor into the timer value in the first place?\r\n\r\nIf the new address are much more likely to succeed (e.g. are fresh instead of stale answers), then I think it makes sense to more immediately start the attempts to the new addresses.",
           "createdAt": "2026-06-24T07:33:50Z",
           "updatedAt": "2026-06-24T07:33:50Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "How about:\r\n- When new answers arrive, client MAY reschedule the current timer. This can include making the timer zero (starting immediately) or can be longer.\r\n- Acknowledge that the timers are based on the time we think the started attempts will take to succeed\r\n- Recalculating to make the timer shorter needs to be based on evidence that the old addresses might be no longer usable (not _just_ a DNS update). So, a client SHOULD only pull in the timer if at least one of the previous answers led to an attempt that didn't make connection progress by the time the timer fired.",
+          "createdAt": "2026-06-25T19:07:28Z",
+          "updatedAt": "2026-06-25T19:07:28Z"
         }
       ],
       "reviews": []
@@ -9315,7 +9329,7 @@
       "id": "PR_kwDOKH7CuM7qY3CE",
       "title": "Simplify abstract/intro definition of Happy Eyeballs",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/131",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -9324,19 +9338,325 @@
       ],
       "body": "Closes #130 \r\n\r\nRather than settings up a dichotomy of \"requirements\" and \"example algorithm\" that isn't really used, just say that this document defines Happy Eyeballs.",
       "createdAt": "2026-06-25T03:41:34Z",
-      "updatedAt": "2026-06-25T03:41:34Z",
+      "updatedAt": "2026-06-26T04:16:17Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfpauly-patch-12",
       "headRefOid": "4bc4589ad24ee33b167bfd26cdd018d8bea39f4f",
+      "closedAt": "2026-06-26T04:16:17Z",
+      "mergedAt": "2026-06-26T04:16:17Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "63a781646a227a7ca7e2649a52def8f87a3ac3ce"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEEXEwQ",
+          "commit": {
+            "abbreviatedOid": "4bc4589"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-25T05:00:25Z",
+          "updatedAt": "2026-06-25T05:00:48Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "nit: I guess technically Happy Eyeballs is also applicable to v4-only/v6-only hosts that support multiple protocols now, not just dual-stack hosts. Not sure it's the most important distinction though.",
+              "createdAt": "2026-06-25T05:00:25Z",
+              "updatedAt": "2026-06-25T05:00:48Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEEzcYA",
+          "commit": {
+            "abbreviatedOid": "4bc4589"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-25T06:31:21Z",
+          "updatedAt": "2026-06-25T06:31:21Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEMoCSA",
+          "commit": {
+            "abbreviatedOid": "4bc4589"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-26T04:16:10Z",
+          "updatedAt": "2026-06-26T04:16:10Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Yeah, that's a fair point, but i think I'd prefer to consider in another pass. I think it's still a key point of context for the overall algorithm. ",
+              "createdAt": "2026-06-26T04:16:10Z",
+              "updatedAt": "2026-06-26T04:16:10Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 132,
+      "id": "PR_kwDOKH7CuM7qZKFo",
+      "title": "Update explanation of MTU issues for IPv6 traffic",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/132",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #124",
+      "createdAt": "2026-06-25T04:02:29Z",
+      "updatedAt": "2026-06-25T13:16:23Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfpauly-patch-13",
+      "headRefOid": "39cdee76b89ad2aecc35650245e7013a681bdf7b",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEEYCgA",
+          "commit": {
+            "abbreviatedOid": "2850e5e"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-25T05:03:35Z",
+          "updatedAt": "2026-06-25T05:03:41Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "optional nit:\n```suggestion\nspecific to IPv6 traffic due to the IPv6 header being\n```",
+              "createdAt": "2026-06-25T05:03:35Z",
+              "updatedAt": "2026-06-25T05:03:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEExOkg",
+          "commit": {
+            "abbreviatedOid": "2850e5e"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-25T06:26:15Z",
+          "updatedAt": "2026-06-25T06:26:15Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 133,
+      "id": "PR_kwDOKH7CuM7qZWRZ",
+      "title": "Clarify DNS server address handling, add references",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/133",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "tfpauly"
+      ],
+      "labels": [],
+      "body": "Closes #117\r\n\r\nThis change adds references and explains the interaction with destination address selection for resolver selection, but maintains the RFC 8305 language around:\r\n\r\n- Preferring IPv6\r\n- Preferring having a diversity of address families\r\n- Being able to penalize a non-responsive resolver and fail over to another\r\n\r\nThese aspects are not covered by other documents at this time.",
+      "createdAt": "2026-06-25T04:14:41Z",
+      "updatedAt": "2026-06-25T13:17:14Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfpauly-patch-14",
+      "headRefOid": "deb00579c2f70fbce8287e7db8b0b44170566562",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEEYzzQ",
+          "commit": {
+            "abbreviatedOid": "0f80d89"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-25T05:06:34Z",
+          "updatedAt": "2026-06-25T05:11:08Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "nit: This feels like an unnecessary reference if we're saying that it just references the other document.",
+              "createdAt": "2026-06-25T05:06:34Z",
+              "updatedAt": "2026-06-25T05:11:08Z"
+            },
+            {
+              "originalPosition": 22,
+              "body": "nit:\n```suggestion\nand the IP version used to transport DNS messages.\n```",
+              "createdAt": "2026-06-25T05:08:22Z",
+              "updatedAt": "2026-06-25T05:11:08Z"
+            },
+            {
+              "originalPosition": 15,
+              "body": "```suggestion\nIn accordance with the Happy Eyeballs approach, an implementation\n```",
+              "createdAt": "2026-06-25T05:09:39Z",
+              "updatedAt": "2026-06-25T05:11:08Z"
+            },
+            {
+              "originalPosition": 24,
+              "body": "```suggestion\nAlso in accordance with Happy Eyeballs, when DNS queries are sent to\n```",
+              "createdAt": "2026-06-25T05:09:48Z",
+              "updatedAt": "2026-06-25T05:11:08Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEFCf6g",
+          "commit": {
+            "abbreviatedOid": "0f80d89"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-25T07:06:57Z",
+          "updatedAt": "2026-06-25T07:06:57Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 134,
+      "id": "PR_kwDOKH7CuM7qZkOa",
+      "title": "Change \"address\" to \"endpoint\" where appropriate",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/134",
+      "state": "MERGED",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #115 ",
+      "createdAt": "2026-06-25T04:31:29Z",
+      "updatedAt": "2026-06-25T13:18:31Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfp/endpoint",
+      "headRefOid": "b87c3343fd2f5e12e1d749ad1ac66c498c120ab7",
+      "closedAt": "2026-06-25T13:18:31Z",
+      "mergedAt": "2026-06-25T13:18:31Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "7aab8f55c74ba705b3b880dacdc186c7033a8ea8"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEEaqlw",
+          "commit": {
+            "abbreviatedOid": "b87c334"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Nice, thank you!",
+          "createdAt": "2026-06-25T05:15:09Z",
+          "updatedAt": "2026-06-25T05:15:09Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEEyp3Q",
+          "commit": {
+            "abbreviatedOid": "b87c334"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Good changes!",
+          "createdAt": "2026-06-25T06:29:11Z",
+          "updatedAt": "2026-06-25T06:29:11Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 135,
+      "id": "PR_kwDOKH7CuM7qZoBE",
+      "title": "Update ECH references to RFCs",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/135",
+      "state": "MERGED",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Update ECH references to RFCs",
+      "createdAt": "2026-06-25T04:34:54Z",
+      "updatedAt": "2026-06-25T13:17:35Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfpauly-patch-15",
+      "headRefOid": "c1139646a125e0d5d1b069432b56e8b441555c32",
+      "closedAt": "2026-06-25T13:17:35Z",
+      "mergedAt": "2026-06-25T13:17:35Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "134aa859743d69d9168a74a25202e7b10ab5019b"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEEaxVg",
+          "commit": {
+            "abbreviatedOid": "c113964"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-25T05:15:38Z",
+          "updatedAt": "2026-06-25T05:15:38Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEEzngA",
+          "commit": {
+            "abbreviatedOid": "c113964"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-25T06:31:48Z",
+          "updatedAt": "2026-06-25T06:31:48Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
