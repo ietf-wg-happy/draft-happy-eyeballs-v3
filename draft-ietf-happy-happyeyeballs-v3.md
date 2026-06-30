@@ -745,6 +745,14 @@ are available initially, and an attempt to one IPv6 address endpoint is already 
 Then, when IPv4 addresses are later received, an IPv4 address endpoint should be placed next in the list of endpoints to attempt
 (to account for interleaving address families) ahead of any remaining IPv6 address endpoints, as if it had been available initially.
 
+When DNS answers change while a Connection Attempt Delay timer is running, the
+client MAY reschedule the timer. While a DNS update alone does not justify
+rescheduling the timer, if at least one connection attempt started before the
+DNS update has not made progress within an expected time window, the client MAY treat this as a signal that
+the previous addresses may no longer be viable and fire the timer sooner
+to start a connection attempt to the next address in the updated list, subject
+to the Minimum Connection Attempt Delay.
+
 # Supporting IPv6-Mostly and IPv6-Only Networks {#v6only}
 
 While many IPv6 transition protocols have been standardized and
