@@ -726,11 +726,13 @@ are available initially, and an attempt to one IPv6 address is already in progre
 Then, when IPv4 addresses are later received, an IPv4 address should be placed next in the list of addresses to attempt
 (to account for interleaving address families) ahead of any remaining IPv6 addresses, as if it had been available initially.
 
-If the DNS answers change while a Connection Attempt Delay timer is running and
-no in-progress connection attempt has yet succeeded, the client MAY
-short-circuit the running timer and immediately start a connection attempt to
-the next address in the updated list. This avoids waiting on a timer that was
-sized against a stale view of the available addresses.
+When DNS answers change while a Connection Attempt Delay timer is running, the
+client MAY reschedule the timer. While a DNS update alone does not justify
+rescheduling the timer, if at least one connection attempt started before the
+DNS update has not made progress, the client MAY treat this as a signal that
+the previous addresses may no longer be viable and fire the timer sooner
+to start a connection attempt to the next address in the updated list, subject
+to the Minimum Connection Attempt Delay.
 
 # Supporting IPv6-Mostly and IPv6-Only Networks {#v6only}
 
