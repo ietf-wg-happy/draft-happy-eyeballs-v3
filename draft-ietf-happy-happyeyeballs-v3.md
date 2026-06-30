@@ -729,7 +729,7 @@ Then, when IPv4 addresses are later received, an IPv4 address should be placed n
 When DNS answers change while a Connection Attempt Delay timer is running, the
 client MAY reschedule the timer. While a DNS update alone does not justify
 rescheduling the timer, if at least one connection attempt started before the
-DNS update has not made progress, the client MAY treat this as a signal that
+DNS update has not made progress within an expected time window, the client MAY treat this as a signal that
 the previous addresses may no longer be viable and fire the timer sooner
 to start a connection attempt to the next address in the updated list, subject
 to the Minimum Connection Attempt Delay.
