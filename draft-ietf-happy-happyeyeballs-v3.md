@@ -927,8 +927,9 @@ Connections that use TCP only (without TLS or another protocol on top)
 perform connection racing only during the TCP handshake. Such connections
 can encounter issues where the handshake (using small packets) completes
 but then large packets are dropped or incorrectly handled by the network
-due to a small MTU being configured on the network. Such issues might be specific to IPv6
-traffic on the network.
+due to a small MTU being configured on the network. Such issues might be
+specific to IPv6 traffic due to the IPv6 header being
+larger than the IPv4 header.
 
 This problem can also occur when TLS is used, but the larger
 messages used in many TLS handshakes are often sufficient to
