@@ -385,7 +385,7 @@ Table of Contents
       |                            |
       | Start w/IPv4               |
       |                            |
-      |        (100ms delay)        |
+      |        (100ms delay)       |
       |                            |
       |    <--- AAAA (2 addresses) |
       |                            |
