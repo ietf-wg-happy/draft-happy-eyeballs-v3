@@ -257,7 +257,7 @@ and update the available set of responses as new answers (see {{new-answers}}).
 
 ### Examples
 
-The follow examples provide various sequences that might be seen for receiving
+The following examples provide various sequences that might be seen for receiving
 DNS answers, in order to show how the logic described above is used in
 practice to determine when to move onto the sorting and connecting phases.
 
