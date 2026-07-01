@@ -328,7 +328,7 @@ A case in which A answers return significantly before AAAA answers:
    |                            |
    | Start w/IPv4               |
    |                            |
-   |        (100ms delay)        |
+   |        (100ms delay)       |
    |                            |
    |    <--- AAAA (2 addresses) |
    |                            |
