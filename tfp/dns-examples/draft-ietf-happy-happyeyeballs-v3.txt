@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 2 January 2027                                          N. Jaju
+Expires: 3 January 2027                                          N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                             1 July 2026
+                                                             2 July 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 January 2027.
+   This Internet-Draft will expire on 3 January 2027.
 
 Copyright Notice
 
@@ -445,6 +445,37 @@ Table of Contents
       |    <--- HTTPS (w/hints)    |
       |                            |
       | Start w/IPv6 + IPv4        |
+      |                            |
+
+   A case in which SVCB/HTTPS answers return with multiple service names
+   ("." indicating that the service applies to the original requested
+   name, and "alt" being an alternative service name).  In this case,
+   connection attempts can start in parallel with new AAAA and A
+   queries.
+
+    Client                    DNS Server
+      |    HTTPS?  --->            |
+      |     AAAA?  --->            |
+      |        A?  --->            |
+      |                            |
+      |        (30ms delay)        |
+      |                            |
+      |    <--- HTTPS (".")        |
+      |    <--- HTTPS ("alt")      |
+      |    <--- AAAA (2 addresses) |
+      |    <--- A (2 addresses)    |
+      |                            |
+      | Start w/IPv6 + IPv4        |
+      |                            |
+      |     AAAA? ("alt")  --->    |
+      |        A? ("alt")  --->    |
+      |                            |
+      |        (30ms delay)        |
+      |                            |
+      |    <--- AAAA (1 address)   |
+      |    <--- A (1 address)      |
+      |                            |
+      | Update w/IPv6 + IPv4        |
       |                            |
 
    An IPv4-only network connection where SVCB/HTTPS answers are slightly
