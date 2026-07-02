@@ -257,8 +257,201 @@ and update the available set of responses as new answers (see {{new-answers}}).
 
 ### Examples
 
-TODO: Provide examples of various scenarios (simple dual stack, SVCB,
-delayed AAAA, delayed SVCB, SVCB hints providing early answers)
+The following examples provide various sequences that might be seen for receiving
+DNS answers, in order to show how the logic described above is used in
+practice to determine when to move onto the sorting and connecting phases.
+
+A simple dual-stack case where AAAA answers return slight before A answers:
+
+~~~ aasvg
+ Client                    DNS Server
+   |    HTTPS?  --->            |
+   |     AAAA?  --->            |
+   |        A?  --->            |
+   |                            |
+   |        (30ms delay)        |
+   |                            |
+   |    <--- HTTPS (no hints)   |
+   |    <--- AAAA (2 addresses) |
+   |                            |
+   | Start w/IPv6               |
+   |                            |
+   |        (2ms delay)         |
+   |                            |
+   |    <--- A (2 addresses)    |
+   |                            |
+   | Update w/IPv6 + IPv4       |
+   |                            |
+~~~
+
+A case in which A answers return before AAAA answers, but AAAA
+answers do arrive after a short delay:
+
+~~~ aasvg
+ Client                    DNS Server
+   |    HTTPS?  --->            |
+   |     AAAA?  --->            |
+   |        A?  --->            |
+   |                            |
+   |        (30ms delay)        |
+   |                            |
+   |    <--- HTTPS (no hints)   |
+   |    <--- A (2 addresses)    |
+   |                            |
+   | Set 50ms timer             |
+   |                            |
+   |        (10ms delay)        |
+   |                            |
+   |    <--- AAAA (2 addresses) |
+   |                            |
+   | Start w/IPv6 + IPv4        |
+   |                            |
+~~~
+
+
+A case in which A answers return significantly before AAAA answers:
+
+~~~ aasvg
+ Client                    DNS Server
+   |    HTTPS?  --->            |
+   |     AAAA?  --->            |
+   |        A?  --->            |
+   |                            |
+   |        (30ms delay)        |
+   |                            |
+   |    <--- HTTPS (no hints)   |
+   |    <--- A (2 addresses)    |
+   |                            |
+   | Set 50ms timer             |
+   |                            |
+   |        (50ms delay)        |
+   |                            |
+   | Start w/IPv4               |
+   |                            |
+   |        (100ms delay)       |
+   |                            |
+   |    <--- AAAA (2 addresses) |
+   |                            |
+   | Update w/IPv6 + IPv4       |
+   |                            |
+~~~
+
+A case in which SVCB/HTTPS answers are slightly delayed:
+
+~~~ aasvg
+ Client                    DNS Server
+   |    HTTPS?  --->            |
+   |     AAAA?  --->            |
+   |        A?  --->            |
+   |                            |
+   |        (30ms delay)        |
+   |                            |
+   |    <--- AAAA (2 addresses) |
+   |    <--- A (2 addresses)    |
+   |                            |
+   | Set 50ms timer             |
+   |                            |
+   |        (10ms delay)        |
+   |                            |
+   |    <--- HTTPS (no hints)   |
+   |                            |
+   | Start w/IPv6 + IPv4        |
+   |                            |
+~~~
+
+A case in which SVCB/HTTPS answers are significantly delayed,
+or never arrive:
+
+~~~ aasvg
+ Client                    DNS Server
+   |    HTTPS?  --->            |
+   |     AAAA?  --->            |
+   |        A?  --->            |
+   |                            |
+   |        (30ms delay)        |
+   |                            |
+   |    <--- AAAA (2 addresses) |
+   |    <--- A (2 addresses)    |
+   |                            |
+   | Set 50ms timer             |
+   |                            |
+   |        (50ms delay)        |
+   |                            |
+   | Start w/IPv6 + IPv4        |
+   |                            |
+~~~
+
+A case in which AAAA answers are delayed, but hints
+are available:
+
+~~~ aasvg
+ Client                    DNS Server
+   |    HTTPS?  --->            |
+   |     AAAA?  --->            |
+   |        A?  --->            |
+   |                            |
+   |        (30ms delay)        |
+   |                            |
+   |    <--- HTTPS (w/hints)    |
+   |                            |
+   | Start w/IPv6 + IPv4        |
+   |                            |
+~~~
+
+A case in which SVCB/HTTPS answers return with multiple
+service names ("." indicating that the service applies
+to the original requested name, and "alt" being an
+alternative service name). In this case, connection attempts
+can start in parallel with new AAAA and A queries.
+
+~~~ aasvg
+ Client                    DNS Server
+   |    HTTPS?  --->            |
+   |     AAAA?  --->            |
+   |        A?  --->            |
+   |                            |
+   |        (30ms delay)        |
+   |                            |
+   |    <--- HTTPS (".")        |
+   |    <--- HTTPS ("alt")      |
+   |    <--- AAAA (2 addresses) |
+   |    <--- A (2 addresses)    |
+   |                            |
+   | Start w/IPv6 + IPv4        |
+   |                            |
+   |     AAAA? ("alt")  --->    |
+   |        A? ("alt")  --->    |
+   |                            |
+   |        (30ms delay)        |
+   |                            |
+   |    <--- AAAA (1 address)   |
+   |    <--- A (1 address)      |
+   |                            |
+   | Update w/IPv6 + IPv4        |
+   |                            |
+~~~
+
+An IPv4-only network connection where SVCB/HTTPS answers
+are slightly delayed:
+
+~~~ aasvg
+ Client                    DNS Server
+   |    HTTPS?  --->            |
+   |        A?  --->            |
+   |                            |
+   |        (30ms delay)        |
+   |                            |
+   |    <--- A (2 addresses)    |
+   |                            |
+   | Set 50ms timer             |
+   |                            |
+   |        (10ms delay)        |
+   |                            |
+   |    <--- HTTPS (no hints)   |
+   |                            |
+   | Start w/IPv4               |
+   |                            |
+~~~
 
 ## Handling New Answers {#new-answers}
 
