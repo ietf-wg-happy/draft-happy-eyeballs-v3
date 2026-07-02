@@ -1066,7 +1066,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 2 January 2027</td>
+<td class="center">Expires 3 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1079,12 +1079,12 @@ svg {
 <dd class="internet-draft">draft-ietf-happy-happyeyeballs-v3-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-07-01" class="published">1 July 2026</time>
+<time datetime="2026-07-02" class="published">2 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-01-02">2 January 2027</time></dd>
+<dd class="expires"><time datetime="2027-01-03">3 January 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1155,7 +1155,7 @@ in RFC 8305.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 2 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 3 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1545,8 +1545,405 @@ and update the available set of responses as new answers (see <a href="#new-answ
           <h4 id="name-examples">
 <a href="#section-4.2.2" class="section-number selfRef">4.2.2. </a><a href="#name-examples" class="section-name selfRef">Examples</a>
           </h4>
-<p id="section-4.2.2-1">TODO: Provide examples of various scenarios (simple dual stack, SVCB,
-delayed AAAA, delayed SVCB, SVCB hints providing early answers)<a href="#section-4.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.2-1">The following examples provide various sequences that might be seen for receiving
+DNS answers, in order to show how the logic described above is used in
+practice to determine when to move onto the sorting and connecting phases.<a href="#section-4.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.2-2">A simple dual-stack case where AAAA answers return slight before A answers:<a href="#section-4.2.2-2" class="pilcrow">¶</a></p>
+<div id="section-4.2.2-3">
+            <div class="alignLeft art-svg artwork" id="section-4.2.2-3.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="336" width="296" viewBox="0 0 296 336" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,304" fill="none" stroke="black"></path>
+                <path d="M 256,48 L 256,304" fill="none" stroke="black"></path>
+                <path d="M 128,48 L 152,48" fill="none" stroke="black"></path>
+                <path d="M 128,64 L 152,64" fill="none" stroke="black"></path>
+                <path d="M 128,80 L 152,80" fill="none" stroke="black"></path>
+                <path d="M 64,144 L 88,144" fill="none" stroke="black"></path>
+                <path d="M 64,160 L 88,160" fill="none" stroke="black"></path>
+                <path d="M 64,256 L 88,256" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="160,80 148,74.4 148,85.6" fill="black" transform="rotate(0,152,80)"></polygon>
+                <polygon class="arrowhead" points="160,64 148,58.4 148,69.6" fill="black" transform="rotate(0,152,64)"></polygon>
+                <polygon class="arrowhead" points="160,48 148,42.4 148,53.6" fill="black" transform="rotate(0,152,48)"></polygon>
+                <polygon class="arrowhead" points="72,256 60,250.4 60,261.6" fill="black" transform="rotate(180,64,256)"></polygon>
+                <polygon class="arrowhead" points="72,160 60,154.4 60,165.6" fill="black" transform="rotate(180,64,160)"></polygon>
+                <polygon class="arrowhead" points="72,144 60,138.4 60,149.6" fill="black" transform="rotate(180,64,144)"></polygon>
+                <g class="text">
+                  <text x="28" y="36">Client</text>
+                  <text x="224" y="36">DNS</text>
+                  <text x="268" y="36">Server</text>
+                  <text x="84" y="52">HTTPS?</text>
+                  <text x="88" y="68">AAAA?</text>
+                  <text x="100" y="84">A?</text>
+                  <text x="112" y="116">(30ms</text>
+                  <text x="164" y="116">delay)</text>
+                  <text x="120" y="148">HTTPS</text>
+                  <text x="160" y="148">(no</text>
+                  <text x="204" y="148">hints)</text>
+                  <text x="116" y="164">AAAA</text>
+                  <text x="148" y="164">(2</text>
+                  <text x="204" y="164">addresses)</text>
+                  <text x="56" y="196">Start</text>
+                  <text x="108" y="196">w/IPv6</text>
+                  <text x="108" y="228">(2ms</text>
+                  <text x="156" y="228">delay)</text>
+                  <text x="104" y="260">A</text>
+                  <text x="124" y="260">(2</text>
+                  <text x="180" y="260">addresses)</text>
+                  <text x="60" y="292">Update</text>
+                  <text x="116" y="292">w/IPv6</text>
+                  <text x="152" y="292">+</text>
+                  <text x="180" y="292">IPv4</text>
+                </g>
+              </svg><a href="#section-4.2.2-3.1" class="pilcrow">¶</a>
+</div>
+</div>
+<p id="section-4.2.2-4">A case in which A answers return before AAAA answers, but AAAA
+answers do arrive after a short delay:<a href="#section-4.2.2-4" class="pilcrow">¶</a></p>
+<div id="section-4.2.2-5">
+            <div class="alignLeft art-svg artwork" id="section-4.2.2-5.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="336" width="296" viewBox="0 0 296 336" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,304" fill="none" stroke="black"></path>
+                <path d="M 256,48 L 256,304" fill="none" stroke="black"></path>
+                <path d="M 128,48 L 152,48" fill="none" stroke="black"></path>
+                <path d="M 128,64 L 152,64" fill="none" stroke="black"></path>
+                <path d="M 128,80 L 152,80" fill="none" stroke="black"></path>
+                <path d="M 64,144 L 88,144" fill="none" stroke="black"></path>
+                <path d="M 64,160 L 88,160" fill="none" stroke="black"></path>
+                <path d="M 64,256 L 88,256" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="160,80 148,74.4 148,85.6" fill="black" transform="rotate(0,152,80)"></polygon>
+                <polygon class="arrowhead" points="160,64 148,58.4 148,69.6" fill="black" transform="rotate(0,152,64)"></polygon>
+                <polygon class="arrowhead" points="160,48 148,42.4 148,53.6" fill="black" transform="rotate(0,152,48)"></polygon>
+                <polygon class="arrowhead" points="72,256 60,250.4 60,261.6" fill="black" transform="rotate(180,64,256)"></polygon>
+                <polygon class="arrowhead" points="72,160 60,154.4 60,165.6" fill="black" transform="rotate(180,64,160)"></polygon>
+                <polygon class="arrowhead" points="72,144 60,138.4 60,149.6" fill="black" transform="rotate(180,64,144)"></polygon>
+                <g class="text">
+                  <text x="28" y="36">Client</text>
+                  <text x="224" y="36">DNS</text>
+                  <text x="268" y="36">Server</text>
+                  <text x="84" y="52">HTTPS?</text>
+                  <text x="88" y="68">AAAA?</text>
+                  <text x="100" y="84">A?</text>
+                  <text x="112" y="116">(30ms</text>
+                  <text x="164" y="116">delay)</text>
+                  <text x="120" y="148">HTTPS</text>
+                  <text x="160" y="148">(no</text>
+                  <text x="204" y="148">hints)</text>
+                  <text x="104" y="164">A</text>
+                  <text x="124" y="164">(2</text>
+                  <text x="180" y="164">addresses)</text>
+                  <text x="48" y="196">Set</text>
+                  <text x="84" y="196">50ms</text>
+                  <text x="128" y="196">timer</text>
+                  <text x="112" y="228">(10ms</text>
+                  <text x="164" y="228">delay)</text>
+                  <text x="116" y="260">AAAA</text>
+                  <text x="148" y="260">(2</text>
+                  <text x="204" y="260">addresses)</text>
+                  <text x="56" y="292">Start</text>
+                  <text x="108" y="292">w/IPv6</text>
+                  <text x="144" y="292">+</text>
+                  <text x="172" y="292">IPv4</text>
+                </g>
+              </svg><a href="#section-4.2.2-5.1" class="pilcrow">¶</a>
+</div>
+</div>
+<p id="section-4.2.2-6">A case in which A answers return significantly before AAAA answers:<a href="#section-4.2.2-6" class="pilcrow">¶</a></p>
+<div id="section-4.2.2-7">
+            <div class="alignLeft art-svg artwork" id="section-4.2.2-7.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="400" width="296" viewBox="0 0 296 400" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,368" fill="none" stroke="black"></path>
+                <path d="M 256,48 L 256,368" fill="none" stroke="black"></path>
+                <path d="M 128,48 L 152,48" fill="none" stroke="black"></path>
+                <path d="M 128,64 L 152,64" fill="none" stroke="black"></path>
+                <path d="M 128,80 L 152,80" fill="none" stroke="black"></path>
+                <path d="M 64,144 L 88,144" fill="none" stroke="black"></path>
+                <path d="M 64,160 L 88,160" fill="none" stroke="black"></path>
+                <path d="M 64,320 L 88,320" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="160,80 148,74.4 148,85.6" fill="black" transform="rotate(0,152,80)"></polygon>
+                <polygon class="arrowhead" points="160,64 148,58.4 148,69.6" fill="black" transform="rotate(0,152,64)"></polygon>
+                <polygon class="arrowhead" points="160,48 148,42.4 148,53.6" fill="black" transform="rotate(0,152,48)"></polygon>
+                <polygon class="arrowhead" points="72,320 60,314.4 60,325.6" fill="black" transform="rotate(180,64,320)"></polygon>
+                <polygon class="arrowhead" points="72,160 60,154.4 60,165.6" fill="black" transform="rotate(180,64,160)"></polygon>
+                <polygon class="arrowhead" points="72,144 60,138.4 60,149.6" fill="black" transform="rotate(180,64,144)"></polygon>
+                <g class="text">
+                  <text x="28" y="36">Client</text>
+                  <text x="224" y="36">DNS</text>
+                  <text x="268" y="36">Server</text>
+                  <text x="84" y="52">HTTPS?</text>
+                  <text x="88" y="68">AAAA?</text>
+                  <text x="100" y="84">A?</text>
+                  <text x="112" y="116">(30ms</text>
+                  <text x="164" y="116">delay)</text>
+                  <text x="120" y="148">HTTPS</text>
+                  <text x="160" y="148">(no</text>
+                  <text x="204" y="148">hints)</text>
+                  <text x="104" y="164">A</text>
+                  <text x="124" y="164">(2</text>
+                  <text x="180" y="164">addresses)</text>
+                  <text x="48" y="196">Set</text>
+                  <text x="84" y="196">50ms</text>
+                  <text x="128" y="196">timer</text>
+                  <text x="112" y="228">(50ms</text>
+                  <text x="164" y="228">delay)</text>
+                  <text x="56" y="260">Start</text>
+                  <text x="108" y="260">w/IPv4</text>
+                  <text x="116" y="292">(100ms</text>
+                  <text x="172" y="292">delay)</text>
+                  <text x="116" y="324">AAAA</text>
+                  <text x="148" y="324">(2</text>
+                  <text x="204" y="324">addresses)</text>
+                  <text x="60" y="356">Update</text>
+                  <text x="116" y="356">w/IPv6</text>
+                  <text x="152" y="356">+</text>
+                  <text x="180" y="356">IPv4</text>
+                </g>
+              </svg><a href="#section-4.2.2-7.1" class="pilcrow">¶</a>
+</div>
+</div>
+<p id="section-4.2.2-8">A case in which SVCB/HTTPS answers are slightly delayed:<a href="#section-4.2.2-8" class="pilcrow">¶</a></p>
+<div id="section-4.2.2-9">
+            <div class="alignLeft art-svg artwork" id="section-4.2.2-9.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="336" width="296" viewBox="0 0 296 336" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,304" fill="none" stroke="black"></path>
+                <path d="M 256,48 L 256,304" fill="none" stroke="black"></path>
+                <path d="M 128,48 L 152,48" fill="none" stroke="black"></path>
+                <path d="M 128,64 L 152,64" fill="none" stroke="black"></path>
+                <path d="M 128,80 L 152,80" fill="none" stroke="black"></path>
+                <path d="M 64,144 L 88,144" fill="none" stroke="black"></path>
+                <path d="M 64,160 L 88,160" fill="none" stroke="black"></path>
+                <path d="M 64,256 L 88,256" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="160,80 148,74.4 148,85.6" fill="black" transform="rotate(0,152,80)"></polygon>
+                <polygon class="arrowhead" points="160,64 148,58.4 148,69.6" fill="black" transform="rotate(0,152,64)"></polygon>
+                <polygon class="arrowhead" points="160,48 148,42.4 148,53.6" fill="black" transform="rotate(0,152,48)"></polygon>
+                <polygon class="arrowhead" points="72,256 60,250.4 60,261.6" fill="black" transform="rotate(180,64,256)"></polygon>
+                <polygon class="arrowhead" points="72,160 60,154.4 60,165.6" fill="black" transform="rotate(180,64,160)"></polygon>
+                <polygon class="arrowhead" points="72,144 60,138.4 60,149.6" fill="black" transform="rotate(180,64,144)"></polygon>
+                <g class="text">
+                  <text x="28" y="36">Client</text>
+                  <text x="224" y="36">DNS</text>
+                  <text x="268" y="36">Server</text>
+                  <text x="84" y="52">HTTPS?</text>
+                  <text x="88" y="68">AAAA?</text>
+                  <text x="100" y="84">A?</text>
+                  <text x="112" y="116">(30ms</text>
+                  <text x="164" y="116">delay)</text>
+                  <text x="116" y="148">AAAA</text>
+                  <text x="148" y="148">(2</text>
+                  <text x="204" y="148">addresses)</text>
+                  <text x="104" y="164">A</text>
+                  <text x="124" y="164">(2</text>
+                  <text x="180" y="164">addresses)</text>
+                  <text x="48" y="196">Set</text>
+                  <text x="84" y="196">50ms</text>
+                  <text x="128" y="196">timer</text>
+                  <text x="112" y="228">(10ms</text>
+                  <text x="164" y="228">delay)</text>
+                  <text x="120" y="260">HTTPS</text>
+                  <text x="160" y="260">(no</text>
+                  <text x="204" y="260">hints)</text>
+                  <text x="56" y="292">Start</text>
+                  <text x="108" y="292">w/IPv6</text>
+                  <text x="144" y="292">+</text>
+                  <text x="172" y="292">IPv4</text>
+                </g>
+              </svg><a href="#section-4.2.2-9.1" class="pilcrow">¶</a>
+</div>
+</div>
+<p id="section-4.2.2-10">A case in which SVCB/HTTPS answers are significantly delayed,
+or never arrive:<a href="#section-4.2.2-10" class="pilcrow">¶</a></p>
+<div id="section-4.2.2-11">
+            <div class="alignLeft art-svg artwork" id="section-4.2.2-11.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="304" width="296" viewBox="0 0 296 304" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,272" fill="none" stroke="black"></path>
+                <path d="M 256,48 L 256,272" fill="none" stroke="black"></path>
+                <path d="M 128,48 L 152,48" fill="none" stroke="black"></path>
+                <path d="M 128,64 L 152,64" fill="none" stroke="black"></path>
+                <path d="M 128,80 L 152,80" fill="none" stroke="black"></path>
+                <path d="M 64,144 L 88,144" fill="none" stroke="black"></path>
+                <path d="M 64,160 L 88,160" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="160,80 148,74.4 148,85.6" fill="black" transform="rotate(0,152,80)"></polygon>
+                <polygon class="arrowhead" points="160,64 148,58.4 148,69.6" fill="black" transform="rotate(0,152,64)"></polygon>
+                <polygon class="arrowhead" points="160,48 148,42.4 148,53.6" fill="black" transform="rotate(0,152,48)"></polygon>
+                <polygon class="arrowhead" points="72,160 60,154.4 60,165.6" fill="black" transform="rotate(180,64,160)"></polygon>
+                <polygon class="arrowhead" points="72,144 60,138.4 60,149.6" fill="black" transform="rotate(180,64,144)"></polygon>
+                <g class="text">
+                  <text x="28" y="36">Client</text>
+                  <text x="224" y="36">DNS</text>
+                  <text x="268" y="36">Server</text>
+                  <text x="84" y="52">HTTPS?</text>
+                  <text x="88" y="68">AAAA?</text>
+                  <text x="100" y="84">A?</text>
+                  <text x="112" y="116">(30ms</text>
+                  <text x="164" y="116">delay)</text>
+                  <text x="116" y="148">AAAA</text>
+                  <text x="148" y="148">(2</text>
+                  <text x="204" y="148">addresses)</text>
+                  <text x="104" y="164">A</text>
+                  <text x="124" y="164">(2</text>
+                  <text x="180" y="164">addresses)</text>
+                  <text x="48" y="196">Set</text>
+                  <text x="84" y="196">50ms</text>
+                  <text x="128" y="196">timer</text>
+                  <text x="112" y="228">(50ms</text>
+                  <text x="164" y="228">delay)</text>
+                  <text x="56" y="260">Start</text>
+                  <text x="108" y="260">w/IPv6</text>
+                  <text x="144" y="260">+</text>
+                  <text x="172" y="260">IPv4</text>
+                </g>
+              </svg><a href="#section-4.2.2-11.1" class="pilcrow">¶</a>
+</div>
+</div>
+<p id="section-4.2.2-12">A case in which AAAA answers are delayed, but hints
+are available:<a href="#section-4.2.2-12" class="pilcrow">¶</a></p>
+<div id="section-4.2.2-13">
+            <div class="alignLeft art-svg artwork" id="section-4.2.2-13.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="224" width="296" viewBox="0 0 296 224" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,192" fill="none" stroke="black"></path>
+                <path d="M 256,48 L 256,192" fill="none" stroke="black"></path>
+                <path d="M 128,48 L 152,48" fill="none" stroke="black"></path>
+                <path d="M 128,64 L 152,64" fill="none" stroke="black"></path>
+                <path d="M 128,80 L 152,80" fill="none" stroke="black"></path>
+                <path d="M 64,144 L 88,144" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="160,80 148,74.4 148,85.6" fill="black" transform="rotate(0,152,80)"></polygon>
+                <polygon class="arrowhead" points="160,64 148,58.4 148,69.6" fill="black" transform="rotate(0,152,64)"></polygon>
+                <polygon class="arrowhead" points="160,48 148,42.4 148,53.6" fill="black" transform="rotate(0,152,48)"></polygon>
+                <polygon class="arrowhead" points="72,144 60,138.4 60,149.6" fill="black" transform="rotate(180,64,144)"></polygon>
+                <g class="text">
+                  <text x="28" y="36">Client</text>
+                  <text x="224" y="36">DNS</text>
+                  <text x="268" y="36">Server</text>
+                  <text x="84" y="52">HTTPS?</text>
+                  <text x="88" y="68">AAAA?</text>
+                  <text x="100" y="84">A?</text>
+                  <text x="112" y="116">(30ms</text>
+                  <text x="164" y="116">delay)</text>
+                  <text x="120" y="148">HTTPS</text>
+                  <text x="184" y="148">(w/hints)</text>
+                  <text x="56" y="180">Start</text>
+                  <text x="108" y="180">w/IPv6</text>
+                  <text x="144" y="180">+</text>
+                  <text x="172" y="180">IPv4</text>
+                </g>
+              </svg><a href="#section-4.2.2-13.1" class="pilcrow">¶</a>
+</div>
+</div>
+<p id="section-4.2.2-14">A case in which SVCB/HTTPS answers return with multiple
+service names ("." indicating that the service applies
+to the original requested name, and "alt" being an
+alternative service name). In this case, connection attempts
+can start in parallel with new AAAA and A queries.<a href="#section-4.2.2-14" class="pilcrow">¶</a></p>
+<div id="section-4.2.2-15">
+            <div class="alignLeft art-svg artwork" id="section-4.2.2-15.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="432" width="296" viewBox="0 0 296 432" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,400" fill="none" stroke="black"></path>
+                <path d="M 256,48 L 256,368" fill="none" stroke="black"></path>
+                <path d="M 128,48 L 152,48" fill="none" stroke="black"></path>
+                <path d="M 128,64 L 152,64" fill="none" stroke="black"></path>
+                <path d="M 128,80 L 152,80" fill="none" stroke="black"></path>
+                <path d="M 64,144 L 88,144" fill="none" stroke="black"></path>
+                <path d="M 64,160 L 88,160" fill="none" stroke="black"></path>
+                <path d="M 64,176 L 88,176" fill="none" stroke="black"></path>
+                <path d="M 64,192 L 88,192" fill="none" stroke="black"></path>
+                <path d="M 192,256 L 216,256" fill="none" stroke="black"></path>
+                <path d="M 192,272 L 216,272" fill="none" stroke="black"></path>
+                <path d="M 64,336 L 88,336" fill="none" stroke="black"></path>
+                <path d="M 64,352 L 88,352" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="224,272 212,266.4 212,277.6" fill="black" transform="rotate(0,216,272)"></polygon>
+                <polygon class="arrowhead" points="224,256 212,250.4 212,261.6" fill="black" transform="rotate(0,216,256)"></polygon>
+                <polygon class="arrowhead" points="160,80 148,74.4 148,85.6" fill="black" transform="rotate(0,152,80)"></polygon>
+                <polygon class="arrowhead" points="160,64 148,58.4 148,69.6" fill="black" transform="rotate(0,152,64)"></polygon>
+                <polygon class="arrowhead" points="160,48 148,42.4 148,53.6" fill="black" transform="rotate(0,152,48)"></polygon>
+                <polygon class="arrowhead" points="72,352 60,346.4 60,357.6" fill="black" transform="rotate(180,64,352)"></polygon>
+                <polygon class="arrowhead" points="72,336 60,330.4 60,341.6" fill="black" transform="rotate(180,64,336)"></polygon>
+                <polygon class="arrowhead" points="72,192 60,186.4 60,197.6" fill="black" transform="rotate(180,64,192)"></polygon>
+                <polygon class="arrowhead" points="72,176 60,170.4 60,181.6" fill="black" transform="rotate(180,64,176)"></polygon>
+                <polygon class="arrowhead" points="72,160 60,154.4 60,165.6" fill="black" transform="rotate(180,64,160)"></polygon>
+                <polygon class="arrowhead" points="72,144 60,138.4 60,149.6" fill="black" transform="rotate(180,64,144)"></polygon>
+                <g class="text">
+                  <text x="28" y="36">Client</text>
+                  <text x="224" y="36">DNS</text>
+                  <text x="268" y="36">Server</text>
+                  <text x="84" y="52">HTTPS?</text>
+                  <text x="88" y="68">AAAA?</text>
+                  <text x="100" y="84">A?</text>
+                  <text x="112" y="116">(30ms</text>
+                  <text x="164" y="116">delay)</text>
+                  <text x="120" y="148">HTTPS</text>
+                  <text x="168" y="148">(".")</text>
+                  <text x="120" y="164">HTTPS</text>
+                  <text x="176" y="164">("alt")</text>
+                  <text x="116" y="180">AAAA</text>
+                  <text x="148" y="180">(2</text>
+                  <text x="204" y="180">addresses)</text>
+                  <text x="104" y="196">A</text>
+                  <text x="124" y="196">(2</text>
+                  <text x="180" y="196">addresses)</text>
+                  <text x="56" y="228">Start</text>
+                  <text x="108" y="228">w/IPv6</text>
+                  <text x="144" y="228">+</text>
+                  <text x="172" y="228">IPv4</text>
+                  <text x="88" y="260">AAAA?</text>
+                  <text x="144" y="260">("alt")</text>
+                  <text x="100" y="276">A?</text>
+                  <text x="144" y="276">("alt")</text>
+                  <text x="112" y="308">(30ms</text>
+                  <text x="164" y="308">delay)</text>
+                  <text x="116" y="340">AAAA</text>
+                  <text x="148" y="340">(1</text>
+                  <text x="196" y="340">address)</text>
+                  <text x="104" y="356">A</text>
+                  <text x="124" y="356">(1</text>
+                  <text x="172" y="356">address)</text>
+                  <text x="60" y="388">Update</text>
+                  <text x="116" y="388">w/IPv6</text>
+                  <text x="152" y="388">+</text>
+                  <text x="180" y="388">IPv4</text>
+                  <text x="264" y="388">|</text>
+                  <text x="256" y="404">|</text>
+                </g>
+              </svg><a href="#section-4.2.2-15.1" class="pilcrow">¶</a>
+</div>
+</div>
+<p id="section-4.2.2-16">An IPv4-only network connection where SVCB/HTTPS answers
+are slightly delayed:<a href="#section-4.2.2-16" class="pilcrow">¶</a></p>
+<div id="section-4.2.2-17">
+            <div class="alignLeft art-svg artwork" id="section-4.2.2-17.1">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="304" width="296" viewBox="0 0 296 304" class="diagram" text-anchor="middle" font-family="monospace" font-size="13px" stroke-linecap="round">
+                <path d="M 24,48 L 24,272" fill="none" stroke="black"></path>
+                <path d="M 256,48 L 256,272" fill="none" stroke="black"></path>
+                <path d="M 128,48 L 152,48" fill="none" stroke="black"></path>
+                <path d="M 128,64 L 152,64" fill="none" stroke="black"></path>
+                <path d="M 64,128 L 88,128" fill="none" stroke="black"></path>
+                <path d="M 64,224 L 88,224" fill="none" stroke="black"></path>
+                <polygon class="arrowhead" points="160,64 148,58.4 148,69.6" fill="black" transform="rotate(0,152,64)"></polygon>
+                <polygon class="arrowhead" points="160,48 148,42.4 148,53.6" fill="black" transform="rotate(0,152,48)"></polygon>
+                <polygon class="arrowhead" points="72,224 60,218.4 60,229.6" fill="black" transform="rotate(180,64,224)"></polygon>
+                <polygon class="arrowhead" points="72,128 60,122.4 60,133.6" fill="black" transform="rotate(180,64,128)"></polygon>
+                <g class="text">
+                  <text x="28" y="36">Client</text>
+                  <text x="224" y="36">DNS</text>
+                  <text x="268" y="36">Server</text>
+                  <text x="84" y="52">HTTPS?</text>
+                  <text x="100" y="68">A?</text>
+                  <text x="112" y="100">(30ms</text>
+                  <text x="164" y="100">delay)</text>
+                  <text x="104" y="132">A</text>
+                  <text x="124" y="132">(2</text>
+                  <text x="180" y="132">addresses)</text>
+                  <text x="48" y="164">Set</text>
+                  <text x="84" y="164">50ms</text>
+                  <text x="128" y="164">timer</text>
+                  <text x="112" y="196">(10ms</text>
+                  <text x="164" y="196">delay)</text>
+                  <text x="120" y="228">HTTPS</text>
+                  <text x="160" y="228">(no</text>
+                  <text x="204" y="228">hints)</text>
+                  <text x="56" y="260">Start</text>
+                  <text x="108" y="260">w/IPv4</text>
+                </g>
+              </svg><a href="#section-4.2.2-17.1" class="pilcrow">¶</a>
+</div>
+</div>
 </section>
 </div>
 </section>
