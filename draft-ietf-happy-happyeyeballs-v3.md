@@ -398,6 +398,39 @@ are available:
    |                            |
 ~~~
 
+A case in which SVCB/HTTPS answers return with multiple
+service names ("." indicating that the service applies
+to the original requested name, and "alt" being an
+alternative service name). In this case, connection attempts
+can start in parallel with new AAAA and A queries.
+
+~~~ aasvg
+ Client                    DNS Server
+   |    HTTPS?  --->            |
+   |     AAAA?  --->            |
+   |        A?  --->            |
+   |                            |
+   |        (30ms delay)        |
+   |                            |
+   |    <--- HTTPS (".")        |
+   |    <--- HTTPS ("alt")      |
+   |    <--- AAAA (2 addresses) |
+   |    <--- A (2 addresses)    |
+   |                            |
+   | Start w/IPv6 + IPv4        |
+   |                            |
+   |     AAAA? ("alt")  --->    |
+   |        A? ("alt")  --->    |
+   |                            |
+   |        (30ms delay)        |
+   |                            |
+   |    <--- AAAA (1 address)   |
+   |    <--- A (1 address)      |
+   |                            |
+   | Update w/IPv6 + IPv4        |
+   |                            |
+~~~
+
 An IPv4-only network connection where SVCB/HTTPS answers
 are slightly delayed:
 
