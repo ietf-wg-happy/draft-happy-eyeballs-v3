@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-28T04:11:47.585017+00:00",
+  "timestamp": "2026-07-02T03:54:48.854226+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -2072,7 +2072,7 @@
       "id": "I_kwDOKH7CuM7z7f8_",
       "title": "Section-10.1 :  Why is there a specific IPv6 MTU problem?",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/124",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "gorryfair",
       "authorAssociation": "NONE",
       "assignees": [
@@ -2081,8 +2081,8 @@
       "labels": [],
       "body": "Why is this IPv6-specific and what does this text allude to: \"Such issues might be specific to IPv6 traffic on the network.\"\n- Can the text describe the nature of this issue? Is it related to the size of the packet-header?",
       "createdAt": "2026-03-18T03:27:04Z",
-      "updatedAt": "2026-06-25T04:00:41Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-30T21:49:56Z",
+      "closedAt": "2026-06-30T21:49:56Z",
       "comments": [
         {
           "author": "nidhijaju",
@@ -2104,6 +2104,13 @@
           "body": "@gorryfair \"such issues\" here is referring to the preceding sentences. In context:\n\n> Connections that use TCP only (without TLS or another protocol on top) perform connection racing only during the TCP handshake. Such connections can encounter issues where the handshake (using small packets) completes but then large packets are dropped or incorrectly handled by the network due to a small MTU being configured on the network. Such issues might be specific to IPv6 traffic on the network.\n\nThe scenario this is referring to is one in which a network drops packets over a certain size, and the IPv6 header size can induce the error in some cases where it doesn't show up for IPv4. \n\n@DavidSchinazi do you recall some of the brokenness we had seen originally around this?",
           "createdAt": "2026-06-25T04:00:41Z",
           "updatedAt": "2026-06-25T04:00:41Z"
+        },
+        {
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "body": "I had cases where Firewalls dropped specific TLS handshakes over IPv6 due to an implementation bug (same TLS parameters worked over IPv4). Though Happy Eyeballs on TCP only lead to broken sessions.\n\nProduced quite a nice picture on MacOS showing who uses Network.framework (thus raced TLS) and who don't.",
+          "createdAt": "2026-06-30T13:24:08Z",
+          "updatedAt": "2026-06-30T13:24:08Z"
         }
       ]
     },
@@ -8849,24 +8856,26 @@
       "id": "PR_kwDOKH7CuM7fnTKo",
       "title": "Allow short-circuiting Connection Attempt Delay on DNS answer change",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/126",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "gakiwate",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "When DNS answers change mid-setup and no in-progress attempt has\r\nsucceeded, allow the client to cancel the running Connection Attempt\r\nDelay timer and start the next attempt immediately, since the timer\r\nwas sized against a now-stale address list.",
       "createdAt": "2026-05-26T23:41:00Z",
-      "updatedAt": "2026-06-25T19:07:28Z",
+      "updatedAt": "2026-06-30T23:59:47Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
       "headRepository": "gakiwate/draft-happy-eyeballs-v3",
       "headRefName": "main",
-      "headRefOid": "758919a6194a9e7d7c7ce92355afc0ae77c5b515",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "d63071db07987fd3300005826849a877ee2a4732",
+      "closedAt": "2026-06-30T23:59:47Z",
+      "mergedAt": "2026-06-30T23:59:47Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "fc746b473367631e68f5b52342c72157c6abac2e"
+      },
       "comments": [
         {
           "author": "DavidSchinazi",
@@ -8925,7 +8934,28 @@
           "updatedAt": "2026-06-25T19:07:28Z"
         }
       ],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEngsPg",
+          "commit": {
+            "abbreviatedOid": "01dce52"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-30T23:57:19Z",
+          "updatedAt": "2026-06-30T23:57:23Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\nDNS update has not made progress within an expected time window, the client MAY treat this as a signal that\n```",
+              "createdAt": "2026-06-30T23:57:19Z",
+              "updatedAt": "2026-06-30T23:57:23Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 127,
@@ -9413,24 +9443,26 @@
       "id": "PR_kwDOKH7CuM7qZKFo",
       "title": "Update explanation of MTU issues for IPv6 traffic",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/132",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #124",
       "createdAt": "2026-06-25T04:02:29Z",
-      "updatedAt": "2026-06-25T13:16:23Z",
+      "updatedAt": "2026-06-30T21:49:55Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfpauly-patch-13",
       "headRefOid": "39cdee76b89ad2aecc35650245e7013a681bdf7b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-06-30T21:49:55Z",
+      "mergedAt": "2026-06-30T21:49:55Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "45ca92372d5d8ac5d0b46b0d5a8731b5c5d5bb50"
+      },
       "comments": [],
       "reviews": [
         {
@@ -9465,6 +9497,19 @@
           "createdAt": "2026-06-25T06:26:15Z",
           "updatedAt": "2026-06-25T06:26:15Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEmHBcg",
+          "commit": {
+            "abbreviatedOid": "39cdee7"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-06-30T19:11:08Z",
+          "updatedAt": "2026-06-30T19:11:08Z",
+          "comments": []
         }
       ]
     },
@@ -9482,7 +9527,7 @@
       "labels": [],
       "body": "Closes #117\r\n\r\nThis change adds references and explains the interaction with destination address selection for resolver selection, but maintains the RFC 8305 language around:\r\n\r\n- Preferring IPv6\r\n- Preferring having a diversity of address families\r\n- Being able to penalize a non-responsive resolver and fail over to another\r\n\r\nThese aspects are not covered by other documents at this time.",
       "createdAt": "2026-06-25T04:14:41Z",
-      "updatedAt": "2026-06-25T13:17:14Z",
+      "updatedAt": "2026-06-30T19:18:31Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
@@ -9545,6 +9590,26 @@
           "createdAt": "2026-06-25T07:06:57Z",
           "updatedAt": "2026-06-25T07:06:57Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEmKWjQ",
+          "commit": {
+            "abbreviatedOid": "deb0057"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-30T19:18:31Z",
+          "updatedAt": "2026-06-30T19:18:31Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "The use if \"In accordance with\" sounds weird to me. But taking a step back, what are we trying to accomplish here? Communication to the DNS resolver feels out of scope for this document",
+              "createdAt": "2026-06-30T19:18:31Z",
+              "updatedAt": "2026-06-30T19:18:31Z"
+            }
+          ]
         }
       ]
     },
@@ -9655,6 +9720,77 @@
           "createdAt": "2026-06-25T06:31:48Z",
           "updatedAt": "2026-06-25T06:31:48Z",
           "comments": []
+        }
+      ]
+    },
+    {
+      "number": 136,
+      "id": "PR_kwDOKH7CuM7swBHu",
+      "title": "Add examples for DNS answer ordering",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/136",
+      "state": "MERGED",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Complete the TODO in the document to add examples for various DNS answers coming back in different orders",
+      "createdAt": "2026-07-01T15:43:40Z",
+      "updatedAt": "2026-07-02T01:10:56Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "fc746b473367631e68f5b52342c72157c6abac2e",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfp/dns-examples",
+      "headRefOid": "e5bf398ad60f27b6d97c1df71e40b0cdcd409b49",
+      "closedAt": "2026-07-02T01:10:56Z",
+      "mergedAt": "2026-07-02T01:10:56Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "915b2e601dadce9e1eb0c6f7a6b8a7023dc9e790"
+      },
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Here's the rendered version: https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/tfp/dns-examples/draft-ietf-happy-happyeyeballs-v3.html",
+          "createdAt": "2026-07-01T16:10:13Z",
+          "updatedAt": "2026-07-01T16:10:13Z"
+        },
+        {
+          "author": "gakiwate",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "It will be interesting to have an additional example where the HTTPS record has information that needs a follow on A / AAAA query. \r\n\r\nSo something that shows A / AAAA being sent again and the timers being updated (or not) to wait for those queries to finish.\r\n\r\n```\r\n Client                    DNS Server\r\n   |    HTTPS?  --->            |\r\n   |     AAAA?  --->            |\r\n   |        A?  --->            |\r\n   |                            |\r\n   |        (30ms delay)        |\r\n   |                            |\r\n   |    <--- HTTPS (no hints)   |\r\n   |        AAAA?  --->            |\r\n   |        A?  --->            |\r\n```",
+          "createdAt": "2026-07-01T21:37:23Z",
+          "updatedAt": "2026-07-01T21:37:23Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@gakiwate thanks, I added another example!",
+          "createdAt": "2026-07-02T00:43:07Z",
+          "updatedAt": "2026-07-02T00:43:07Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABEtvQgg",
+          "commit": {
+            "abbreviatedOid": "f43ec46"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-07-01T17:06:55Z",
+          "updatedAt": "2026-07-01T17:07:49Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\nThe following examples provide various sequences that might be seen for receiving\n```",
+              "createdAt": "2026-07-01T17:06:55Z",
+              "updatedAt": "2026-07-01T17:07:49Z"
+            }
+          ]
         }
       ]
     }
