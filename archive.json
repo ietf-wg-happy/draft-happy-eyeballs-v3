@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-05T03:48:34.916796+00:00",
+  "timestamp": "2026-07-07T03:46:56.228329+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -2081,7 +2081,7 @@
       "labels": [],
       "body": "Why is this IPv6-specific and what does this text allude to: \"Such issues might be specific to IPv6 traffic on the network.\"\n- Can the text describe the nature of this issue? Is it related to the size of the packet-header?",
       "createdAt": "2026-03-18T03:27:04Z",
-      "updatedAt": "2026-07-03T07:41:37Z",
+      "updatedAt": "2026-07-06T17:03:40Z",
       "closedAt": "2026-06-30T21:49:56Z",
       "comments": [
         {
@@ -2139,6 +2139,13 @@
           "body": "On 03-Jul-26 19:28, Gorry Fairhurst wrote:\r\n> On 03/07/2026 00:55, Brian E Carpenter wrote:\r\n>> On 03-Jul-26 11:01, Dan Wing wrote:\r\n>>> On Jun 24, 2026, at 9:33\u202fAM, Gorry Fairhurst ***@***.***>\r\n>>> wrote:\r\n>>>>\r\n>>>> On 24/06/2026 09:46, Nidhi Jaju wrote:\r\n>>>>> nidhijaju left a comment (ietf-wg-happy/draft-happy-eyeballs-v3#124)\r\n>>>>> Note: This text was added in #120.\r\n>>>>> \u2014\r\n>>>>> Reply to this email directly, view it on GitHub, or unsubscribe.\r\n>>>>> You are receiving this because you authored the thread.Message ID:\r\n>>>>> ***@***.***>\r\n>>>> I still don't understand the origins or generallity of the statement\r\n>>>> \"Such issues might be specific to IPv6\".\r\n>>>> Maybe I am missing something, so what is it that makes a TCP session\r\n>>>> over IPv6 fail to recieve packets of the received MSS?\r\n>>>\r\n>>> Spit-balling: Decades of deployed routers with \"ip tcp adjust-mss\",\r\n>>> but without corresponding \"ipv6 tcp adjust-mss\". Also due to header\r\n>>> size differences the two values usually don't match and counting\r\n>>> bytes is harder now than decades ago.\r\n> Indeed.\r\n>>\r\n>> And wouldn't variable length extension headers make it potentially\r\n>> even worse?\r\n>>  \u00a0\u00a0 Brian\r\n> \r\n> If this is a source, ought the TCP sender to take EH and other headers\r\n> into account when constructing a TCP Segment so that the payload is\r\n> less, rather than the packet being discarded?\r\n\r\nI think that's what should happen, but I don't know if it always\r\nwill happen. The TCP layer might not be aware of what happens\r\nin the IPv6 layer.\r\n\r\n> \r\n> Were you thinking of transit routers that are configured to add EH\r\n> (e.g., for OAM)\r\n\r\nThat would be a direct violation of RFC 8200.\r\nhttps://www.rfc-editor.org/rfc/rfc8200.html#page-8\r\n\r\n    Brian\r\n\r\n\r\n> and ought to have configured a sufficient MTU.\r\n> \r\n> Gorry\r\n> \r\n",
           "createdAt": "2026-07-03T07:41:37Z",
           "updatedAt": "2026-07-03T07:41:37Z"
+        },
+        {
+          "author": "gorryfair",
+          "authorAssociation": "NONE",
+          "body": "On Jul 2, 2026, at 4:55\u202fPM, Brian E Carpenter ***@***.***> wrote:\r\n> On 03-Jul-26 11:01, Dan Wing wrote:\r\n>> On Jun 24, 2026, at 9:33\u202fAM, Gorry Fairhurst ***@***.***> wrote:\r\n>>> \r\n>>> On 24/06/2026 09:46, Nidhi Jaju wrote:\r\n>>>> nidhijaju left a comment (ietf-wg-happy/draft-happy-eyeballs-v3#124)\r\n>>>> Note: This text was added in #120.\r\n>>>> \u2014\r\n>>>> Reply to this email directly, view it on GitHub, or unsubscribe.\r\n>>>> You are receiving this because you authored the thread.Message ID: ***@***.***>\r\n>>> I still don't understand the origins or generallity of the statement \"Such issues might be specific to IPv6\".\r\n>>> Maybe I am missing something, so what is it that makes a TCP session over IPv6 fail to recieve packets of the received MSS?\r\n>> Spit-balling: Decades of deployed routers with \"ip tcp adjust-mss\", but without corresponding \"ipv6 tcp adjust-mss\". Also due to header size differences the two values usually don't match and counting bytes is harder now than decades ago.\r\n> \r\n> And wouldn't variable length extension headers make it potentially even worse?\r\n\r\nCertainly makes calculating the reduction more difficult (to impossible) in sending host.\r\n\r\n-d\r\n\r\n",
+          "createdAt": "2026-07-06T17:03:39Z",
+          "updatedAt": "2026-07-06T17:03:39Z"
         }
       ]
     },
