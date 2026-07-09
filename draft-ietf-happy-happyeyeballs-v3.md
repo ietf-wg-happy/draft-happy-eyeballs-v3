@@ -1035,9 +1035,6 @@ milliseconds. MUST NOT be less than 10 milliseconds.
 - Maximum Connection Attempt Delay ({{connections}}): The maximum time to
 wait between connection attempts. Recommended to be 2 seconds.
 
-- Last Resort Local Synthesis Delay ({{broken}}): The time to wait
-after starting the last IPv6 attempt and before sending the A
-query. Recommended to be 2 seconds.
 
 The delay values described in this section were determined
 empirically by measuring the timing of connections on a very wide set
