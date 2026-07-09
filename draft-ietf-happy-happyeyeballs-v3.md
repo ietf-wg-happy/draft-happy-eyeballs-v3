@@ -997,71 +997,18 @@ synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/3
 Additionally, there are restrictions on the use of the well-known NAT64
 prefix ({{Section 3.1 of !RFC6052}}) for certain addresses.
 
-## Supporting DNS64 {#dns64}
 
-If PREF64 is not available and the NAT64 prefix cannot be discovered,
-clients SHOULD assume the network is relying on DNS64 for IPv4-to-IPv6
-address synthesis. In this scenario, clients will typically only
-receive AAAA records from DNS queries, as DNS64 servers synthese these
-records for IPv4-only domains.
+## Sorting and Connecting on NAT64 Networks
 
-## Hostnames with Broken AAAA Records {#broken}
+Synthesized IPv6 addresses (IPv4 addresses that have been
+synthensized into IPv6 addresses either locally using PREF64
+or by a DNS64 resolver) MUST be treated as IPv4 addresses for
+the purpose of Happy Eyeballs grouping and sorting ({{sorting}}).
 
-At the time of writing, there exist a small but non-negligible number
-of hostnames that resolve to valid A records and broken AAAA records,
-which we define as AAAA records that contain seemingly valid IPv6
-addresses but those addresses never reply when contacted on the usual
-ports. These can be, for example, caused by:
-
-- Mistyping of the IPv6 address in the DNS zone configuration
-
-- Routing black holes
-
-- Service outages
-
-While an algorithm complying with the other sections of this document
-would correctly handle such hostnames on a dual-stack network, they
-will not necessarily function correctly on IPv6-only networks with
-NAT64 and DNS64. Since DNS64 recursive resolvers rely on the
-authoritative name servers sending negative (no error, no data)
-responses for AAAA records in order to synthesize, they will not
-synthesize records for these particular hostnames and will instead
-pass through the broken AAAA record.
-
-In order to support these scenarios, the client device needs to query
-the DNS for the A record and then perform local synthesis. Since
-these types of hostnames are rare and, in order to minimize load on
-DNS servers, this A query should only be performed when the client
-has given up on the AAAA records it initially received. This can be
-achieved by using a longer timeout, referred to as the "Last Resort
-Local Synthesis Delay"; the delay is recommended to be 2 seconds.
-The timer is started when the last connection attempt is fired. If
-no connection attempt has succeeded when this timer fires, the device
-queries the DNS for the IPv4 address and, on reception of a valid A
-record, treats it as if it were provided by the application (see
-{{literals}}).
-
-## Virtual Private Networks
-
-Some Virtual Private Networks (VPNs) may be configured to handle DNS
-queries from the device. The configuration could encompass all
-queries or a subset such as "*.internal.example.com". These VPNs can
-also be configured to only route part of the IPv4 address space, such
-as 192.0.2.0/24. However, if an internal hostname resolves to an
-external IPv4 address, these can cause issues if the underlying
-network is IPv6-only. As an example, let's assume that
-"www.internal.example.com" has exactly one A record, 198.51.100.42,
-and no AAAA records. The client will send the DNS query to the
-company's recursive resolver and that resolver will reply with these
-records. The device now only has an IPv4 address to connect to and
-no route to that address. Since the company's resolver does not know
-the NAT64 prefix of the underlying network, it cannot synthesize the
-address. Similarly, the underlying network's DNS64 recursive
-resolver does not know the company's internal addresses, so it cannot
-resolve the hostname. Because of this, the client device needs to
-resolve the A record using the company's resolver and then locally
-synthesize an IPv6 address, as if the resolved IPv4 address were
-provided by the application ({{literals}}).
+IPv6 addresses received from AAAA records might come from DNS64
+{{DNS64}}. Clients that are aware of the PREF64 value MUST check
+to see if an IPv6 address received from DNS is actually an IPv4
+address.
 
 # Summary of Configurable Values
 
