@@ -144,24 +144,24 @@ by sending DNS queries and collecting the answers.
 This section describes how a client initiates DNS queries
 and asynchronously handles the answers.
 
-## Sending DNS Queries
+## Sending DNS Queries {#queries}
 
 Clients first need to determine which DNS resource records
 they will include in queries for a named host.
 
-This decision is based on if client has "connectivity" using IPv4 and IPv6.
-In this case, "connectivity" for an address family is defined
+This decision is based on if client has "connectivity" using IPv4
+and/or IPv6 on the current provisioning domain (PvD) {{?PvD=RFC7556}}.
+Generally, "connectivity" for an address family is defined
 as having at least one local address of the family from which
 to send packets, and at least one non-link local route for
-the address family.
+the address family. When there is IPv6 connectivity, the client
+MUST include a query for AAAA records. When there is IPv4 connectivity,
+the client MUST include a query for A records. Additionally,
+if the client has detected a NAT64 prefix ({{!NAT64=RFC6146}})
+on the network, the client MUST include a query for A records
+(see {{nat64}} for more details on detecting the NAT64 prefix
+and handling answers).
 
-When a client has both IPv4 and IPv6 connectivity, it needs to
-send out queries for both AAAA and A records. On a network with
-only IPv4 connectivity, it will send a query for A records. On a
-network with only IPv6 connectivity, the client will either send
-out queries for both AAAA and A records, or only a query for AAAA
-records, depending on the network configuration. See {{v6only}}
-for more discussion of handling IPv6-mostly and IPv6-only networks.
 
 In addition to requesting AAAA and A records, depending on which
 application is establishing the connection, clients can request
@@ -667,7 +667,7 @@ Fast Open {{?RFC7413}} and some Hypertext Transport Protocol (HTTP)
 cookies. This historical data MUST be partitioned using the same
 boundaries used for privacy-sensitive information specific to that endpoint,
 and MUST NOT be used across different Provisioning Domains (PvDs)
-{{?RFC7556}}. The data SHOULD be flushed whenever a device changes the
+{{PvD}}. The data SHOULD be flushed whenever a device changes the
 PvD to which it is attached. However, if a client can reliably
 identify a previously attached PvD, it MAY retain and resume using
 historical data associated with that PvD upon reconnection. Clients
@@ -946,69 +946,56 @@ the previous addresses may no longer be viable and fire the timer sooner
 to start a connection attempt to the next address in the updated list, subject
 to the Minimum Connection Attempt Delay.
 
-# Supporting IPv6-Mostly and IPv6-Only Networks {#v6only}
+# Handling NAT64 Networks {#nat64}
 
-While many IPv6 transition protocols have been standardized and
-deployed, most are transparent to client devices. Supporting IPv6-only
-networks often requires specific client-side changes, especially when
-interacting with IPv4-only services. Two primary mechanisms for this
-are the combined use of NAT64 {{!RFC6146}} with DNS64 {{!RFC6147}}, or
-leveraging NAT64 with a discovered PREF64 prefix {{!RFC8781}}.
+NAT64 {{NAT64}} is an IPv6 transition protocol that allows
+clients with IPv6-only connectivity to access IPv4-only peers
+outside the local link. When NAT64 is in use, an IPv6 prefix,
+referred to as PREF64, is used on by the NAT for synthesizing
+IPv4 addresses into IPv6 addresses.
 
-One possible way to handle these networks is for the client device
-networking stack to implement 464XLAT {{?RFC6877}}. 464XLAT has the
-advantage of not requiring changes to user space software; however, it
-requires per-packet translation if the application is using IPv4
-literals and does not encourage client application software to support
-native IPv6. On platforms that do not support 464XLAT, the Happy
-Eyeballs engine SHOULD follow the recommendations in this section to
-properly support IPv6-mostly ({{?V6-MOSTLY=I-D.ietf-v6ops-6mops}}) and IPv6-only networks.
+## Discovering PREF64
 
-The features described in this section SHOULD only be enabled when the
-host detects an IPv6-mostly or IPv6-only network. A simple heuristic
-to detect one of these networks is to check if the network offers
-routable IPv6 addressing, does not offer routable IPv4 addressing, and
-offers a DNS resolver address.
+Clients can discover a network's PREF64 in one of the following ways:
 
-## IPv4 Address Literals {#literals}
+1. From a Router Advertisement option ({{!PREF64=RFC8781}})
 
-If client applications or users wish to connect to IPv4 address
-literals, the Happy Eyeballs engine will need to perform NAT64 address
-synthesis for them. The solution is similar to "Bump-in-the-Host"
-{{!RFC6535}} but is implemented inside the Happy Eyeballs client.
+1. From a DNS query for ipv4only.arpa ({{!RFC7050}})
 
-Note that some IPv4 prefixes are scoped to a given host or network,
-such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and
-255.255.255.255/32, and therefore do not require NAT64 address
-synthesis.
+If a network with IPv6-only connectivity does not provide the prefix
+in a Router Advertisement {{PREF64}}, clients SHOULD send the DNS
+query to discover the prefix {{RFC7050}}.
 
-## Discovering and Utilizing PREF64 {#pref64-detection}
+Networks that use NAT64 might also include DNS64 {{?DNS64=RFC6147}},
+in which the DNS resolver synthesizes A answers into AAAA answers.
+However, with the prefix available from router advertisements {{PREF64}},
+networks might choose to not deploy DNS64, as the latter has a number
+of disadvantages (see {{Section 4.3.4 of ?V6-MOSTLY=I-D.ietf-v6ops-6mops}}).
 
-When an IPv4 address is passed into the Happy Eyeballs implementation
-instead of a hostname, it SHOULD use PREF64s received from Router
-Advertisements {{!RFC8781}}.
+To ensure compatibility with any NAT64 network, whenever the client
+detects a NAT64 prefix, from either of the options reference above,
+clients MUST send A queries in addition to AAAA queries (as
+specified in {{queries}}). This allows the client to receive any
+existing IPv4 A records and perform local NAT64 address synthesis,
+eliminating the network's need to run DNS64.
 
-With PREF64 available, networks might choose to not deploy DNS64, as
-the latter has a number of disadvantages (see
-{{V6-MOSTLY, Section 4.3.4}}). To ensure
-compatibility with such networks, if PREF64 is available, clients
-SHOULD send an A query in addition to an AAAA query for a given
-hostname. This allows the client to receive any existing IPv4 A
-records and perform local NAT64 address synthesis, eliminating the
-network's need to run DNS64.
+## Synthesizing IPv6 Addresses
 
-If the network does not provide PREF64s, the implementation SHOULD
-query the network for the NAT64 prefix using "Discovery of the IPv6
-Prefix Used for IPv6 Address Synthesis" {{!RFC7050}}. It then
-synthesizes an appropriate IPv6 address (or several) using the
-encoding described in "IPv6 Addressing of IPv4/ IPv6 Translators"
-{{!RFC6052}}. The synthesized addresses are then inserted into the
-list of addresses as if they were results from DNS A queries;
-connection attempts follow the algorithm described above (see
-{{connections}}).
+When a client has discovered PREF64, it can use the prefix to
+synthesize IPv4 addresses into IPv6 addresses as defined in {{!RFC6052}}.
 
-Such translation also applies to any IPv4 addresses received in A
-records and IPv4 address hints received in SVCB records.
+Such synthesis is performed by the Happy Eyeballs client any
+time it has an IPv4 answer from DNS (from A records or IPv4
+address hints received in SVCB/HTTPS records), or is being
+asked to connect to an IPv4 literal address. The solution is similar
+to "Bump-in-the-Host" {{!RFC6535}} but is implemented inside
+the Happy Eyeballs client.
+
+Note that NAT64 address synthesis is not always required or possible.
+Some IPv4 prefixes are scoped to a given host or network and do not require
+synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/32;
+Additionally, there are restrictions on the use of the well-known NAT64
+prefix ({{Section 3.1 of !RFC6052}}) for certain addresses.
 
 ## Supporting DNS64 {#dns64}
 
