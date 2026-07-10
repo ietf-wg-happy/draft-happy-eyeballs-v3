@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 10 January 2027                                         N. Jaju
+Expires: 11 January 2027                                         N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                             9 July 2026
+                                                            10 July 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 10 January 2027.
+   This Internet-Draft will expire on 11 January 2027.
 
 Copyright Notice
 
@@ -202,7 +202,7 @@ Table of Contents
    include in queries for a named host.
 
    This decision is based on if client has "connectivity" using IPv4
-   and/or IPv6 on the current provisioning domain (PvD) [PvD].
+   and/or IPv6 on the current Provisioning Domain (PvD) [PvD].
    Generally, "connectivity" for an address family is defined as having
    at least one local address of the family from which to send packets,
    and at least one non-link local route for the address family.  When
