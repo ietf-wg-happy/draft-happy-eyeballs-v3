@@ -150,7 +150,7 @@ Clients first need to determine which DNS resource records
 they will include in queries for a named host.
 
 This decision is based on if client has "connectivity" using IPv4
-and/or IPv6 on the current provisioning domain (PvD) {{?PvD=RFC7556}}.
+and/or IPv6 on the current Provisioning Domain (PvD) {{?PvD=RFC7556}}.
 Generally, "connectivity" for an address family is defined
 as having at least one local address of the family from which
 to send packets, and at least one non-link local route for
