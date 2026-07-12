@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-07T03:46:56.228329+00:00",
+  "timestamp": "2026-07-12T03:19:37.324933+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -2168,6 +2168,51 @@
       "updatedAt": "2026-06-26T04:16:18Z",
       "closedAt": "2026-06-26T04:16:18Z",
       "comments": []
+    },
+    {
+      "number": 138,
+      "id": "I_kwDOKH7CuM8AAAABIWhMsQ",
+      "title": "Exponential Connection Attempt Delay (multiplier), allowing a smaller initial delay",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/138",
+      "state": "OPEN",
+      "author": "mxinden",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Today's [Connection Attempt Delay](https://datatracker.ietf.org/doc/html/draft-ietf-happy-happyeyeballs-v3-04#name-connection-attempts) is constant (default 250 ms). A constant delay is a poor trade: large means slow fallback when the preferred path is a blackhole; small means a sustained burst of attempts under congestion.\n\n## Proposal\n\nAn optional **Connection Attempt Delay Multiplier** that grows the delay for each additional in-flight attempt. A value of 1 is today's constant-delay behavior. Firefox ships the multiplier on Nightly ([bug 2050565](https://bugzilla.mozilla.org/show_bug.cgi?id=2050565)), with an initial delay of 50 ms and a multiplier of 2, so attempts start at 0, 50, 150, 350, 750 ms. Growing the delay keeps the attempt rate low even when paths are broken.\n\n## Firefox telemetry\n\nBelow the relevant Firefox Nightly telemetry (~15k clients), with a connection attempt delay of 50ms and a multiplier of 2. Connections almost never fan out, so the faster second attempt adds negligible load:\n\n- [`winning_attempt_index`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_winning_attempt_index/explore): the winner is attempt **1 in 94.2%** of connections, attempt 2 in 4.6%, index >= 3 in only **1.2%**.\n- [`connection_attempt_count`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_connection_attempt_count/explore) (succeeded): **87.4%** start a single attempt; **98.1%** never start a third.\n- [`cancelled_attempt_count`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_cancelled_attempt_count/explore): **94.1%** of wins cancel zero in-flight attempts.\n\n## Benefit\n\nThe addressable slice is the **~5.8%** of connections where attempt >= 2 wins; for them, cutting the first gap from 250 ms to 50 ms should pull down the P75 to P95 percentile of [`end_to_end_time_succeeded`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_end_to_end_time_succeeded/explore) (currently P50 = 74 ms, P75 = 161 ms, P95 = 603 ms).\n\n## Questions\n\n1. Is an initial delay below the 100 ms recommended minimum acceptable given the back-off?\n2. Normative (with a recommended default) or informational implementation guidance?\n3. Compound on in-flight attempts (as Firefox does) or on total attempts started?",
+      "createdAt": "2026-07-10T13:29:52Z",
+      "updatedAt": "2026-07-11T04:27:44Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Nice, I like this approach! I think the main thing to reconcile with here is the interaction with estimated RTT data. 250ms is a default _if you can't get a better number_. In practice, in Apple's implementation we're almost always going to use some other value that's based on current network RTT and expected number of round trips.\n\nHave you done any experiments with using dynamically adjusted times?",
+          "createdAt": "2026-07-10T15:58:48Z",
+          "updatedAt": "2026-07-10T15:58:48Z"
+        },
+        {
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I like this idea. You could combine both by applying the multiplier to the historical expected RTT",
+          "createdAt": "2026-07-10T23:07:18Z",
+          "updatedAt": "2026-07-10T23:07:18Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As other data points from Apple's stack, we see the following on dual stack networks when used for web loads:\n- 97.2% of connections use the first address\n- 1.95% of connections use the second address\n- 0.85% of connections use further attempts\n\nI think we'd need to add a bit data more to measure how many connection attempts start and cancel.",
+          "createdAt": "2026-07-10T23:14:43Z",
+          "updatedAt": "2026-07-10T23:14:51Z"
+        },
+        {
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "That sounds a good idea! FWIW Chrome uses historical RTT for TCP/QUIC races. Regarding races within the same protocol, we currently use a fixed value for TCP, but @nidhijaju is planning to replace it with historical RTT. We have a similar plan for QUIC, but it is currently in the implementation stage.",
+          "createdAt": "2026-07-11T04:27:44Z",
+          "updatedAt": "2026-07-11T04:27:44Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -3805,25 +3850,33 @@
       "id": "PR_kwDOKH7CuM5emMP1",
       "title": "The Well-Known Prefix MUST NOT be used to represent non-global IPv4 addresses, such as RFC1918",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/33",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "momoka0122y",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "closes #32 \r\n\r\n",
       "createdAt": "2023-11-04T13:50:59Z",
-      "updatedAt": "2023-11-07T08:57:59Z",
+      "updatedAt": "2026-07-10T03:36:52Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "a120bd4a4ea0325659bf35835c02ce7ac6a766cd",
       "headRepository": "momoka0122y/draft-happy-eyeballs-v3",
       "headRefName": "patch-3",
       "headRefOid": "90af2ef4f73a79c0874bbc411474960f470c4feb",
-      "closedAt": null,
+      "closedAt": "2026-07-10T03:36:51Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Incorporating into #137 ",
+          "createdAt": "2026-07-10T03:36:51Z",
+          "updatedAt": "2026-07-10T03:36:51Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOKH7CuM5mJjGO",
@@ -6812,10 +6865,12 @@
       "author": "oskar456",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
+      "labels": [
+        "IPv6"
+      ],
       "body": "This simplifies the section about IPv6-only networks while hopefully addressing comments from #91:\r\n\r\n - Remove mentions of IPv6-mostly, since the host where Happy Eyeballs runs will never be IPv6-mostly, it would be either Dual-stack or IPv6-only.\r\n - Use the presence of PREF64 as the only detection mechanism of NAT64\r\n - Note that RFC 7050 should be used, but only when RFC 8781 failed\r\n - Prescribe handling of IPv4 addresses by first looking up the routing table (needed for VPNs) and then synthesizing IPv6. This already covers the former text on IPv4 literals, broken AAAA records and VPN case\r\n - Add section on dealing with DNS64: basically detect and undo since it is not needed for HE.\r\n - Removed the `Last Resort Local Synthesis Delay` configurable variable. If we want HE to function properly without DNS64, every IPv4-only destination looks exactly like \"Broken AAAA record\" case and we definitely don't want 2 second delay every single time.",
       "createdAt": "2025-07-29T21:43:48Z",
-      "updatedAt": "2025-11-10T10:31:24Z",
+      "updatedAt": "2026-07-10T03:36:26Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
@@ -6840,6 +6895,13 @@
           "body": "Discussed at IETF 124: \r\n- Potential for a design team\r\n- Potential to ask 6man to do a 6724bisbis",
           "createdAt": "2025-11-06T20:13:50Z",
           "updatedAt": "2025-11-06T20:13:50Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "See attempt at incorporating this + design team discussion in #137 ",
+          "createdAt": "2026-07-10T03:36:26Z",
+          "updatedAt": "2026-07-10T03:36:26Z"
         }
       ],
       "reviews": [
@@ -9562,7 +9624,7 @@
       "labels": [],
       "body": "Closes #117\r\n\r\nThis change adds references and explains the interaction with destination address selection for resolver selection, but maintains the RFC 8305 language around:\r\n\r\n- Preferring IPv6\r\n- Preferring having a diversity of address families\r\n- Being able to penalize a non-responsive resolver and fail over to another\r\n\r\nThese aspects are not covered by other documents at this time.",
       "createdAt": "2026-06-25T04:14:41Z",
-      "updatedAt": "2026-06-30T19:18:31Z",
+      "updatedAt": "2026-07-10T18:08:49Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
@@ -9643,6 +9705,46 @@
               "body": "The use if \"In accordance with\" sounds weird to me. But taking a step back, what are we trying to accomplish here? Communication to the DNS resolver feels out of scope for this document",
               "createdAt": "2026-06-30T19:18:31Z",
               "updatedAt": "2026-06-30T19:18:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABFkEsag",
+          "commit": {
+            "abbreviatedOid": "deb0057"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-10T03:38:06Z",
+          "updatedAt": "2026-07-10T03:38:06Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "The selection of address family used to talk to the resolver was part of HEv2 as well (I thought you wrote that part, David!), so this is mainly trying to update and rephrase that.",
+              "createdAt": "2026-07-10T03:38:06Z",
+              "updatedAt": "2026-07-10T03:38:06Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABFpZjdA",
+          "commit": {
+            "abbreviatedOid": "deb0057"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-10T18:08:49Z",
+          "updatedAt": "2026-07-10T18:08:49Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "How dare you suggest that past me was right!? That guy keeps making mistakes that I have to deal with",
+              "createdAt": "2026-07-10T18:08:49Z",
+              "updatedAt": "2026-07-10T18:08:49Z"
             }
           ]
         }
@@ -9824,6 +9926,205 @@
               "body": "```suggestion\nThe following examples provide various sequences that might be seen for receiving\n```",
               "createdAt": "2026-07-01T17:06:55Z",
               "updatedAt": "2026-07-01T17:07:49Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 137,
+      "id": "PR_kwDOKH7CuM7v8a-t",
+      "title": "Rewrite IPv6-only/NAT64 text based on design team discussion",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/137",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "IPv6"
+      ],
+      "body": "Attempt at closing IPv6-only network issues, based on design team discussion from IETF 125\r\n\r\nProposal was:\r\n\r\n> Define: PvD is all interfaces on which the connection might end up sending packets.\r\n> * If your PvD has non-loopback v4 or contains any known PREF64 prefix, then you MUST send A (since you might end up using it)\r\n> * If your PvD has any non link-local or loopback v6 (global scope), then you MUST send AAAA\r\n> * Will get back v4, v6, or synthesized v6 addresses\r\n>     * If you have the prefix, you SHOULD replace v6 addresses that you can de-synthesize with the real v4 versions using the prefix for the interface on which the DNS query was sent.\r\n>     * These are the same as the native v4 ones from a prioritization perspective\r\n>     * Run the sorting algorithm, native v6 will be preferred",
+      "createdAt": "2026-07-09T23:08:57Z",
+      "updatedAt": "2026-07-10T08:16:24Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "915b2e601dadce9e1eb0c6f7a6b8a7023dc9e790",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfp/ipv6-only-redo",
+      "headRefOid": "e242fb9d39b04ed68ab15485f3768c034ce9b4ca",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Rendered version: https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/tfp/ipv6-only-redo/draft-ietf-happy-happyeyeballs-v3.html",
+          "createdAt": "2026-07-09T23:12:27Z",
+          "updatedAt": "2026-07-09T23:12:27Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABFjbOvw",
+          "commit": {
+            "abbreviatedOid": "31f5f98"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-10T00:23:23Z",
+          "updatedAt": "2026-07-10T00:31:06Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "```suggestion\nThis decision is based on whether the client has \"connectivity\" using IPv4\n```",
+              "createdAt": "2026-07-10T00:23:23Z",
+              "updatedAt": "2026-07-10T00:31:07Z"
+            },
+            {
+              "originalPosition": 13,
+              "body": "```suggestion\nand/or IPv6 on the current Provisioning Domain (PvD) {{?PvD=RFC7556}}.\n```",
+              "createdAt": "2026-07-10T00:25:21Z",
+              "updatedAt": "2026-07-10T00:31:07Z"
+            },
+            {
+              "originalPosition": 180,
+              "body": "It would be nice to keep the mention of how most other IPv6 transition technologies don't need to be worried about because they are transparent to the client device",
+              "createdAt": "2026-07-10T00:26:37Z",
+              "updatedAt": "2026-07-10T00:31:07Z"
+            },
+            {
+              "originalPosition": 240,
+              "body": "I would revert the removal of the Last Resort Local Synthesis Delay. If we want to remove that, let's have a WG discussion about it and do it in a separate issue and PR",
+              "createdAt": "2026-07-10T00:30:34Z",
+              "updatedAt": "2026-07-10T00:31:07Z"
+            },
+            {
+              "originalPosition": 240,
+              "body": "Why is the VPN section removed?",
+              "createdAt": "2026-07-10T00:30:53Z",
+              "updatedAt": "2026-07-10T00:31:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABFj05XQ",
+          "commit": {
+            "abbreviatedOid": "31f5f98"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-10T02:16:03Z",
+          "updatedAt": "2026-07-10T02:16:03Z",
+          "comments": [
+            {
+              "originalPosition": 240,
+              "body": "I think we'll have a WG discussion for this whole this! But the reason I removed it is that I don't think it makes sense any more in the context of these updates.\r\n\r\nThe Last Resort Local Synthesis Delay is about when you send an A query to get the address to synthesize, when you're on a NAT64 network. The advice is now that you MUST send the A query any time a NAT64 prefix is known (which is a prerequisite to doing synthesis), so having another delay timer to do the same thing doesn't make sense.\r\n\r\nDoes that sound right? Anything I'm missing?",
+              "createdAt": "2026-07-10T02:16:03Z",
+              "updatedAt": "2026-07-10T02:16:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABFj1UoQ",
+          "commit": {
+            "abbreviatedOid": "31f5f98"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-10T02:17:46Z",
+          "updatedAt": "2026-07-10T02:17:46Z",
+          "comments": [
+            {
+              "originalPosition": 240,
+              "body": "Perhaps we need to add back parts of it, or just re-emphasize that this is all about what's on the same PvD. I'd like to get feedback from the group on what to say here, but I think the old text around DNS64 stuff doesn't apply generally anymore.",
+              "createdAt": "2026-07-10T02:17:46Z",
+              "updatedAt": "2026-07-10T02:17:47Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABFj1c2w",
+          "commit": {
+            "abbreviatedOid": "31f5f98"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-10T02:18:18Z",
+          "updatedAt": "2026-07-10T02:18:19Z",
+          "comments": [
+            {
+              "originalPosition": 180,
+              "body": "Are you thinking we should call out examples, or just say \"other\"?",
+              "createdAt": "2026-07-10T02:18:18Z",
+              "updatedAt": "2026-07-10T02:18:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABFj8xIg",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-10T02:56:55Z",
+          "updatedAt": "2026-07-10T03:01:00Z",
+          "comments": [
+            {
+              "originalPosition": 240,
+              "body": "Oh you're absolutely right. SGTM",
+              "createdAt": "2026-07-10T02:56:55Z",
+              "updatedAt": "2026-07-10T03:01:00Z"
+            },
+            {
+              "originalPosition": 180,
+              "body": "Nah I think \"other\" is fine. We used to says \"many\" :-P",
+              "createdAt": "2026-07-10T02:58:31Z",
+              "updatedAt": "2026-07-10T03:01:00Z"
+            },
+            {
+              "originalPosition": 240,
+              "body": "Yeah in my mind the main realization of this section was that if you get DNS from one interface and use it on another then things can get interesting. I think that still applies here: if the corporate VPN PvD is v4 only and the A record is for an address not in the corp VPN split tunnel routes then things break",
+              "createdAt": "2026-07-10T03:00:46Z",
+              "updatedAt": "2026-07-10T03:01:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABFlVxlQ",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-07-10T08:08:21Z",
+          "updatedAt": "2026-07-10T08:16:24Z",
+          "comments": [
+            {
+              "originalPosition": 240,
+              "body": "How do we treat duplicate addresses, especially in the case we synthesized based on PREF64 and got the same address from DNS64?",
+              "createdAt": "2026-07-10T08:08:21Z",
+              "updatedAt": "2026-07-10T08:16:24Z"
+            },
+            {
+              "originalPosition": 240,
+              "body": "We should treat VPN as implicit PvDs \u2013 It's all the same story. \n\nDid we mention that we MUST NOT do cross-PvD synthesis?\n\nDo we need more text con cross PvD interaction (DNS from PvD A which has no default route but A/AAAA points to a prefix only reachable through PvD B)?",
+              "createdAt": "2026-07-10T08:16:01Z",
+              "updatedAt": "2026-07-10T08:16:24Z"
             }
           ]
         }
