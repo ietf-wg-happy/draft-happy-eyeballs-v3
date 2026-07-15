@@ -509,7 +509,7 @@ Before attempting to connect to any of the resolved destination
 endpoints, the client defines the order in which to start the
 attempts. Once the order has been defined, the client can use a
 simple algorithm for racing each option after a short delay (see
-{{connections}}). It is important that the ordered list involve all
+{{connections}}). It is important that the ordered list involves all
 endpoints from both address families and all protocols that have been received
 by this point, as this allows the client to get the racing effect of
 Happy Eyeballs for the entire list, not just the first IPv4 and first
@@ -593,8 +593,8 @@ some answers that include ECH configuration and some that don't, but notes
 that such cases are possible. It is possible that services only include
 ECH configurations on SVCB answers that are prioritized behind others
 that don't include ECH configurations; for example, this might be
-used as an experimenation or roll-out strategy. Due to such cases, clients
-ought to not arbitrarily group ECH-containing answers and sort them
+used as an experimentation or roll-out strategy. Due to such cases, clients
+ought not to arbitrarily group ECH-containing answers and sort them
 first if they won't use the ECH information, or if the connection would
 not benefit from the use of ECH. However, for cases where there is a
 reason for an application preference for ECH, the client MAY group
@@ -705,7 +705,7 @@ endpoint is started first, followed by the others, one at a
 time. Starting a new connection attempt does not affect previous
 attempts, as multiple connection attempts may occur in parallel.  Once
 one of the connection attempts succeeds ({{success}}), all other
-connections attempts that have not yet succeeded SHOULD be canceled.
+connection attempts that have not yet succeeded SHOULD be canceled.
 Any endpoint that was not yet attempted as a connection SHOULD be
 ignored.  At that time, any asynchronous DNS queries MAY be canceled as
 new endpoints will not be used for this connection. However, the DNS
@@ -778,7 +778,7 @@ handshakes or state checks as well.
 Client connections that use TCP only (without TLS or another protocol
 on top, such as for unencrypted HTTP connections) will determine
 successful establishment based on completing the TCP handshake
-only. When TLS is used on top of of TCP (such as for encrypted HTTP
+only. When TLS is used on top of TCP (such as for encrypted HTTP
 connections), clients SHOULD wait for the TLS handshake to
 successfully complete before cancelling other connection
 attempts. This is particularly useful for networks in which a
@@ -988,7 +988,7 @@ When an IPv4 address is passed into the Happy Eyeballs implementation
 instead of a hostname, it SHOULD use PREF64s received from Router
 Advertisements {{!RFC8781}}.
 
-With PREF64 available, networks might choose to not deploy DNS64, as
+With PREF64 available, networks might choose not to deploy DNS64, as
 the latter has a number of disadvantages (see
 {{V6-MOSTLY, Section 4.3.4}}). To ensure
 compatibility with such networks, if PREF64 is available, clients
@@ -1015,12 +1015,12 @@ records and IPv4 address hints received in SVCB records.
 If PREF64 is not available and the NAT64 prefix cannot be discovered,
 clients SHOULD assume the network is relying on DNS64 for IPv4-to-IPv6
 address synthesis. In this scenario, clients will typically only
-receive AAAA records from DNS queries, as DNS64 servers synthese these
+receive AAAA records from DNS queries, as DNS64 servers synthesize these
 records for IPv4-only domains.
 
 ## Hostnames with Broken AAAA Records {#broken}
 
-At the time of writing, there exist a small but non-negligible number
+At the time of writing, there exists a small but non-negligible number
 of hostnames that resolve to valid A records and broken AAAA records,
 which we define as AAAA records that contain seemingly valid IPv6
 addresses but those addresses never reply when contacted on the usual
@@ -1061,7 +1061,7 @@ queries from the device. The configuration could encompass all
 queries or a subset such as "*.internal.example.com". These VPNs can
 also be configured to only route part of the IPv4 address space, such
 as 192.0.2.0/24. However, if an internal hostname resolves to an
-external IPv4 address, these can cause issues if the underlying
+external IPv4 address, this can cause issues if the underlying
 network is IPv6-only. As an example, let's assume that
 "www.internal.example.com" has exactly one A record, 198.51.100.42,
 and no AAAA records. The client will send the DNS query to the
