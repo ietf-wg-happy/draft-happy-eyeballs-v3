@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-12T03:19:37.324933+00:00",
+  "timestamp": "2026-07-16T02:51:26.375188+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -10129,6 +10129,32 @@
           ]
         }
       ]
+    },
+    {
+      "number": 139,
+      "id": "PR_kwDOKH7CuM7x9FqV",
+      "title": "Fix typos",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/139",
+      "state": "OPEN",
+      "author": "judgeNotFound",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Just some grammatical things I found during reading the current draft.",
+      "createdAt": "2026-07-15T09:31:20Z",
+      "updatedAt": "2026-07-15T09:31:21Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "915b2e601dadce9e1eb0c6f7a6b8a7023dc9e790",
+      "headRepository": "judgeNotFound/draft-happy-eyeballs-v3",
+      "headRefName": "main",
+      "headRefOid": "b77849c728d2c0cd1396100596375cc29de2a3ab",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
