@@ -39,11 +39,11 @@ in RFC 8305.
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.10.0
+    platformdirs 4.10.1
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.1
+    wcwidth 0.8.2
 -->
 <link href="draft-ietf-happy-happyeyeballs-v3.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1066,7 +1066,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 3 January 2027</td>
+<td class="center">Expires 20 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1079,12 +1079,12 @@ svg {
 <dd class="internet-draft">draft-ietf-happy-happyeyeballs-v3-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-07-02" class="published">2 July 2026</time>
+<time datetime="2026-07-19" class="published">19 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-01-03">3 January 2027</time></dd>
+<dd class="expires"><time datetime="2027-01-20">20 January 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1155,7 +1155,7 @@ in RFC 8305.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 3 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2018,7 +2018,7 @@ available list.<a href="#section-4.5-3" class="pilcrow">¶</a></p>
 endpoints, the client defines the order in which to start the
 attempts. Once the order has been defined, the client can use a
 simple algorithm for racing each option after a short delay (see
-<a href="#connections" class="auto internal xref">Section 6</a>). It is important that the ordered list involve all
+<a href="#connections" class="auto internal xref">Section 6</a>). It is important that the ordered list involves all
 endpoints from both address families and all protocols that have been received
 by this point, as this allows the client to get the racing effect of
 Happy Eyeballs for the entire list, not just the first IPv4 and first
@@ -2105,8 +2105,8 @@ some answers that include ECH configuration and some that don't, but notes
 that such cases are possible. It is possible that services only include
 ECH configurations on SVCB answers that are prioritized behind others
 that don't include ECH configurations; for example, this might be
-used as an experimenation or roll-out strategy. Due to such cases, clients
-ought to not arbitrarily group ECH-containing answers and sort them
+used as an experimentation or roll-out strategy. Due to such cases, clients
+ought not to arbitrarily group ECH-containing answers and sort them
 first if they won't use the ECH information, or if the connection would
 not benefit from the use of ECH. However, for cases where there is a
 reason for an application preference for ECH, the client <span class="bcp14">MAY</span> group
@@ -2221,7 +2221,7 @@ endpoint is started first, followed by the others, one at a
 time. Starting a new connection attempt does not affect previous
 attempts, as multiple connection attempts may occur in parallel.  Once
 one of the connection attempts succeeds (<a href="#success" class="auto internal xref">Section 6.1</a>), all other
-connections attempts that have not yet succeeded <span class="bcp14">SHOULD</span> be canceled.
+connection attempts that have not yet succeeded <span class="bcp14">SHOULD</span> be canceled.
 Any endpoint that was not yet attempted as a connection <span class="bcp14">SHOULD</span> be
 ignored.  At that time, any asynchronous DNS queries <span class="bcp14">MAY</span> be canceled as
 new endpoints will not be used for this connection. However, the DNS
@@ -2290,7 +2290,7 @@ handshakes or state checks as well.<a href="#section-6.1-1" class="pilcrow">¶</
 <p id="section-6.1-2">Client connections that use TCP only (without TLS or another protocol
 on top, such as for unencrypted HTTP connections) will determine
 successful establishment based on completing the TCP handshake
-only. When TLS is used on top of of TCP (such as for encrypted HTTP
+only. When TLS is used on top of TCP (such as for encrypted HTTP
 connections), clients <span class="bcp14">SHOULD</span> wait for the TLS handshake to
 successfully complete before cancelling other connection
 attempts. This is particularly useful for networks in which a
@@ -2510,7 +2510,7 @@ synthesis.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 <p id="section-8.2-1">When an IPv4 address is passed into the Happy Eyeballs implementation
 instead of a hostname, it <span class="bcp14">SHOULD</span> use PREF64s received from Router
 Advertisements <span>[<a href="#RFC8781" class="cite xref">RFC8781</a>]</span>.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
-<p id="section-8.2-2">With PREF64 available, networks might choose to not deploy DNS64, as
+<p id="section-8.2-2">With PREF64 available, networks might choose not to deploy DNS64, as
 the latter has a number of disadvantages (see
 <span>[<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>], <a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-07#section-4.3.4" class="relref">Section 4.3.4</a></span>). To ensure
 compatibility with such networks, if PREF64 is available, clients
@@ -2539,7 +2539,7 @@ records and IPv4 address hints received in SVCB records.<a href="#section-8.2-4"
 <p id="section-8.3-1">If PREF64 is not available and the NAT64 prefix cannot be discovered,
 clients <span class="bcp14">SHOULD</span> assume the network is relying on DNS64 for IPv4-to-IPv6
 address synthesis. In this scenario, clients will typically only
-receive AAAA records from DNS queries, as DNS64 servers synthese these
+receive AAAA records from DNS queries, as DNS64 servers synthesize these
 records for IPv4-only domains.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2548,7 +2548,7 @@ records for IPv4-only domains.<a href="#section-8.3-1" class="pilcrow">¶</a></p
         <h3 id="name-hostnames-with-broken-aaaa-">
 <a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-hostnames-with-broken-aaaa-" class="section-name selfRef">Hostnames with Broken AAAA Records</a>
         </h3>
-<p id="section-8.4-1">At the time of writing, there exist a small but non-negligible number
+<p id="section-8.4-1">At the time of writing, there exists a small but non-negligible number
 of hostnames that resolve to valid A records and broken AAAA records,
 which we define as AAAA records that contain seemingly valid IPv6
 addresses but those addresses never reply when contacted on the usual
@@ -2596,7 +2596,7 @@ queries from the device. The configuration could encompass all
 queries or a subset such as "*.internal.example.com". These VPNs can
 also be configured to only route part of the IPv4 address space, such
 as 192.0.2.0/24. However, if an internal hostname resolves to an
-external IPv4 address, these can cause issues if the underlying
+external IPv4 address, this can cause issues if the underlying
 network is IPv6-only. As an example, let's assume that
 "www.internal.example.com" has exactly one A record, 198.51.100.42,
 and no AAAA records. The client will send the DNS query to the
