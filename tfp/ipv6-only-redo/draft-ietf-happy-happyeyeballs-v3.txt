@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 11 January 2027                                         N. Jaju
+Expires: 21 January 2027                                         N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                            10 July 2026
+                                                            20 July 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 January 2027.
+   This Internet-Draft will expire on 21 January 2027.
 
 Copyright Notice
 
@@ -1041,9 +1041,7 @@ Table of Contents
    Note that NAT64 address synthesis is not always required or possible.
    Some IPv4 prefixes are scoped to a given host or network and do not
    require synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16,
-   and 255.255.255.255/32; Additionally, there are restrictions on the
-   use of the well-known NAT64 prefix (Section 3.1 of [RFC6052]) for
-   certain addresses.
+   and 255.255.255.255/32;
 
 8.3.  Sorting and Connecting on NAT64 Networks
 
