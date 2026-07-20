@@ -509,7 +509,7 @@ Before attempting to connect to any of the resolved destination
 endpoints, the client defines the order in which to start the
 attempts. Once the order has been defined, the client can use a
 simple algorithm for racing each option after a short delay (see
-{{connections}}). It is important that the ordered list involve all
+{{connections}}). It is important that the ordered list involves all
 endpoints from both address families and all protocols that have been received
 by this point, as this allows the client to get the racing effect of
 Happy Eyeballs for the entire list, not just the first IPv4 and first
@@ -593,8 +593,8 @@ some answers that include ECH configuration and some that don't, but notes
 that such cases are possible. It is possible that services only include
 ECH configurations on SVCB answers that are prioritized behind others
 that don't include ECH configurations; for example, this might be
-used as an experimenation or roll-out strategy. Due to such cases, clients
-ought to not arbitrarily group ECH-containing answers and sort them
+used as an experimentation or roll-out strategy. Due to such cases, clients
+ought not to arbitrarily group ECH-containing answers and sort them
 first if they won't use the ECH information, or if the connection would
 not benefit from the use of ECH. However, for cases where there is a
 reason for an application preference for ECH, the client MAY group
@@ -705,7 +705,7 @@ endpoint is started first, followed by the others, one at a
 time. Starting a new connection attempt does not affect previous
 attempts, as multiple connection attempts may occur in parallel.  Once
 one of the connection attempts succeeds ({{success}}), all other
-connections attempts that have not yet succeeded SHOULD be canceled.
+connection attempts that have not yet succeeded SHOULD be canceled.
 Any endpoint that was not yet attempted as a connection SHOULD be
 ignored.  At that time, any asynchronous DNS queries MAY be canceled as
 new endpoints will not be used for this connection. However, the DNS
@@ -778,7 +778,7 @@ handshakes or state checks as well.
 Client connections that use TCP only (without TLS or another protocol
 on top, such as for unencrypted HTTP connections) will determine
 successful establishment based on completing the TCP handshake
-only. When TLS is used on top of of TCP (such as for encrypted HTTP
+only. When TLS is used on top of TCP (such as for encrypted HTTP
 connections), clients SHOULD wait for the TLS handshake to
 successfully complete before cancelling other connection
 attempts. This is particularly useful for networks in which a
