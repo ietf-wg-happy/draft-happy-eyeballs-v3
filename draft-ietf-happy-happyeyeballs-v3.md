@@ -994,8 +994,6 @@ the Happy Eyeballs client.
 Note that NAT64 address synthesis is not always required or possible.
 Some IPv4 prefixes are scoped to a given host or network and do not require
 synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/32;
-Additionally, there are restrictions on the use of the well-known NAT64
-prefix ({{Section 3.1 of !RFC6052}}) for certain addresses.
 
 
 ## Sorting and Connecting on NAT64 Networks
