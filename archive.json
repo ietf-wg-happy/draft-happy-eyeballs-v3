@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-16T02:51:26.375188+00:00",
+  "timestamp": "2026-07-21T02:56:53.589970+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -2213,6 +2213,22 @@
           "updatedAt": "2026-07-11T04:27:44Z"
         }
       ]
+    },
+    {
+      "number": 140,
+      "id": "I_kwDOKH7CuM8AAAABJdOIFA",
+      "title": "Top-level section on PvDs, VPNs, network connections, and other network contexts",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/140",
+      "state": "OPEN",
+      "author": "enygren",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "As discussed in IETF 126 in Vienna and in discussions for #132, we should pull out an explicit section covering:\n* PvDs\n* VPNs (including split tunnel)\n* Absence of PvDs and network switches in this context\n* Other similar concepts to PvDs (\"multiple simultaneous networks with different properties\") \n* Multiple independent network interfaces\n\nWe may want to have an abstract name we use that covers these (eg, \"network context\"?).\nWhile PvDs are a concrete instantiation, not all OSes implement them.\n\nFor example, considerations such as:\n\n* Do not use DNS records obtained from one network context in another\n* Absent PvDs, flush the default DNS cache on switching networks\n* Do not use a NAT64 from one network context in another\n* ...\n\nSome of the considerations from #132 could fall into this.\n",
+      "createdAt": "2026-07-20T13:49:01Z",
+      "updatedAt": "2026-07-20T13:49:01Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -8717,7 +8733,7 @@
       "id": "PR_kwDOKH7CuM7H-gWa",
       "title": "Refactor to separate requirements from algorithm",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/122",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bemasc",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -8726,14 +8742,14 @@
       ],
       "body": "This draft's abstract and introduction indicate that the draft should provide requirements and an example algorithm.  Thus far, the draft has not really done that. The existing text is mostly describing an algorithm, sometimes via general requirements and sometimes via very specific instructions.\r\n\r\nThis PR attempts a clean separation between the requirements and the example algorithm.  Most of the changes are relocations of existing text with only minor edits.  Normative language has been removed from the example algorithm (which is not normative) and consolidated in new requirements paragraphs where appropriate. Some new text is added to make aspects of the example algorithm explicit (rather than implied from the requirements).\r\n\r\nTo avoid entangling too many concerns, this PR does not attempt to de-duplicate duplicated guidance, or to adjust any normative recommendation.  It also does not attempt to complete the full specification of the example algorithm, which can be seen to have several missing pieces after removing the requirements, or to resolve other unrelated issues.",
       "createdAt": "2026-03-04T20:13:02Z",
-      "updatedAt": "2026-03-16T14:23:07Z",
+      "updatedAt": "2026-07-20T12:09:36Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "8e5a78c21f9b6ebfbf1b11bb54f3a32d8e73e630",
       "headRepository": "bemasc/draft-happy-eyeballs-v3",
       "headRefName": "refactor-requirements",
       "headRefOid": "55528671acdf052ee930294b2e5620f34c22c296",
-      "closedAt": null,
+      "closedAt": "2026-07-20T12:09:35Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -8751,6 +8767,13 @@
           "body": "The text in the abstract and intro is inherited from HEv2. I think one question we should address is if that breakdown it sets up is correct, or if the solution is to change the framing. The notion of the algorithm being an example is only mentioned in these places, and is not, for example, part of the WG charter.\r\n\r\nMy main concern with splitting things is making it harder to see the flow \u2014 the steps of resolution, sorting, grouping, and connecting are pretty core and fundamental to understanding the algorithm.\r\n\r\nAnother way to approach this is to define the algorithm as the main flow of the doc, as it is, and then extract the normative bits to summarize near the end.",
           "createdAt": "2026-03-15T01:51:50Z",
           "updatedAt": "2026-03-15T01:51:50Z"
+        },
+        {
+          "author": "bemasc",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "This is effectively superseded by #131.  (But see #125 for a more relevant change.)",
+          "createdAt": "2026-07-20T12:09:35Z",
+          "updatedAt": "2026-07-20T12:09:35Z"
         }
       ],
       "reviews": [
@@ -9624,7 +9647,7 @@
       "labels": [],
       "body": "Closes #117\r\n\r\nThis change adds references and explains the interaction with destination address selection for resolver selection, but maintains the RFC 8305 language around:\r\n\r\n- Preferring IPv6\r\n- Preferring having a diversity of address families\r\n- Being able to penalize a non-responsive resolver and fail over to another\r\n\r\nThese aspects are not covered by other documents at this time.",
       "createdAt": "2026-06-25T04:14:41Z",
-      "updatedAt": "2026-07-10T18:08:49Z",
+      "updatedAt": "2026-07-20T12:23:37Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
@@ -9635,7 +9658,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "bemasc",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "DNS isn't just IPv4 and IPv6.  With RFC 9461, it has full SVCB protocol discovery support and _many_ different protocols (UDP, TCP, DoT, DoH/H2, DoH/H3, and DoQ).  In my view:\r\n\r\n* What goes on behind the DNS curtain is basically out of scope for HE.\r\n* DNS can certainly use HE _within the SVCB-driven connection modes_, as a \"client\" of HE.\r\n* The behavior for bare UDP and TCP (\"Do53\") is pretty tricky and DNS-specific, and we should stay out of it.\r\n* This text is not what we need.",
+          "createdAt": "2026-07-20T12:23:37Z",
+          "updatedAt": "2026-07-20T12:23:37Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOKH7CuM8AAAABEEYzzQ",
@@ -9945,13 +9976,13 @@
       ],
       "body": "Attempt at closing IPv6-only network issues, based on design team discussion from IETF 125\r\n\r\nProposal was:\r\n\r\n> Define: PvD is all interfaces on which the connection might end up sending packets.\r\n> * If your PvD has non-loopback v4 or contains any known PREF64 prefix, then you MUST send A (since you might end up using it)\r\n> * If your PvD has any non link-local or loopback v6 (global scope), then you MUST send AAAA\r\n> * Will get back v4, v6, or synthesized v6 addresses\r\n>     * If you have the prefix, you SHOULD replace v6 addresses that you can de-synthesize with the real v4 versions using the prefix for the interface on which the DNS query was sent.\r\n>     * These are the same as the native v4 ones from a prioritization perspective\r\n>     * Run the sorting algorithm, native v6 will be preferred",
       "createdAt": "2026-07-09T23:08:57Z",
-      "updatedAt": "2026-07-10T08:16:24Z",
+      "updatedAt": "2026-07-20T12:02:53Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
-      "baseRefOid": "915b2e601dadce9e1eb0c6f7a6b8a7023dc9e790",
+      "baseRefOid": "95d9ed82177a990f486f10cd10066d7c51323f4e",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfp/ipv6-only-redo",
-      "headRefOid": "e242fb9d39b04ed68ab15485f3768c034ce9b4ca",
+      "headRefOid": "502acf61829c8b571877e2cadd6419b20068029a",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -10127,6 +10158,246 @@
               "updatedAt": "2026-07-10T08:16:24Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGgLXzg",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-19T19:37:29Z",
+          "updatedAt": "2026-07-19T19:37:29Z",
+          "comments": [
+            {
+              "originalPosition": 240,
+              "body": "I read it like that the problem with VPN does not exist if we state that host must do A quieries and local synthesis of IPv6 destination address. But that only works if you treat VPN as being in the same PvD.",
+              "createdAt": "2026-07-19T19:37:29Z",
+              "updatedAt": "2026-07-19T19:37:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGgL4hA",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "oskar456",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-19T19:43:51Z",
+          "updatedAt": "2026-07-19T19:43:52Z",
+          "comments": [
+            {
+              "originalPosition": 225,
+              "body": "Maybe also mention local IPv4 routes that might be provided by some VPNs - in case VPN just pushes some IPv4 routes but does not change client's DNS resolver.",
+              "createdAt": "2026-07-19T19:43:52Z",
+              "updatedAt": "2026-07-19T19:43:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGiJ8DQ",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "furry13",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-20T08:54:07Z",
+          "updatedAt": "2026-07-20T08:54:07Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "```suggestion\nas having at least one non-loopback and and non-link-local ({{!RFC3927}},{{!RFC4291}}) address of that address family from which\n```",
+              "createdAt": "2026-07-20T08:54:07Z",
+              "updatedAt": "2026-07-20T08:54:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGiL23w",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "furry13",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-20T08:58:37Z",
+          "updatedAt": "2026-07-20T08:58:37Z",
+          "comments": [
+            {
+              "originalPosition": 227,
+              "body": "```suggestion\n\n```\n\nhttps://datatracker.ietf.org/doc/draft-ietf-v6ops-nat64-wkp-1918/ is in the last call, removing this restriction. ",
+              "createdAt": "2026-07-20T08:58:37Z",
+              "updatedAt": "2026-07-20T08:58:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGiM_oQ",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "furry13",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-20T09:01:36Z",
+          "updatedAt": "2026-07-20T09:01:36Z",
+          "comments": [
+            {
+              "originalPosition": 240,
+              "body": "IMHO it would be better to define a generic logic of dealing with IPv4 and IPv6 addresses, and do not complicate the text with a dedicated VPN use case. If we get it right, the VPN scenario should just work and HE would not need to treat it differently.",
+              "createdAt": "2026-07-20T09:01:36Z",
+              "updatedAt": "2026-07-20T09:01:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGiSS7g",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "furry13",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-20T09:13:11Z",
+          "updatedAt": "2026-07-20T09:13:11Z",
+          "comments": [
+            {
+              "originalPosition": 221,
+              "body": "OK, so here is the question: we say 'it can use the prefix to synthesize IPv6 from IPv4' but later we say 'the client MUST de-synthesize'. \nLet's say\n    Case1: The client has only IP6 connectivity (no v4 address, and IPv6 address is 2001:db8::f00) but PREF64 has been detected. THe client gets back AAAA = 64:ff9b::192.0.2.1 and A=192.0.2.1\n\nAs we say later, the client MUST desynthesize, so the resulting destination addressers set would be {192.0.2.1}, with the only source address avaiable {2001:db8::f00}. \n\nDo we need to explain what happens? What ensures that  the address would be synthesized again?\n\nThe more I think about it, the more I suspect we might be introducing a lot of complexity here which could be avoided, as suggested by Lorenzo by updating RFC6724-bis to *depref* 64:ff9b:: (or any PREF64-derived addresses and prefer IPv4.\n\nI guess we can talk about it during the session.",
+              "createdAt": "2026-07-20T09:13:11Z",
+              "updatedAt": "2026-07-20T09:13:11Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGimokA",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "timchown",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-20T10:00:04Z",
+          "updatedAt": "2026-07-20T10:00:04Z",
+          "comments": [
+            {
+              "originalPosition": 221,
+              "body": "Just for info, 6724-bis is really 6724-update, so not a full republication, but such a change could in principle be added.  Also, 6724-update has been with the IESG now \"in RFC Editor queue\" for 318 days.",
+              "createdAt": "2026-07-20T10:00:04Z",
+              "updatedAt": "2026-07-20T10:00:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGjRYqg",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "enygren",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-20T11:45:29Z",
+          "updatedAt": "2026-07-20T11:45:29Z",
+          "comments": [
+            {
+              "originalPosition": 240,
+              "body": "It may be that we want to talk about \"VPNs and PvDs\" as a group?\nThis might be something worth pulling up to a top-level section to talk about this class of topics.  This touches on a few other areas as well, and from a read through abstracting this out could be useful especially as not everything may strictly use PvDs yet but may have equivalent concepts.\n\nThere are also topics like \"must flush address cache when switching between networks lacking PvDs\".  \n\nSo perhaps we have a general concept of \"network interface context\" (word TBD) which may be a PvD, a VPN, or a connection to a given network outside of a PvD.",
+              "createdAt": "2026-07-20T11:45:29Z",
+              "updatedAt": "2026-07-20T11:45:29Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGjTYzg",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-20T11:50:41Z",
+          "updatedAt": "2026-07-20T11:50:41Z",
+          "comments": [
+            {
+              "originalPosition": 227,
+              "body": "Sounds good!",
+              "createdAt": "2026-07-20T11:50:41Z",
+              "updatedAt": "2026-07-20T11:50:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGjW10A",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-20T11:59:20Z",
+          "updatedAt": "2026-07-20T11:59:20Z",
+          "comments": [
+            {
+              "originalPosition": 221,
+              "body": "The way I address this in the PR is:\r\n\r\n> Synthesized IPv6 addresses (IPv4 addresses that have been synthensized into IPv6 addresses either locally using PREF64 or by a DNS64 resolver) MUST be treated as IPv4 addresses for the purpose of Happy Eyeballs grouping and sorting ([Section 5](https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/tfp/ipv6-only-redo/draft-ietf-happy-happyeyeballs-v3.html#sorting)).[\u00b6](https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/tfp/ipv6-only-redo/draft-ietf-happy-happyeyeballs-v3.html#section-8.3-1)\r\n\r\nThis doesn't literally de-synthensize it.",
+              "createdAt": "2026-07-20T11:59:20Z",
+              "updatedAt": "2026-07-20T11:59:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGjXLBQ",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-20T12:00:02Z",
+          "updatedAt": "2026-07-20T12:00:02Z",
+          "comments": [
+            {
+              "originalPosition": 221,
+              "body": "The one case where we'd need to actually use the v4 is in the VPN case",
+              "createdAt": "2026-07-20T12:00:02Z",
+              "updatedAt": "2026-07-20T12:00:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGjYUeA",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-20T12:02:53Z",
+          "updatedAt": "2026-07-20T12:02:53Z",
+          "comments": [
+            {
+              "originalPosition": 221,
+              "body": "I think what we end up with is that you never need to de-synthesize and re-synthesize, but you do need to check if the v4 address that is encapsulated is actually part of a VPN route and in that case, use the IPv4 address over the VPN",
+              "createdAt": "2026-07-20T12:02:53Z",
+              "updatedAt": "2026-07-20T12:02:53Z"
+            }
+          ]
         }
       ]
     },
@@ -10135,20 +10406,62 @@
       "id": "PR_kwDOKH7CuM7x9FqV",
       "title": "Fix typos",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/139",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "judgeNotFound",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Just some grammatical things I found during reading the current draft.",
       "createdAt": "2026-07-15T09:31:20Z",
-      "updatedAt": "2026-07-15T09:31:21Z",
+      "updatedAt": "2026-07-19T11:52:15Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "915b2e601dadce9e1eb0c6f7a6b8a7023dc9e790",
       "headRepository": "judgeNotFound/draft-happy-eyeballs-v3",
       "headRefName": "main",
       "headRefOid": "b77849c728d2c0cd1396100596375cc29de2a3ab",
+      "closedAt": "2026-07-19T11:52:15Z",
+      "mergedAt": "2026-07-19T11:52:15Z",
+      "mergedBy": "nidhijaju",
+      "mergeCommit": {
+        "oid": "95d9ed82177a990f486f10cd10066d7c51323f4e"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGfip0g",
+          "commit": {
+            "abbreviatedOid": "b77849c"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thank you!",
+          "createdAt": "2026-07-19T11:52:07Z",
+          "updatedAt": "2026-07-19T11:52:07Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 141,
+      "id": "PR_kwDOKH7CuM7z6k8s",
+      "title": "Correct explaination for IPv6 fragmentation issues, reference RFC8900",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/141",
+      "state": "OPEN",
+      "author": "enygren",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "As discussed in IETF 126 Vienna, the IPv6 fragmentation issues are not due to the larger header sizes.\r\nUpdates the explanation and references RFC8900 which goes into far more detail.",
+      "createdAt": "2026-07-20T15:14:13Z",
+      "updatedAt": "2026-07-20T15:14:14Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "95d9ed82177a990f486f10cd10066d7c51323f4e",
+      "headRepository": "enygren/draft-happy-eyeballs-v3",
+      "headRefName": "enygren-ipv6-frag",
+      "headRefOid": "fe33c5bdba4f57d1651941de4a05a58556f52d65",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
