@@ -152,14 +152,14 @@ they will include in queries for a named host.
 This decision is based on whether the client has "connectivity" using IPv4
 and/or IPv6 on the current Provisioning Domain (PvD) {{?PvD=RFC7556}}.
 Generally, "connectivity" for an address family is defined
-as having at least one local address of the family from which
-to send packets, and at least one non-link local route for
-the address family. When there is IPv6 connectivity, the client
-MUST include a query for AAAA records. When there is IPv4 connectivity,
-the client MUST include a query for A records. Additionally,
-if the client has detected a NAT64 prefix ({{!NAT64=RFC6146}})
-on the network, the client MUST include a query for A records
-(see {{nat64}} for more details on detecting the NAT64 prefix
+as having at least one non-loopback and and non-link-local ({{!RFC3927}},{{!RFC4291}})
+address of that address family from which to send packets, and at
+least one non-link local route for the address family. When there is
+IPv6 connectivity, the client MUST include a query for AAAA records.
+When there is IPv4 connectivity, the client MUST include a query for
+A records. Additionally, if the client has detected a NAT64 prefix
+({{!NAT64=RFC6146}}) on the network, the client MUST include a query
+for A records (see {{nat64}} for more details on detecting the NAT64 prefix
 and handling answers).
 
 
@@ -979,34 +979,41 @@ specified in {{queries}}). This allows the client to receive any
 existing IPv4 A records and perform local NAT64 address synthesis,
 eliminating the network's need to run DNS64.
 
-## Synthesizing IPv6 Addresses
-
-When a client has discovered PREF64, it can use the prefix to
-synthesize IPv4 addresses into IPv6 addresses as defined in {{!RFC6052}}.
-
-Such synthesis is performed by the Happy Eyeballs client any
-time it has an IPv4 answer from DNS (from A records or IPv4
-address hints received in SVCB/HTTPS records), or is being
-asked to connect to an IPv4 literal address. The solution is similar
-to "Bump-in-the-Host" {{!RFC6535}} but is implemented inside
-the Happy Eyeballs client.
-
-Note that NAT64 address synthesis is not always required or possible.
-Some IPv4 prefixes are scoped to a given host or network and do not require
-synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/32;
-
-
-## Sorting and Connecting on NAT64 Networks
+## Handling Synthesized Answers
 
 Synthesized IPv6 addresses (IPv4 addresses that have been
 synthensized into IPv6 addresses either locally using PREF64
-or by a DNS64 resolver) MUST be treated as IPv4 addresses for
-the purpose of Happy Eyeballs grouping and sorting ({{sorting}}).
+or by a DNS64 resolver) MUST be de-synthesized into IPv4 addresses
+before being used by the Happy Eyeballs client for grouping and
+sorting ({{sorting}}), and connecting. These addresses might
+be re-synthesized into IPv6 addresses (see {{synthesizing}}),
+in which case implementations can choose to optimize processing
+by storing the original address, but still using the IPv4 address
+for purposes of sorting and route lookups.
 
 IPv6 addresses received from AAAA records might come from DNS64
 {{DNS64}}. Clients that are aware of the PREF64 value MUST check
 to see if an IPv6 address received from DNS is actually an IPv4
 address.
+
+## Synthesizing IPv6 Addresses During Connection Establishment {#synthesizing}
+
+When a client has discovered PREF64, it can use the prefix to
+synthesize IPv4 addresses into IPv6 addresses as defined in {{!RFC6052}}.
+
+If the Happy Eyeballs client is attempting a connection
+to an IPv4 address when there is no IPv4 route that applies for that
+address, then the client MUST synthesize this address into an
+IPv6 address using the PREF64. These IPv4 addresses can come
+from DNS (via A records or IPv4 address hints received in
+SVCB/HTTPS records), or from de-synthesizing IPv6 addresses,
+or from IPv4 literal addresses passed by an application.
+This solution is similar to "Bump-in-the-Host" {{!RFC6535}},
+but is implemented inside the Happy Eyeballs client.
+
+Note that NAT64 address synthesis is not always required or possible.
+Some IPv4 prefixes are scoped to a given host or network and do not require
+synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/32.
 
 # Summary of Configurable Values
 
