@@ -1066,7 +1066,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 21 January 2027</td>
+<td class="center">Expires 23 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1079,12 +1079,12 @@ svg {
 <dd class="internet-draft">draft-ietf-happy-happyeyeballs-v3-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-07-20" class="published">20 July 2026</time>
+<time datetime="2026-07-22" class="published">22 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-01-21">21 January 2027</time></dd>
+<dd class="expires"><time datetime="2027-01-23">23 January 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1155,7 +1155,7 @@ in RFC 8305.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 23 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1264,10 +1264,10 @@ in RFC 8305.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
                 <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-discovering-pref64" class="internal xref">Discovering PREF64</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
-                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-synthesizing-ipv6-addresses" class="internal xref">Synthesizing IPv6 Addresses</a></p>
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-handling-synthesized-answer" class="internal xref">Handling Synthesized Answers</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
-                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-sorting-and-connecting-on-n" class="internal xref">Sorting and Connecting on NAT64 Networks</a></p>
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-synthesizing-ipv6-addresses" class="internal xref">Synthesizing IPv6 Addresses During Connection Establishment</a></p>
 </li>
             </ul>
 </li>
@@ -1420,14 +1420,14 @@ they will include in queries for a named host.<a href="#section-4.1-1" class="pi
 <p id="section-4.1-2">This decision is based on whether the client has "connectivity" using IPv4
 and/or IPv6 on the current Provisioning Domain (PvD) <span>[<a href="#PvD" class="cite xref">PvD</a>]</span>.
 Generally, "connectivity" for an address family is defined
-as having at least one local address of the family from which
-to send packets, and at least one non-link local route for
-the address family. When there is IPv6 connectivity, the client
-<span class="bcp14">MUST</span> include a query for AAAA records. When there is IPv4 connectivity,
-the client <span class="bcp14">MUST</span> include a query for A records. Additionally,
-if the client has detected a NAT64 prefix (<span>[<a href="#NAT64" class="cite xref">NAT64</a>]</span>)
-on the network, the client <span class="bcp14">MUST</span> include a query for A records
-(see <a href="#nat64" class="auto internal xref">Section 8</a> for more details on detecting the NAT64 prefix
+as having at least one non-loopback and and non-link-local (<span>[<a href="#RFC3927" class="cite xref">RFC3927</a>]</span>,<span>[<a href="#RFC4291" class="cite xref">RFC4291</a>]</span>)
+address of that address family from which to send packets, and at
+least one non-link local route for the address family. When there is
+IPv6 connectivity, the client <span class="bcp14">MUST</span> include a query for AAAA records.
+When there is IPv4 connectivity, the client <span class="bcp14">MUST</span> include a query for
+A records. Additionally, if the client has detected a NAT64 prefix
+(<span>[<a href="#NAT64" class="cite xref">NAT64</a>]</span>) on the network, the client <span class="bcp14">MUST</span> include a query
+for A records (see <a href="#nat64" class="auto internal xref">Section 8</a> for more details on detecting the NAT64 prefix
 and handling answers).<a href="#section-4.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.1-3">In addition to requesting AAAA and A records, depending on which
 application is establishing the connection, clients can request
@@ -2497,37 +2497,45 @@ existing IPv4 A records and perform local NAT64 address synthesis,
 eliminating the network's need to run DNS64.<a href="#section-8.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="synthesizing-ipv6-addresses">
+<div id="handling-synthesized-answers">
 <section id="section-8.2">
-        <h3 id="name-synthesizing-ipv6-addresses">
-<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-synthesizing-ipv6-addresses" class="section-name selfRef">Synthesizing IPv6 Addresses</a>
+        <h3 id="name-handling-synthesized-answer">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-handling-synthesized-answer" class="section-name selfRef">Handling Synthesized Answers</a>
         </h3>
-<p id="section-8.2-1">When a client has discovered PREF64, it can use the prefix to
-synthesize IPv4 addresses into IPv6 addresses as defined in <span>[<a href="#RFC6052" class="cite xref">RFC6052</a>]</span>.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
-<p id="section-8.2-2">Such synthesis is performed by the Happy Eyeballs client any
-time it has an IPv4 answer from DNS (from A records or IPv4
-address hints received in SVCB/HTTPS records), or is being
-asked to connect to an IPv4 literal address. The solution is similar
-to "Bump-in-the-Host" <span>[<a href="#RFC6535" class="cite xref">RFC6535</a>]</span> but is implemented inside
-the Happy Eyeballs client.<a href="#section-8.2-2" class="pilcrow">¶</a></p>
-<p id="section-8.2-3">Note that NAT64 address synthesis is not always required or possible.
-Some IPv4 prefixes are scoped to a given host or network and do not require
-synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/32;<a href="#section-8.2-3" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="sorting-and-connecting-on-nat64-networks">
-<section id="section-8.3">
-        <h3 id="name-sorting-and-connecting-on-n">
-<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-sorting-and-connecting-on-n" class="section-name selfRef">Sorting and Connecting on NAT64 Networks</a>
-        </h3>
-<p id="section-8.3-1">Synthesized IPv6 addresses (IPv4 addresses that have been
+<p id="section-8.2-1">Synthesized IPv6 addresses (IPv4 addresses that have been
 synthensized into IPv6 addresses either locally using PREF64
-or by a DNS64 resolver) <span class="bcp14">MUST</span> be treated as IPv4 addresses for
-the purpose of Happy Eyeballs grouping and sorting (<a href="#sorting" class="auto internal xref">Section 5</a>).<a href="#section-8.3-1" class="pilcrow">¶</a></p>
-<p id="section-8.3-2">IPv6 addresses received from AAAA records might come from DNS64
+or by a DNS64 resolver) <span class="bcp14">MUST</span> be de-synthesized into IPv4 addresses
+before being used by the Happy Eyeballs client for grouping and
+sorting (<a href="#sorting" class="auto internal xref">Section 5</a>), and connecting. These addresses might
+be re-synthesized into IPv6 addresses (see <a href="#synthesizing" class="auto internal xref">Section 8.3</a>),
+in which case implementations can choose to optimize processing
+by storing the original address, but still using the IPv4 address
+for purposes of sorting and route lookups.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.2-2">IPv6 addresses received from AAAA records might come from DNS64
 <span>[<a href="#DNS64" class="cite xref">DNS64</a>]</span>. Clients that are aware of the PREF64 value <span class="bcp14">MUST</span> check
 to see if an IPv6 address received from DNS is actually an IPv4
-address.<a href="#section-8.3-2" class="pilcrow">¶</a></p>
+address.<a href="#section-8.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="synthesizing">
+<section id="section-8.3">
+        <h3 id="name-synthesizing-ipv6-addresses">
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-synthesizing-ipv6-addresses" class="section-name selfRef">Synthesizing IPv6 Addresses During Connection Establishment</a>
+        </h3>
+<p id="section-8.3-1">When a client has discovered PREF64, it can use the prefix to
+synthesize IPv4 addresses into IPv6 addresses as defined in <span>[<a href="#RFC6052" class="cite xref">RFC6052</a>]</span>.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.3-2">If the Happy Eyeballs client is attempting a connection
+to an IPv4 address when there is no IPv4 route that applies for that
+address, then the client <span class="bcp14">MUST</span> synthesize this address into an
+IPv6 address using the PREF64. These IPv4 addresses can come
+from DNS (via A records or IPv4 address hints received in
+SVCB/HTTPS records), or from de-synthesizing IPv6 addresses,
+or from IPv4 literal addresses passed by an application.
+This solution is similar to "Bump-in-the-Host" <span>[<a href="#RFC6535" class="cite xref">RFC6535</a>]</span>,
+but is implemented inside the Happy Eyeballs client.<a href="#section-8.3-2" class="pilcrow">¶</a></p>
+<p id="section-8.3-3">Note that NAT64 address synthesis is not always required or possible.
+Some IPv4 prefixes are scoped to a given host or network and do not require
+synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/32.<a href="#section-8.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2693,6 +2701,14 @@ that response is non-negative.<a href="#section-11-3" class="pilcrow">¶</a></p>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3927">[RFC3927]</dt>
+        <dd>
+<span class="refAuthor">Cheshire, S.</span>, <span class="refAuthor">Aboba, B.</span>, and <span class="refAuthor">E. Guttman</span>, <span class="refTitle">"Dynamic Configuration of IPv4 Link-Local Addresses"</span>, <span class="seriesInfo">RFC 3927</span>, <span class="seriesInfo">DOI 10.17487/RFC3927</span>, <time datetime="2005-05" class="refDate">May 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3927">https://www.rfc-editor.org/rfc/rfc3927</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4291">[RFC4291]</dt>
+        <dd>
+<span class="refAuthor">Hinden, R.</span> and <span class="refAuthor">S. Deering</span>, <span class="refTitle">"IP Version 6 Addressing Architecture"</span>, <span class="seriesInfo">RFC 4291</span>, <span class="seriesInfo">DOI 10.17487/RFC4291</span>, <time datetime="2006-02" class="refDate">February 2006</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4291">https://www.rfc-editor.org/rfc/rfc4291</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC4821">[RFC4821]</dt>
         <dd>

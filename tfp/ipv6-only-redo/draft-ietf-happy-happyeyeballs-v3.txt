@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 21 January 2027                                         N. Jaju
+Expires: 23 January 2027                                         N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                            20 July 2026
+                                                            22 July 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 January 2027.
+   This Internet-Draft will expire on 23 January 2027.
 
 Copyright Notice
 
@@ -100,8 +100,8 @@ Table of Contents
    7.  DNS Answer Changes During Happy Eyeballs Connection Setup
    8.  Handling NAT64 Networks
      8.1.  Discovering PREF64
-     8.2.  Synthesizing IPv6 Addresses
-     8.3.  Sorting and Connecting on NAT64 Networks
+     8.2.  Handling Synthesized Answers
+     8.3.  Synthesizing IPv6 Addresses During Connection Establishment
    9.  Summary of Configurable Values
    10. Limitations
      10.1.  Path Maximum Transmission Unit Discovery
@@ -204,14 +204,15 @@ Table of Contents
    This decision is based on whether the client has "connectivity" using
    IPv4 and/or IPv6 on the current Provisioning Domain (PvD) [PvD].
    Generally, "connectivity" for an address family is defined as having
-   at least one local address of the family from which to send packets,
-   and at least one non-link local route for the address family.  When
-   there is IPv6 connectivity, the client MUST include a query for AAAA
-   records.  When there is IPv4 connectivity, the client MUST include a
-   query for A records.  Additionally, if the client has detected a
-   NAT64 prefix ([NAT64]) on the network, the client MUST include a
-   query for A records (see Section 8 for more details on detecting the
-   NAT64 prefix and handling answers).
+   at least one non-loopback and and non-link-local
+   ([RFC3927],[RFC4291]) address of that address family from which to
+   send packets, and at least one non-link local route for the address
+   family.  When there is IPv6 connectivity, the client MUST include a
+   query for AAAA records.  When there is IPv4 connectivity, the client
+   MUST include a query for A records.  Additionally, if the client has
+   detected a NAT64 prefix ([NAT64]) on the network, the client MUST
+   include a query for A records (see Section 8 for more details on
+   detecting the NAT64 prefix and handling answers).
 
    In addition to requesting AAAA and A records, depending on which
    application is establishing the connection, clients can request
@@ -1026,33 +1027,41 @@ Table of Contents
    A records and perform local NAT64 address synthesis, eliminating the
    network's need to run DNS64.
 
-8.2.  Synthesizing IPv6 Addresses
+8.2.  Handling Synthesized Answers
+
+   Synthesized IPv6 addresses (IPv4 addresses that have been
+   synthensized into IPv6 addresses either locally using PREF64 or by a
+   DNS64 resolver) MUST be de-synthesized into IPv4 addresses before
+   being used by the Happy Eyeballs client for grouping and sorting
+   (Section 5), and connecting.  These addresses might be re-synthesized
+   into IPv6 addresses (see Section 8.3), in which case implementations
+   can choose to optimize processing by storing the original address,
+   but still using the IPv4 address for purposes of sorting and route
+   lookups.
+
+   IPv6 addresses received from AAAA records might come from DNS64
+   [DNS64].  Clients that are aware of the PREF64 value MUST check to
+   see if an IPv6 address received from DNS is actually an IPv4 address.
+
+8.3.  Synthesizing IPv6 Addresses During Connection Establishment
 
    When a client has discovered PREF64, it can use the prefix to
    synthesize IPv4 addresses into IPv6 addresses as defined in
    [RFC6052].
 
-   Such synthesis is performed by the Happy Eyeballs client any time it
-   has an IPv4 answer from DNS (from A records or IPv4 address hints
-   received in SVCB/HTTPS records), or is being asked to connect to an
-   IPv4 literal address.  The solution is similar to "Bump-in-the-Host"
-   [RFC6535] but is implemented inside the Happy Eyeballs client.
+   If the Happy Eyeballs client is attempting a connection to an IPv4
+   address when there is no IPv4 route that applies for that address,
+   then the client MUST synthesize this address into an IPv6 address
+   using the PREF64.  These IPv4 addresses can come from DNS (via A
+   records or IPv4 address hints received in SVCB/HTTPS records), or
+   from de-synthesizing IPv6 addresses, or from IPv4 literal addresses
+   passed by an application.  This solution is similar to "Bump-in-the-
+   Host" [RFC6535], but is implemented inside the Happy Eyeballs client.
 
    Note that NAT64 address synthesis is not always required or possible.
    Some IPv4 prefixes are scoped to a given host or network and do not
    require synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16,
-   and 255.255.255.255/32;
-
-8.3.  Sorting and Connecting on NAT64 Networks
-
-   Synthesized IPv6 addresses (IPv4 addresses that have been
-   synthensized into IPv6 addresses either locally using PREF64 or by a
-   DNS64 resolver) MUST be treated as IPv4 addresses for the purpose of
-   Happy Eyeballs grouping and sorting (Section 5).
-
-   IPv6 addresses received from AAAA records might come from DNS64
-   [DNS64].  Clients that are aware of the PREF64 value MUST check to
-   see if an IPv6 address received from DNS is actually an IPv4 address.
+   and 255.255.255.255/32.
 
 9.  Summary of Configurable Values
 
@@ -1182,6 +1191,15 @@ Table of Contents
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC3927]  Cheshire, S., Aboba, B., and E. Guttman, "Dynamic
+              Configuration of IPv4 Link-Local Addresses", RFC 3927,
+              DOI 10.17487/RFC3927, May 2005,
+              <https://www.rfc-editor.org/rfc/rfc3927>.
+
+   [RFC4291]  Hinden, R. and S. Deering, "IP Version 6 Addressing
+              Architecture", RFC 4291, DOI 10.17487/RFC4291, February
+              2006, <https://www.rfc-editor.org/rfc/rfc4291>.
 
    [RFC4821]  Mathis, M. and J. Heffner, "Packetization Layer Path MTU
               Discovery", RFC 4821, DOI 10.17487/RFC4821, March 2007,
