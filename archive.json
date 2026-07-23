@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-21T02:56:53.589970+00:00",
+  "timestamp": "2026-07-23T03:16:21.096268+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -9647,7 +9647,7 @@
       "labels": [],
       "body": "Closes #117\r\n\r\nThis change adds references and explains the interaction with destination address selection for resolver selection, but maintains the RFC 8305 language around:\r\n\r\n- Preferring IPv6\r\n- Preferring having a diversity of address families\r\n- Being able to penalize a non-responsive resolver and fail over to another\r\n\r\nThese aspects are not covered by other documents at this time.",
       "createdAt": "2026-06-25T04:14:41Z",
-      "updatedAt": "2026-07-20T12:23:37Z",
+      "updatedAt": "2026-07-21T14:35:07Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
@@ -9665,6 +9665,13 @@
           "body": "DNS isn't just IPv4 and IPv6.  With RFC 9461, it has full SVCB protocol discovery support and _many_ different protocols (UDP, TCP, DoT, DoH/H2, DoH/H3, and DoQ).  In my view:\r\n\r\n* What goes on behind the DNS curtain is basically out of scope for HE.\r\n* DNS can certainly use HE _within the SVCB-driven connection modes_, as a \"client\" of HE.\r\n* The behavior for bare UDP and TCP (\"Do53\") is pretty tricky and DNS-specific, and we should stay out of it.\r\n* This text is not what we need.",
           "createdAt": "2026-07-20T12:23:37Z",
           "updatedAt": "2026-07-20T12:23:37Z"
+        },
+        {
+          "author": "valenting",
+          "authorAssociation": "NONE",
+          "body": "I would like to support the previous comment.\r\nAs an application doing happy eyeballs, Firefox is getting the IP addresses from `getaddrinfo` and HTTPS record from [platform APIs](https://valentin.gosu.se/blog/2025/02/getaddrinfo-sucks-everything-else-is-much-worse), or via DoH.\r\nA lot of the time Firefox does not control how it retrieves the DNS records - I expect this will be the case for a lot of applications.\r\nWhile HE3 could be informed by whether the RR were retrieved via a secure transport, I think the other bits should be out of scope for the draft.",
+          "createdAt": "2026-07-21T14:35:07Z",
+          "updatedAt": "2026-07-21T14:35:07Z"
         }
       ],
       "reviews": [
@@ -9976,13 +9983,13 @@
       ],
       "body": "Attempt at closing IPv6-only network issues, based on design team discussion from IETF 125\r\n\r\nProposal was:\r\n\r\n> Define: PvD is all interfaces on which the connection might end up sending packets.\r\n> * If your PvD has non-loopback v4 or contains any known PREF64 prefix, then you MUST send A (since you might end up using it)\r\n> * If your PvD has any non link-local or loopback v6 (global scope), then you MUST send AAAA\r\n> * Will get back v4, v6, or synthesized v6 addresses\r\n>     * If you have the prefix, you SHOULD replace v6 addresses that you can de-synthesize with the real v4 versions using the prefix for the interface on which the DNS query was sent.\r\n>     * These are the same as the native v4 ones from a prioritization perspective\r\n>     * Run the sorting algorithm, native v6 will be preferred",
       "createdAt": "2026-07-09T23:08:57Z",
-      "updatedAt": "2026-07-20T12:02:53Z",
+      "updatedAt": "2026-07-22T13:56:32Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "95d9ed82177a990f486f10cd10066d7c51323f4e",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfp/ipv6-only-redo",
-      "headRefOid": "502acf61829c8b571877e2cadd6419b20068029a",
+      "headRefOid": "babc001040b598945c4dbead795429770c10818f",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -10396,6 +10403,66 @@
               "body": "I think what we end up with is that you never need to de-synthesize and re-synthesize, but you do need to check if the v4 address that is encapsulated is actually part of a VPN route and in that case, use the IPv4 address over the VPN",
               "createdAt": "2026-07-20T12:02:53Z",
               "updatedAt": "2026-07-20T12:02:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABGrXrig",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-21T09:20:41Z",
+          "updatedAt": "2026-07-21T09:20:41Z",
+          "comments": [
+            {
+              "originalPosition": 221,
+              "body": "There are a few ways how to do that\u2026 both work fine for the VPN case\r\n\r\n- de-duplicate NAT64 and A records and only keep the A\r\n- turn NAT64 into A , re-synthesize if unreachable (within PvD)\r\n\r\n\r\nThe third alternative I see has the problem that is may end up using NAT64 even when there is a more specific v4 route\r\n- keep NAT64 and just sort as it was v4\r\n\r\n@furry13 I would argue that having a separate precedence for NAT64 is only needed in the last case and breaks for non well-known NAT64 prefixes.",
+              "createdAt": "2026-07-21T09:20:41Z",
+              "updatedAt": "2026-07-21T09:20:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABG20inQ",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-22T13:55:59Z",
+          "updatedAt": "2026-07-22T13:55:59Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "Fixed!",
+              "createdAt": "2026-07-22T13:55:59Z",
+              "updatedAt": "2026-07-22T13:55:59Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABG202aQ",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-22T13:56:32Z",
+          "updatedAt": "2026-07-22T13:56:32Z",
+          "comments": [
+            {
+              "originalPosition": 221,
+              "body": "I added a commit to mention the de-synthesis and re-synthesis, which will handle the VPN case. Please check!",
+              "createdAt": "2026-07-22T13:56:32Z",
+              "updatedAt": "2026-07-22T13:56:32Z"
             }
           ]
         }
