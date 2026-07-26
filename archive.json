@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-23T03:16:21.096268+00:00",
+  "timestamp": "2026-07-26T03:21:02.682168+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -9983,7 +9983,7 @@
       ],
       "body": "Attempt at closing IPv6-only network issues, based on design team discussion from IETF 125\r\n\r\nProposal was:\r\n\r\n> Define: PvD is all interfaces on which the connection might end up sending packets.\r\n> * If your PvD has non-loopback v4 or contains any known PREF64 prefix, then you MUST send A (since you might end up using it)\r\n> * If your PvD has any non link-local or loopback v6 (global scope), then you MUST send AAAA\r\n> * Will get back v4, v6, or synthesized v6 addresses\r\n>     * If you have the prefix, you SHOULD replace v6 addresses that you can de-synthesize with the real v4 versions using the prefix for the interface on which the DNS query was sent.\r\n>     * These are the same as the native v4 ones from a prioritization perspective\r\n>     * Run the sorting algorithm, native v6 will be preferred",
       "createdAt": "2026-07-09T23:08:57Z",
-      "updatedAt": "2026-07-22T13:56:32Z",
+      "updatedAt": "2026-07-23T07:46:10Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "95d9ed82177a990f486f10cd10066d7c51323f4e",
@@ -10465,6 +10465,59 @@
               "updatedAt": "2026-07-22T13:56:32Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABG9JqAg",
+          "commit": {
+            "abbreviatedOid": "e242fb9"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-23T07:27:52Z",
+          "updatedAt": "2026-07-23T07:27:52Z",
+          "comments": [
+            {
+              "originalPosition": 225,
+              "body": "@oskar456 with Jen, I updated the text to talk about checking for v4 routes in general. Given this, do think this is sufficient, or should we call out VPN specially?",
+              "createdAt": "2026-07-23T07:27:52Z",
+              "updatedAt": "2026-07-23T07:27:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABG9Q3ng",
+          "commit": {
+            "abbreviatedOid": "babc001"
+          },
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-23T07:41:22Z",
+          "updatedAt": "2026-07-23T07:41:22Z",
+          "comments": [
+            {
+              "originalPosition": 180,
+              "body": "I would argue that except for proxies, none of them is distinguishable from native v4 for a HE implementation or widely deployed => dom't care, perhaps not stress with \"many\" ",
+              "createdAt": "2026-07-23T07:41:22Z",
+              "updatedAt": "2026-07-23T07:41:22Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABG9TUbA",
+          "commit": {
+            "abbreviatedOid": "babc001"
+          },
+          "author": "philsbln",
+          "authorAssociation": "NONE",
+          "state": "APPROVED",
+          "body": "Works for me \u2026 with the flow de-synthesize, sorts, check route, synthesize it should not break VPN and avoids preferring NAT64 over native v4 \u2013 well done",
+          "createdAt": "2026-07-23T07:46:10Z",
+          "updatedAt": "2026-07-23T07:46:10Z",
+          "comments": []
         }
       ]
     },
@@ -10522,13 +10575,53 @@
       "labels": [],
       "body": "As discussed in IETF 126 Vienna, the IPv6 fragmentation issues are not due to the larger header sizes.\r\nUpdates the explanation and references RFC8900 which goes into far more detail.",
       "createdAt": "2026-07-20T15:14:13Z",
-      "updatedAt": "2026-07-20T15:14:14Z",
+      "updatedAt": "2026-07-24T09:52:34Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "95d9ed82177a990f486f10cd10066d7c51323f4e",
       "headRepository": "enygren/draft-happy-eyeballs-v3",
       "headRefName": "enygren-ipv6-frag",
       "headRefOid": "fe33c5bdba4f57d1651941de4a05a58556f52d65",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABHHDjvQ",
+          "commit": {
+            "abbreviatedOid": "fe33c5b"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thank you!",
+          "createdAt": "2026-07-24T09:52:34Z",
+          "updatedAt": "2026-07-24T09:52:34Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 142,
+      "id": "PR_kwDOKH7CuM71yw_2",
+      "title": "Update acknowledgments",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/142",
+      "state": "OPEN",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-07-24T09:54:26Z",
+      "updatedAt": "2026-07-24T09:54:26Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "95d9ed82177a990f486f10cd10066d7c51323f4e",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfpauly-patch-16",
+      "headRefOid": "3eaadf7256493d779f2dea7e9db25d89b8d13c9f",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
