@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 20 January 2027                                         N. Jaju
+Expires: 28 January 2027                                         N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                            19 July 2026
+                                                            27 July 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 January 2027.
+   This Internet-Draft will expire on 28 January 2027.
 
 Copyright Notice
 
@@ -1178,11 +1178,13 @@ Table of Contents
 
    Connections that use TCP only (without TLS or another protocol on
    top) perform connection racing only during the TCP handshake.  Such
-   connections can encounter issues where the handshake (using small
+   connections can encounter issues where the TCP handshake (using small
    packets) completes but then large packets are dropped or incorrectly
-   handled by the network due to a small MTU being configured on the
-   network.  Such issues might be specific to IPv6 traffic due to the
-   IPv6 header being larger than the IPv4 header.
+   handled by the network due to a small MTU being configured somewhere
+   in the network.  Such issues might be more likely with IPv6 traffic
+   [RFC8900] due to the network being unable to fragment IPv6 packets
+   and associated issues with Path MTU Discovery, such as with ICMPv6
+   PTB messages not making it back to the client.
 
    This problem can also occur when TLS is used, but the larger messages
    used in many TLS handshakes are often sufficient to ensure maximum-
@@ -1408,6 +1410,11 @@ Table of Contents
               RFC 8765, DOI 10.17487/RFC8765, June 2020,
               <https://www.rfc-editor.org/rfc/rfc8765>.
 
+   [RFC8900]  Bonica, R., Baker, F., Huston, G., Hinden, R., Troan, O.,
+              and F. Gont, "IP Fragmentation Considered Fragile",
+              BCP 230, RFC 8900, DOI 10.17487/RFC8900, September 2020,
+              <https://www.rfc-editor.org/rfc/rfc8900>.
+
    [RFC9001]  Thomson, M., Ed. and S. Turner, Ed., "Using TLS to Secure
               QUIC", RFC 9001, DOI 10.17487/RFC9001, May 2021,
               <https://www.rfc-editor.org/rfc/rfc9001>.
@@ -1433,8 +1440,9 @@ Acknowledgments
    also like to thank Fred Baker, Nick Chettle, Lorenzo Colitti, Igor
    Gashinsky, Geoff Huston, Jen Linkova, Paul Hoffman, Philip Homburg,
    Warren Kumari, Erik Nygren, Jordi Palet Martinez, Rui Paulo, Stephen
-   Strowes, Jinmei Tatuya, Dave Thaler, Joe Touch, and James Woodyatt
-   for their input and contributions.
+   Strowes, Jinmei Tatuya, Dave Thaler, Joe Touch, James Woodyatt,
+   Ondřej Caletka, Philipp Tiesel, and Max Inden for their input and
+   contributions.
 
 Authors' Addresses
 
