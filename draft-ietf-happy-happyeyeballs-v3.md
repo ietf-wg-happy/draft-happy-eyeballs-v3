@@ -1126,11 +1126,13 @@ issues may still affect the chosen connection.
 
 Connections that use TCP only (without TLS or another protocol on top)
 perform connection racing only during the TCP handshake. Such connections
-can encounter issues where the handshake (using small packets) completes
+can encounter issues where the TCP handshake (using small packets) completes
 but then large packets are dropped or incorrectly handled by the network
-due to a small MTU being configured on the network. Such issues might be
-specific to IPv6 traffic due to the IPv6 header being
-larger than the IPv4 header.
+due to a small MTU being configured somewhere in the network.
+Such issues might be more likely with IPv6 traffic  {{?RFC8900}}
+due to the network being unable to fragment IPv6 packets
+and associated issues with Path MTU Discovery, such as with ICMPv6 PTB
+messages not making it back to the client.
 
 This problem can also occur when TLS is used, but the larger
 messages used in many TLS handshakes are often sufficient to
