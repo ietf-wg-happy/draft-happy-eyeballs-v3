@@ -1200,5 +1200,6 @@ Saab who helped measure and refine this algorithm. The authors would
 also like to thank Fred Baker, Nick Chettle, Lorenzo Colitti, Igor
 Gashinsky, Geoff Huston, Jen Linkova, Paul Hoffman, Philip Homburg,
 Warren Kumari, Erik Nygren, Jordi Palet Martinez, Rui Paulo, Stephen
-Strowes, Jinmei Tatuya, Dave Thaler, Joe Touch, and James Woodyatt
-for their input and contributions.
+Strowes, Jinmei Tatuya, Dave Thaler, Joe Touch, James Woodyatt,
+Ondřej Caletka, Philipp Tiesel, and Max Inden for their input and
+contributions.
