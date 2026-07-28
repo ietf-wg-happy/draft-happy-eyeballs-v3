@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-26T03:21:02.682168+00:00",
+  "timestamp": "2026-07-28T02:47:26.809716+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -10568,24 +10568,26 @@
       "id": "PR_kwDOKH7CuM7z6k8s",
       "title": "Correct explaination for IPv6 fragmentation issues, reference RFC8900",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/141",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "enygren",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "As discussed in IETF 126 Vienna, the IPv6 fragmentation issues are not due to the larger header sizes.\r\nUpdates the explanation and references RFC8900 which goes into far more detail.",
       "createdAt": "2026-07-20T15:14:13Z",
-      "updatedAt": "2026-07-24T09:52:34Z",
+      "updatedAt": "2026-07-27T23:05:50Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "95d9ed82177a990f486f10cd10066d7c51323f4e",
       "headRepository": "enygren/draft-happy-eyeballs-v3",
       "headRefName": "enygren-ipv6-frag",
       "headRefOid": "fe33c5bdba4f57d1651941de4a05a58556f52d65",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-07-27T22:40:26Z",
+      "mergedAt": "2026-07-27T22:40:26Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "dc3315239425462c7f5823100497e9887cf00ff7"
+      },
       "comments": [],
       "reviews": [
         {
@@ -10600,6 +10602,26 @@
           "createdAt": "2026-07-24T09:52:34Z",
           "updatedAt": "2026-07-24T09:52:34Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABHaPKNQ",
+          "commit": {
+            "abbreviatedOid": "fe33c5b"
+          },
+          "author": "ekinnear",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-27T23:05:50Z",
+          "updatedAt": "2026-07-27T23:05:50Z",
+          "comments": [
+            {
+              "originalPosition": 11,
+              "body": "```suggestion\nSuch issues might be more likely with IPv6 traffic {{?RFC8900}}\n```",
+              "createdAt": "2026-07-27T23:05:50Z",
+              "updatedAt": "2026-07-27T23:05:50Z"
+            }
+          ]
         }
       ]
     },
@@ -10608,26 +10630,42 @@
       "id": "PR_kwDOKH7CuM71yw_2",
       "title": "Update acknowledgments",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/142",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-07-24T09:54:26Z",
-      "updatedAt": "2026-07-24T09:54:26Z",
+      "updatedAt": "2026-07-27T22:40:07Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "95d9ed82177a990f486f10cd10066d7c51323f4e",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfpauly-patch-16",
       "headRefOid": "3eaadf7256493d779f2dea7e9db25d89b8d13c9f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-07-27T22:40:07Z",
+      "mergedAt": "2026-07-27T22:40:07Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "c41538d6f4e50fb2a2845abfb414623baab4c901"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABHYoCHA",
+          "commit": {
+            "abbreviatedOid": "3eaadf7"
+          },
+          "author": "DavidSchinazi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-07-27T19:06:13Z",
+          "updatedAt": "2026-07-27T19:06:13Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
