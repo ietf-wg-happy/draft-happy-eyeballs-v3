@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 28 January 2027                                         N. Jaju
+Expires: 31 January 2027                                         N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                            27 July 2026
+                                                            30 July 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 January 2027.
+   This Internet-Draft will expire on 31 January 2027.
 
 Copyright Notice
 
@@ -98,12 +98,10 @@ Table of Contents
      6.2.  Handling Application Layer Protocol Negotiation (ALPN)
      6.3.  Dropping or Pending Connection Attempts
    7.  DNS Answer Changes During Happy Eyeballs Connection Setup
-   8.  Supporting IPv6-Mostly and IPv6-Only Networks
-     8.1.  IPv4 Address Literals
-     8.2.  Discovering and Utilizing PREF64
-     8.3.  Supporting DNS64
-     8.4.  Hostnames with Broken AAAA Records
-     8.5.  Virtual Private Networks
+   8.  Handling NAT64 Networks
+     8.1.  Discovering PREF64
+     8.2.  Handling Synthesized Answers
+     8.3.  Synthesizing IPv6 Addresses During Connection Establishment
    9.  Summary of Configurable Values
    10. Limitations
      10.1.  Path Maximum Transmission Unit Discovery
@@ -203,19 +201,18 @@ Table of Contents
    Clients first need to determine which DNS resource records they will
    include in queries for a named host.
 
-   This decision is based on if client has "connectivity" using IPv4 and
-   IPv6.  In this case, "connectivity" for an address family is defined
-   as having at least one local address of the family from which to send
-   packets, and at least one non-link local route for the address
-   family.
-
-   When a client has both IPv4 and IPv6 connectivity, it needs to send
-   out queries for both AAAA and A records.  On a network with only IPv4
-   connectivity, it will send a query for A records.  On a network with
-   only IPv6 connectivity, the client will either send out queries for
-   both AAAA and A records, or only a query for AAAA records, depending
-   on the network configuration.  See Section 8 for more discussion of
-   handling IPv6-mostly and IPv6-only networks.
+   This decision is based on whether the client has "connectivity" using
+   IPv4 and/or IPv6 on the current Provisioning Domain (PvD) [PvD].
+   Generally, "connectivity" for an address family is defined as having
+   at least one non-loopback and and non-link-local
+   ([RFC3927],[RFC4291]) address of that address family from which to
+   send packets, and at least one non-link local route for the address
+   family.  When there is IPv6 connectivity, the client MUST include a
+   query for AAAA records.  When there is IPv4 connectivity, the client
+   MUST include a query for A records.  Additionally, if the client has
+   detected a NAT64 prefix ([NAT64]) on the network, the client MUST
+   include a query for A records (see Section 8 for more details on
+   detecting the NAT64 prefix and handling answers).
 
    In addition to requesting AAAA and A records, depending on which
    application is establishing the connection, clients can request
@@ -717,7 +714,7 @@ Table of Contents
    Protocol (HTTP) cookies.  This historical data MUST be partitioned
    using the same boundaries used for privacy-sensitive information
    specific to that endpoint, and MUST NOT be used across different
-   Provisioning Domains (PvDs) [RFC7556].  The data SHOULD be flushed
+   Provisioning Domains (PvDs) [PvD].  The data SHOULD be flushed
    whenever a device changes the PvD to which it is attached.  However,
    if a client can reliably identify a previously attached PvD, it MAY
    retain and resume using historical data associated with that PvD upon
@@ -997,135 +994,74 @@ Table of Contents
    the timer sooner to start a connection attempt to the next address in
    the updated list, subject to the Minimum Connection Attempt Delay.
 
-8.  Supporting IPv6-Mostly and IPv6-Only Networks
+8.  Handling NAT64 Networks
 
-   While many IPv6 transition protocols have been standardized and
-   deployed, most are transparent to client devices.  Supporting
-   IPv6-only networks often requires specific client-side changes,
-   especially when interacting with IPv4-only services.  Two primary
-   mechanisms for this are the combined use of NAT64 [RFC6146] with
-   DNS64 [RFC6147], or leveraging NAT64 with a discovered PREF64 prefix
-   [RFC8781].
+   NAT64 [NAT64] is an IPv6 transition protocol that allows clients with
+   IPv6-only connectivity to access IPv4-only peers outside the local
+   link.  When NAT64 is in use, an IPv6 prefix, referred to as PREF64,
+   is used on by the NAT for synthesizing IPv4 addresses into IPv6
+   addresses.
 
-   One possible way to handle these networks is for the client device
-   networking stack to implement 464XLAT [RFC6877]. 464XLAT has the
-   advantage of not requiring changes to user space software; however,
-   it requires per-packet translation if the application is using IPv4
-   literals and does not encourage client application software to
-   support native IPv6.  On platforms that do not support 464XLAT, the
-   Happy Eyeballs engine SHOULD follow the recommendations in this
-   section to properly support IPv6-mostly ([V6-MOSTLY]) and IPv6-only
-   networks.
+8.1.  Discovering PREF64
 
-   The features described in this section SHOULD only be enabled when
-   the host detects an IPv6-mostly or IPv6-only network.  A simple
-   heuristic to detect one of these networks is to check if the network
-   offers routable IPv6 addressing, does not offer routable IPv4
-   addressing, and offers a DNS resolver address.
+   Clients can discover a network's PREF64 in one of the following ways:
 
-8.1.  IPv4 Address Literals
+   1.  From a Router Advertisement option ([PREF64])
 
-   If client applications or users wish to connect to IPv4 address
-   literals, the Happy Eyeballs engine will need to perform NAT64
-   address synthesis for them.  The solution is similar to "Bump-in-the-
-   Host" [RFC6535] but is implemented inside the Happy Eyeballs client.
+   2.  From a DNS query for ipv4only.arpa ([RFC7050])
 
-   Note that some IPv4 prefixes are scoped to a given host or network,
-   such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and
-   255.255.255.255/32, and therefore do not require NAT64 address
-   synthesis.
+   If a network with IPv6-only connectivity does not provide the prefix
+   in a Router Advertisement [PREF64], clients SHOULD send the DNS query
+   to discover the prefix [RFC7050].
 
-8.2.  Discovering and Utilizing PREF64
+   Networks that use NAT64 might also include DNS64 [DNS64], in which
+   the DNS resolver synthesizes A answers into AAAA answers.  However,
+   with the prefix available from router advertisements [PREF64],
+   networks might choose to not deploy DNS64, as the latter has a number
+   of disadvantages (see Section 4.3.4 of [V6-MOSTLY]).
 
-   When an IPv4 address is passed into the Happy Eyeballs implementation
-   instead of a hostname, it SHOULD use PREF64s received from Router
-   Advertisements [RFC8781].
+   To ensure compatibility with any NAT64 network, whenever the client
+   detects a NAT64 prefix, from either of the options reference above,
+   clients MUST send A queries in addition to AAAA queries (as specified
+   in Section 4.1).  This allows the client to receive any existing IPv4
+   A records and perform local NAT64 address synthesis, eliminating the
+   network's need to run DNS64.
 
-   With PREF64 available, networks might choose not to deploy DNS64, as
-   the latter has a number of disadvantages (see [V6-MOSTLY],
-   Section 4.3.4).  To ensure compatibility with such networks, if
-   PREF64 is available, clients SHOULD send an A query in addition to an
-   AAAA query for a given hostname.  This allows the client to receive
-   any existing IPv4 A records and perform local NAT64 address
-   synthesis, eliminating the network's need to run DNS64.
+8.2.  Handling Synthesized Answers
 
-   If the network does not provide PREF64s, the implementation SHOULD
-   query the network for the NAT64 prefix using "Discovery of the IPv6
-   Prefix Used for IPv6 Address Synthesis" [RFC7050].  It then
-   synthesizes an appropriate IPv6 address (or several) using the
-   encoding described in "IPv6 Addressing of IPv4/ IPv6 Translators"
-   [RFC6052].  The synthesized addresses are then inserted into the list
-   of addresses as if they were results from DNS A queries; connection
-   attempts follow the algorithm described above (see Section 6).
+   Synthesized IPv6 addresses (IPv4 addresses that have been
+   synthensized into IPv6 addresses either locally using PREF64 or by a
+   DNS64 resolver) MUST be de-synthesized into IPv4 addresses before
+   being used by the Happy Eyeballs client for grouping and sorting
+   (Section 5), and connecting.  These addresses might be re-synthesized
+   into IPv6 addresses (see Section 8.3), in which case implementations
+   can choose to optimize processing by storing the original address,
+   but still using the IPv4 address for purposes of sorting and route
+   lookups.
 
-   Such translation also applies to any IPv4 addresses received in A
-   records and IPv4 address hints received in SVCB records.
+   IPv6 addresses received from AAAA records might come from DNS64
+   [DNS64].  Clients that are aware of the PREF64 value MUST check to
+   see if an IPv6 address received from DNS is actually an IPv4 address.
 
-8.3.  Supporting DNS64
+8.3.  Synthesizing IPv6 Addresses During Connection Establishment
 
-   If PREF64 is not available and the NAT64 prefix cannot be discovered,
-   clients SHOULD assume the network is relying on DNS64 for IPv4-to-
-   IPv6 address synthesis.  In this scenario, clients will typically
-   only receive AAAA records from DNS queries, as DNS64 servers
-   synthesize these records for IPv4-only domains.
+   When a client has discovered PREF64, it can use the prefix to
+   synthesize IPv4 addresses into IPv6 addresses as defined in
+   [RFC6052].
 
-8.4.  Hostnames with Broken AAAA Records
+   If the Happy Eyeballs client is attempting a connection to an IPv4
+   address when there is no IPv4 route that applies for that address,
+   then the client MUST synthesize this address into an IPv6 address
+   using the PREF64.  These IPv4 addresses can come from DNS (via A
+   records or IPv4 address hints received in SVCB/HTTPS records), or
+   from de-synthesizing IPv6 addresses, or from IPv4 literal addresses
+   passed by an application.  This solution is similar to "Bump-in-the-
+   Host" [RFC6535], but is implemented inside the Happy Eyeballs client.
 
-   At the time of writing, there exists a small but non-negligible
-   number of hostnames that resolve to valid A records and broken AAAA
-   records, which we define as AAAA records that contain seemingly valid
-   IPv6 addresses but those addresses never reply when contacted on the
-   usual ports.  These can be, for example, caused by:
-
-   *  Mistyping of the IPv6 address in the DNS zone configuration
-
-   *  Routing black holes
-
-   *  Service outages
-
-   While an algorithm complying with the other sections of this document
-   would correctly handle such hostnames on a dual-stack network, they
-   will not necessarily function correctly on IPv6-only networks with
-   NAT64 and DNS64.  Since DNS64 recursive resolvers rely on the
-   authoritative name servers sending negative (no error, no data)
-   responses for AAAA records in order to synthesize, they will not
-   synthesize records for these particular hostnames and will instead
-   pass through the broken AAAA record.
-
-   In order to support these scenarios, the client device needs to query
-   the DNS for the A record and then perform local synthesis.  Since
-   these types of hostnames are rare and, in order to minimize load on
-   DNS servers, this A query should only be performed when the client
-   has given up on the AAAA records it initially received.  This can be
-   achieved by using a longer timeout, referred to as the "Last Resort
-   Local Synthesis Delay"; the delay is recommended to be 2 seconds.
-   The timer is started when the last connection attempt is fired.  If
-   no connection attempt has succeeded when this timer fires, the device
-   queries the DNS for the IPv4 address and, on reception of a valid A
-   record, treats it as if it were provided by the application (see
-   Section 8.1).
-
-8.5.  Virtual Private Networks
-
-   Some Virtual Private Networks (VPNs) may be configured to handle DNS
-   queries from the device.  The configuration could encompass all
-   queries or a subset such as "*.internal.example.com".  These VPNs can
-   also be configured to only route part of the IPv4 address space, such
-   as 192.0.2.0/24.  However, if an internal hostname resolves to an
-   external IPv4 address, this can cause issues if the underlying
-   network is IPv6-only.  As an example, let's assume that
-   "www.internal.example.com" has exactly one A record, 198.51.100.42,
-   and no AAAA records.  The client will send the DNS query to the
-   company's recursive resolver and that resolver will reply with these
-   records.  The device now only has an IPv4 address to connect to and
-   no route to that address.  Since the company's resolver does not know
-   the NAT64 prefix of the underlying network, it cannot synthesize the
-   address.  Similarly, the underlying network's DNS64 recursive
-   resolver does not know the company's internal addresses, so it cannot
-   resolve the hostname.  Because of this, the client device needs to
-   resolve the A record using the company's resolver and then locally
-   synthesize an IPv6 address, as if the resolved IPv4 address were
-   provided by the application (Section 8.1).
+   Note that NAT64 address synthesis is not always required or possible.
+   Some IPv4 prefixes are scoped to a given host or network and do not
+   require synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16,
+   and 255.255.255.255/32.
 
 9.  Summary of Configurable Values
 
@@ -1152,10 +1088,6 @@ Table of Contents
 
    *  Maximum Connection Attempt Delay (Section 6): The maximum time to
       wait between connection attempts.  Recommended to be 2 seconds.
-
-   *  Last Resort Local Synthesis Delay (Section 8.4): The time to wait
-      after starting the last IPv6 attempt and before sending the A
-      query.  Recommended to be 2 seconds.
 
    The delay values described in this section were determined
    empirically by measuring the timing of connections on a very wide set
@@ -1248,10 +1180,28 @@ Table of Contents
               Encrypted Client Hello", RFC 9849, DOI 10.17487/RFC9849,
               March 2026, <https://www.rfc-editor.org/rfc/rfc9849>.
 
+   [NAT64]    Bagnulo, M., Matthews, P., and I. van Beijnum, "Stateful
+              NAT64: Network Address and Protocol Translation from IPv6
+              Clients to IPv4 Servers", RFC 6146, DOI 10.17487/RFC6146,
+              April 2011, <https://www.rfc-editor.org/rfc/rfc6146>.
+
+   [PREF64]   Colitti, L. and J. Linkova, "Discovering PREF64 in Router
+              Advertisements", RFC 8781, DOI 10.17487/RFC8781, April
+              2020, <https://www.rfc-editor.org/rfc/rfc8781>.
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC3927]  Cheshire, S., Aboba, B., and E. Guttman, "Dynamic
+              Configuration of IPv4 Link-Local Addresses", RFC 3927,
+              DOI 10.17487/RFC3927, May 2005,
+              <https://www.rfc-editor.org/rfc/rfc3927>.
+
+   [RFC4291]  Hinden, R. and S. Deering, "IP Version 6 Addressing
+              Architecture", RFC 4291, DOI 10.17487/RFC4291, February
+              2006, <https://www.rfc-editor.org/rfc/rfc4291>.
 
    [RFC4821]  Mathis, M. and J. Heffner, "Packetization Layer Path MTU
               Discovery", RFC 4821, DOI 10.17487/RFC4821, March 2007,
@@ -1261,17 +1211,6 @@ Table of Contents
               Li, "IPv6 Addressing of IPv4/IPv6 Translators", RFC 6052,
               DOI 10.17487/RFC6052, October 2010,
               <https://www.rfc-editor.org/rfc/rfc6052>.
-
-   [RFC6146]  Bagnulo, M., Matthews, P., and I. van Beijnum, "Stateful
-              NAT64: Network Address and Protocol Translation from IPv6
-              Clients to IPv4 Servers", RFC 6146, DOI 10.17487/RFC6146,
-              April 2011, <https://www.rfc-editor.org/rfc/rfc6146>.
-
-   [RFC6147]  Bagnulo, M., Sullivan, A., Matthews, P., and I. van
-              Beijnum, "DNS64: DNS Extensions for Network Address
-              Translation from IPv6 Clients to IPv4 Servers", RFC 6147,
-              DOI 10.17487/RFC6147, April 2011,
-              <https://www.rfc-editor.org/rfc/rfc6147>.
 
    [RFC6298]  Paxson, V., Allman, M., Chu, J., and M. Sargent,
               "Computing TCP's Retransmission Timer", RFC 6298,
@@ -1305,10 +1244,6 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-   [RFC8781]  Colitti, L. and J. Linkova, "Discovering PREF64 in Router
-              Advertisements", RFC 8781, DOI 10.17487/RFC8781, April
-              2020, <https://www.rfc-editor.org/rfc/rfc8781>.
-
    [RFC9000]  Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
               Multiplexed and Secure Transport", RFC 9000,
               DOI 10.17487/RFC9000, May 2021,
@@ -1334,6 +1269,12 @@ Table of Contents
    [AltSvc]   Nottingham, M., McManus, P., and J. Reschke, "HTTP
               Alternative Services", RFC 7838, DOI 10.17487/RFC7838,
               April 2016, <https://www.rfc-editor.org/rfc/rfc7838>.
+
+   [DNS64]    Bagnulo, M., Sullivan, A., Matthews, P., and I. van
+              Beijnum, "DNS64: DNS Extensions for Network Address
+              Translation from IPv6 Clients to IPv4 Servers", RFC 6147,
+              DOI 10.17487/RFC6147, April 2011,
+              <https://www.rfc-editor.org/rfc/rfc6147>.
 
    [DNSSEC]   Hoffman, P., "DNS Security Extensions (DNSSEC)", BCP 237,
               RFC 9364, DOI 10.17487/RFC9364, February 2023,
@@ -1380,6 +1321,10 @@ Table of Contents
               <https://datatracker.ietf.org/doc/html/draft-gakiwate-
               dnsop-optimistic-dns-00>.
 
+   [PvD]      Anipko, D., Ed., "Multiple Provisioning Domain
+              Architecture", RFC 7556, DOI 10.17487/RFC7556, June 2015,
+              <https://www.rfc-editor.org/rfc/rfc7556>.
+
    [QUIC]     Iyengar, J., Ed. and M. Thomson, Ed., "QUIC: A UDP-Based
               Multiplexed and Secure Transport", RFC 9000,
               DOI 10.17487/RFC9000, May 2021,
@@ -1389,18 +1334,9 @@ Table of Contents
               Dual-Stack Hosts", RFC 6555, DOI 10.17487/RFC6555, April
               2012, <https://www.rfc-editor.org/rfc/rfc6555>.
 
-   [RFC6877]  Mawatari, M., Kawashima, M., and C. Byrne, "464XLAT:
-              Combination of Stateful and Stateless Translation",
-              RFC 6877, DOI 10.17487/RFC6877, April 2013,
-              <https://www.rfc-editor.org/rfc/rfc6877>.
-
    [RFC7413]  Cheng, Y., Chu, J., Radhakrishnan, S., and A. Jain, "TCP
               Fast Open", RFC 7413, DOI 10.17487/RFC7413, December 2014,
               <https://www.rfc-editor.org/rfc/rfc7413>.
-
-   [RFC7556]  Anipko, D., Ed., "Multiple Provisioning Domain
-              Architecture", RFC 7556, DOI 10.17487/RFC7556, June 2015,
-              <https://www.rfc-editor.org/rfc/rfc7556>.
 
    [RFC8446]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
               Version 1.3", RFC 8446, DOI 10.17487/RFC8446, August 2018,
@@ -1426,9 +1362,9 @@ Table of Contents
    [V6-MOSTLY]
               Buraglio, N., Caletka, O., and J. Linkova, "IPv6-mostly
               Networks: Deployment and Operations Considerations", Work
-              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-07, 2
-              March 2026, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-v6ops-6mops-07>.
+              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-08, 29
+              July 2026, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-v6ops-6mops-08>.
 
 Acknowledgments
 
