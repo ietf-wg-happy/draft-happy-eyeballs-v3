@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-28T02:47:26.809716+00:00",
+  "timestamp": "2026-08-02T03:19:22.776497+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -627,7 +627,7 @@
       "id": "I_kwDOKH7CuM512_CI",
       "title": "The Well-Known Prefix MUST NOT be used to represent non-global IPv4 addresses, such as RFC1918",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/32",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "momoka0122y",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -636,8 +636,8 @@
       ],
       "body": "This was dismissed on https://github.com/tfpauly/draft-happy-eyeballs-v3/issues/18 but today I just found it in RFC6052. (I didn't notice this until now since i was only reading RFC7050 and RFC6146)\r\n\r\n```\r\n[3.1](https://datatracker.ietf.org/doc/html/rfc6052#section-3.1).  Restrictions on the Use of the Well-Known Prefix\r\n\r\n   The Well-Known Prefix MUST NOT be used to represent non-global IPv4\r\n   addresses, such as those defined in [[RFC1918](https://datatracker.ietf.org/doc/html/rfc1918)] or listed in Section 3\r\n   of [RFC5735].  Address translators MUST NOT translate packets in\r\n   which an address is composed of the Well-Known Prefix and a non-\r\n   global IPv4 address; they MUST drop these packets.\r\n```\r\n\r\nIf you think this part is not necessary because it is already documented here I understand, but I think it is very informational if it is in this document. (As I did not know this was a MUST NOT until today)",
       "createdAt": "2023-11-04T13:49:19Z",
-      "updatedAt": "2026-06-25T00:11:33Z",
-      "closedAt": null,
+      "updatedAt": "2026-07-30T15:21:26Z",
+      "closedAt": "2026-07-30T15:21:26Z",
       "comments": []
     },
     {
@@ -828,7 +828,7 @@
       "id": "I_kwDOKH7CuM6CwBxq",
       "title": "Should synthesized NAT64 addresses be preferred over native IPv4?",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/42",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "furry13",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -837,8 +837,8 @@
       ],
       "body": "This is an open question I do not have an answer for yet - I guess the arguments can be made for both approaches..\r\n\r\nSo if an IPv6-mostly network provides DNS64, then a dual-stack host talking to an IPv4-only destination would have a choice between:\r\n\r\n* a synthesized IPv6 address which will be routed via NAT64\r\n* a native IPv4 path\r\n\r\n(we have a similar discussion in https://datatracker.ietf.org/doc/draft-link-v6ops-claton/: shall CLAT be enabled if both PLAT and IPv4 are available?)",
       "createdAt": "2024-03-18T23:06:41Z",
-      "updatedAt": "2026-06-24T23:58:51Z",
-      "closedAt": null,
+      "updatedAt": "2026-07-30T15:21:26Z",
+      "closedAt": "2026-07-30T15:21:26Z",
       "comments": [
         {
           "author": "ekinnear",
@@ -1486,7 +1486,7 @@
       "id": "I_kwDOKH7CuM7BcRyY",
       "title": "Treat synthesized NAT64 addresses as IPv4?",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/87",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "philsbln",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -1495,8 +1495,8 @@
       ],
       "body": "Section 8 suggests synthesizing NAT64-addresses in IPv6 only/mostly in cases without 464XLAT being used.\nWhile in the 464XLAT case NAT64 is clearly treated as IPv4, Section 8 does not suggest whether from A-records self-synthesized addresses should be treated as IPv4.\n\nNote that this issue is related to #42 but suggests a totally different outcome.\nBeyond that\u2026 in the all-in case with DNS64 and 464XLAT, should DNS64 synthesized AAAAs be detected and somehow treated special?",
       "createdAt": "2025-07-19T16:07:18Z",
-      "updatedAt": "2026-06-24T23:58:51Z",
-      "closedAt": null,
+      "updatedAt": "2026-07-30T15:21:27Z",
+      "closedAt": "2026-07-30T15:21:27Z",
       "comments": []
     },
     {
@@ -1588,7 +1588,7 @@
       "id": "I_kwDOKH7CuM7CWj0l",
       "title": "Section 8 needs major adjustments",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/91",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "oskar456",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -1597,8 +1597,8 @@
       ],
       "body": "I think there are some issues with section 8 (Supporting IPv6-Mostly and IPv6-Only Networks). Some of them are already discussed in issues #32, #42, and #87, maybe others but I think a complex review of this section is necessary.\n\nHere are my notes of what I think is not correct:\n  \n -  The title should not mention IPv6-mostly but should mention NAT64. IPv6-mostly refers to the network setup side, on the host this manifests itself either as dual stack (if DHCP Option 108 is not supported) or as IPv6-only. If the IPv6-mostly network is in the dual stack mode then nothing from Section 8 applies.\n - Section 8 introduction mentions that it is intended only for platforms not supporting 464XLAT. In a long term, this would be possibly a very small minority of platforms. So I wonder whether it is worth implementing all the features from this section for only a very tiny amount of use cases. Having said that I believe that even on platforms with CLAT, the HE library should instead use the mitigations from Section 8 and avoid using CLAT (I believe this is the way the Apple ecosystem works already).\n - \"A simple heuristic to detect one of these networks is to check if the network offers routable IPv6 addressing, does not offer routable IPv4 addressing, and offers a DNS resolver address.\" - that does detect IPv6-only network but not NAT64. The whole section is about mitigating issues with accessing IPv4 resources over NAT64, so the heuristic here needs to somehow detect NAT64 presence.\n - Section 8.2 \"Discovering and Utilizing PREF64\" should probably be the first one as this forms the foundation of detecting NAT64 network and also obtaining enough data to perform other mitigations.\n - Section 8.3 \"Supporting DNS64\" is wrong: \"If PREF64 is not available and the NAT64 prefix cannot be discovered, clients SHOULD assume the network is relying on DNS64 for IPv4-to-IPv6 address synthesis\" -  if the NAT64 prefix cannot be discovered, then the client cannot assume anything else than that there is no NAT64 in the network. Without discovered NAT64 prefix, all the mitigations mentioned in Section 8 cannot work. I believe this section could be easily dropped, it does not bring any new information.\n - It is not clear whether the mitigation of the VPN issue in Section 8.5 should also use \"Last Resort Local Synthesis Delay\" or not.\n - I think there should be a section summarising the algorithm, because just from the text, it is hard to figure out what exactly should happen. I am still wrapping my head around a proper solution supporting at the same time dual-stack, NAT64/DNS64 and NAT64/PREF64 (without DNS64) - that last one is quite tricky.\n\nThe issue is that if there would be network with NAT64 without DNS64, under current text, every single connection to IPv4-only destination would be penalised by \"Last Resort Local Synthesis Delay\". This is unacceptable. There might be an exception that you don't apply this delay if AAAA query returned empty answer, but you will still be dependant on every AAAA query properly finishing.\nI don't think the \"Last Resort Local Synthesis Delay\" is necessary. If the system uses 464XLAT, it would do A queries for every single hostname without any delay and it would not cause any overload of the DNS. \n\nMaybe the proper solution would be \"undo and redo DNS64\" like this:\n  1. detect PREF64 (either RA option or RFC 7050)\n  2. no PREF64 - business as usual.\n  3. if there is PREF64:\n      a. Start doing A queries even if there is no IPv4 connectivity\n      b. Every time you receive AAAA answer, try to undo the DNS64. If it was possible, consider both A and AAAA queries finished with no IPv6 addresses and IPv4 addresses extracted from the AAAA answers.\n      c. For each connection towards an IPv4 destination:\n           1. if covered via a specific route not going towards CLAT, send natively (this is needed for the VPN case)\n           2. if covered only by route towards CLAT, combine the destination with the detected PREF64 and create IPv6 packet.",
       "createdAt": "2025-07-24T17:39:35Z",
-      "updatedAt": "2026-06-24T23:58:52Z",
-      "closedAt": null,
+      "updatedAt": "2026-07-30T15:21:28Z",
+      "closedAt": "2026-07-30T15:21:28Z",
       "comments": [
         {
           "author": "philsbln",
@@ -6877,7 +6877,7 @@
       "id": "PR_kwDOKH7CuM6hQQbS",
       "title": "Rewrite Supporting IPv6-only networks section",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/94",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "oskar456",
       "authorAssociation": "NONE",
       "assignees": [],
@@ -6886,14 +6886,14 @@
       ],
       "body": "This simplifies the section about IPv6-only networks while hopefully addressing comments from #91:\r\n\r\n - Remove mentions of IPv6-mostly, since the host where Happy Eyeballs runs will never be IPv6-mostly, it would be either Dual-stack or IPv6-only.\r\n - Use the presence of PREF64 as the only detection mechanism of NAT64\r\n - Note that RFC 7050 should be used, but only when RFC 8781 failed\r\n - Prescribe handling of IPv4 addresses by first looking up the routing table (needed for VPNs) and then synthesizing IPv6. This already covers the former text on IPv4 literals, broken AAAA records and VPN case\r\n - Add section on dealing with DNS64: basically detect and undo since it is not needed for HE.\r\n - Removed the `Last Resort Local Synthesis Delay` configurable variable. If we want HE to function properly without DNS64, every IPv4-only destination looks exactly like \"Broken AAAA record\" case and we definitely don't want 2 second delay every single time.",
       "createdAt": "2025-07-29T21:43:48Z",
-      "updatedAt": "2026-07-10T03:36:26Z",
+      "updatedAt": "2026-07-30T18:52:43Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "7698dca45c2bf50c5e0b46f23424d789ae33fbbc",
       "headRepository": "oskar456/draft-happy-eyeballs-v3",
       "headRefName": "oc-fix-section8",
       "headRefOid": "45bd512c74cc82ec99c4227ad7f7879901592685",
-      "closedAt": null,
+      "closedAt": "2026-07-30T15:21:46Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
@@ -6918,6 +6918,13 @@
           "body": "See attempt at incorporating this + design team discussion in #137 ",
           "createdAt": "2026-07-10T03:36:26Z",
           "updatedAt": "2026-07-10T03:36:26Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Superseded by #137",
+          "createdAt": "2026-07-30T15:21:46Z",
+          "updatedAt": "2026-07-30T15:21:46Z"
         }
       ],
       "reviews": [
@@ -9974,7 +9981,7 @@
       "id": "PR_kwDOKH7CuM7v8a-t",
       "title": "Rewrite IPv6-only/NAT64 text based on design team discussion",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/137",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -9983,17 +9990,19 @@
       ],
       "body": "Attempt at closing IPv6-only network issues, based on design team discussion from IETF 125\r\n\r\nProposal was:\r\n\r\n> Define: PvD is all interfaces on which the connection might end up sending packets.\r\n> * If your PvD has non-loopback v4 or contains any known PREF64 prefix, then you MUST send A (since you might end up using it)\r\n> * If your PvD has any non link-local or loopback v6 (global scope), then you MUST send AAAA\r\n> * Will get back v4, v6, or synthesized v6 addresses\r\n>     * If you have the prefix, you SHOULD replace v6 addresses that you can de-synthesize with the real v4 versions using the prefix for the interface on which the DNS query was sent.\r\n>     * These are the same as the native v4 ones from a prioritization perspective\r\n>     * Run the sorting algorithm, native v6 will be preferred",
       "createdAt": "2026-07-09T23:08:57Z",
-      "updatedAt": "2026-07-23T07:46:10Z",
+      "updatedAt": "2026-07-30T15:21:25Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "95d9ed82177a990f486f10cd10066d7c51323f4e",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfp/ipv6-only-redo",
       "headRefOid": "babc001040b598945c4dbead795429770c10818f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-07-30T15:21:25Z",
+      "mergedAt": "2026-07-30T15:21:25Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "261574b7f92cdaf3a8bdf3643a65af8020471f2f"
+      },
       "comments": [
         {
           "author": "tfpauly",
@@ -10001,6 +10010,13 @@
           "body": "Rendered version: https://ietf-wg-happy.github.io/draft-happy-eyeballs-v3/tfp/ipv6-only-redo/draft-ietf-happy-happyeyeballs-v3.html",
           "createdAt": "2026-07-09T23:12:27Z",
           "updatedAt": "2026-07-09T23:12:27Z"
+        },
+        {
+          "author": "furry13",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "LGTM, thanks a lot!",
+          "createdAt": "2026-07-30T12:36:53Z",
+          "updatedAt": "2026-07-30T12:36:53Z"
         }
       ],
       "reviews": [
@@ -10312,7 +10328,7 @@
             "abbreviatedOid": "e242fb9"
           },
           "author": "enygren",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2026-07-20T11:45:29Z",
