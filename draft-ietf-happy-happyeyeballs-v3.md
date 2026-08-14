@@ -756,6 +756,21 @@ packet-loss rates. The Connection Attempt Delay SHOULD have an upper
 bound, referred to as the "Maximum Connection Attempt Delay". The
 current recommended value is 2 seconds.
 
+An implementation MAY increase the Connection Attempt Delay for each
+additional connection attempt that is started while earlier attempts
+are still in progress, multiplying the delay by a fixed factor (the
+"Connection Attempt Delay Multiplier") for each such attempt. The
+multiplier scales whichever base delay the implementation uses: the
+RTT-derived estimate described above when RTT data is available, or the
+fixed default otherwise. A short base delay starts a first fallback
+quickly, while the multiplier spaces out later attempts so the
+aggregate attempt rate stays low. For example, with a fixed base delay
+of 50 milliseconds and a multiplier of 2, attempts are started at 0,
+50, 150, 350, and 750 milliseconds. A multiplier of 1 keeps the delay
+constant. When a multiplier greater than 1 is used, the base delay MAY
+be below the recommended Minimum Connection Attempt Delay, but the 10
+millisecond hard lower bound still applies.
+
 The Connection Attempt Delay is used to set a timer, referred to as
 the "Next Connection Attempt Timer". Whenever this timer fires and
 a connection has not been successfully established, the next
@@ -1039,6 +1054,12 @@ milliseconds. MUST NOT be less than 10 milliseconds.
 
 - Maximum Connection Attempt Delay ({{connections}}): The maximum time to
 wait between connection attempts. Recommended to be 2 seconds.
+
+- Connection Attempt Delay Multiplier ({{connections}}): An optional
+factor by which the Connection Attempt Delay is multiplied for each
+additional concurrent connection attempt in progress. Recommended to be
+1 (a constant delay); values greater than 1 grow the delay per attempt
+and allow a shorter base delay.
 
 
 The delay values described in this section were determined
