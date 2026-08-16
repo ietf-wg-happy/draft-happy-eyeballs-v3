@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-02T03:19:22.776497+00:00",
+  "timestamp": "2026-08-16T01:35:18.837040+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -2181,7 +2181,7 @@
       "labels": [],
       "body": "Today's [Connection Attempt Delay](https://datatracker.ietf.org/doc/html/draft-ietf-happy-happyeyeballs-v3-04#name-connection-attempts) is constant (default 250 ms). A constant delay is a poor trade: large means slow fallback when the preferred path is a blackhole; small means a sustained burst of attempts under congestion.\n\n## Proposal\n\nAn optional **Connection Attempt Delay Multiplier** that grows the delay for each additional in-flight attempt. A value of 1 is today's constant-delay behavior. Firefox ships the multiplier on Nightly ([bug 2050565](https://bugzilla.mozilla.org/show_bug.cgi?id=2050565)), with an initial delay of 50 ms and a multiplier of 2, so attempts start at 0, 50, 150, 350, 750 ms. Growing the delay keeps the attempt rate low even when paths are broken.\n\n## Firefox telemetry\n\nBelow the relevant Firefox Nightly telemetry (~15k clients), with a connection attempt delay of 50ms and a multiplier of 2. Connections almost never fan out, so the faster second attempt adds negligible load:\n\n- [`winning_attempt_index`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_winning_attempt_index/explore): the winner is attempt **1 in 94.2%** of connections, attempt 2 in 4.6%, index >= 3 in only **1.2%**.\n- [`connection_attempt_count`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_connection_attempt_count/explore) (succeeded): **87.4%** start a single attempt; **98.1%** never start a third.\n- [`cancelled_attempt_count`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_cancelled_attempt_count/explore): **94.1%** of wins cancel zero in-flight attempts.\n\n## Benefit\n\nThe addressable slice is the **~5.8%** of connections where attempt >= 2 wins; for them, cutting the first gap from 250 ms to 50 ms should pull down the P75 to P95 percentile of [`end_to_end_time_succeeded`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_end_to_end_time_succeeded/explore) (currently P50 = 74 ms, P75 = 161 ms, P95 = 603 ms).\n\n## Questions\n\n1. Is an initial delay below the 100 ms recommended minimum acceptable given the back-off?\n2. Normative (with a recommended default) or informational implementation guidance?\n3. Compound on in-flight attempts (as Firefox does) or on total attempts started?",
       "createdAt": "2026-07-10T13:29:52Z",
-      "updatedAt": "2026-07-11T04:27:44Z",
+      "updatedAt": "2026-08-14T12:46:01Z",
       "closedAt": null,
       "comments": [
         {
@@ -2211,6 +2211,13 @@
           "body": "That sounds a good idea! FWIW Chrome uses historical RTT for TCP/QUIC races. Regarding races within the same protocol, we currently use a fixed value for TCP, but @nidhijaju is planning to replace it with historical RTT. We have a similar plan for QUIC, but it is currently in the implementation stage.",
           "createdAt": "2026-07-11T04:27:44Z",
           "updatedAt": "2026-07-11T04:27:44Z"
+        },
+        {
+          "author": "mxinden",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Have you done any experiments with using dynamically adjusted times?\n\nWe (Firefox) have not. I don't think it is worth the additional engineering work and code complexity for us any time soon.",
+          "createdAt": "2026-08-14T12:46:01Z",
+          "updatedAt": "2026-08-14T12:46:01Z"
         }
       ]
     },
@@ -10682,6 +10689,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 143,
+      "id": "PR_kwDOKH7CuM7_GlLg",
+      "title": "Add exponential connection attempt delay multiplier",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/143",
+      "state": "OPEN",
+      "author": "mxinden",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Describe an optional Connection Attempt Delay Multiplier that grows the delay for each additional concurrent attempt in progress. The multiplier scales the implementation's base delay, whether the RTT-derived estimate or the fixed default. A multiplier of 1 is the existing constant-delay behavior.\r\n\r\nFixes https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/138.",
+      "createdAt": "2026-08-14T12:57:22Z",
+      "updatedAt": "2026-08-14T13:00:25Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "261574b7f92cdaf3a8bdf3643a65af8020471f2f",
+      "headRepository": "mxinden/draft-happy-eyeballs-v3",
+      "headRefName": "exponential-connection-attempt-delay",
+      "headRefOid": "7646aad7b4cc13eb358c3939ccc11e823730a0b5",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
