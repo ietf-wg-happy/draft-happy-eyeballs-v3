@@ -179,20 +179,19 @@ logic described above):
 
 This ordering assumes that the client implementing the Happy
 Eyeballs algorithm is able to specifically influence the queries
-that are sent, or have a guarantee from the DNS stub resolver
+that are sent, or has a guarantee from the DNS stub resolver
 about how the queries are sent. This is not possible in all
 environments and operating systems depending on the APIs available.
 
 Note that the DNS stub resolver implementation might itself
 employ the Happy Eyeballs algorithm, particularly when connecting
 to an encrypted DNS server (using {{?DOT=RFC7858}}, {{?DOH=RFC8484}},
-or {{?DOQ=RFC9250}}, for example). Additionally, {{?RFC10001}}
-provides guidance for how stub resolvers ought to handle dual-stack
-environments. Following this guidance is beneficial to
-clients implementing Happy Eyeballs, as it ensures that dual-stack
-networks are handled well during DNS resolution, which is a
-pre-requisite for the rest of the Happy Eyeballs algorithm to
-work well.
+or {{?DOQ=RFC9250}}, for example, potentially discovered via {{?RFC9461}}).
+Additionally, {{Section 4.3 of ?RFC10001}} provides guidance for how stub
+resolvers ought to handle dual-stack environments. Following this guidance
+is beneficial to clients implementing Happy Eyeballs, as it ensures that
+dual-stack networks are handled well during DNS resolution, which is a
+prerequisite for the rest of the Happy Eyeballs algorithm to work well.
 
 ## Handling DNS Answers Asynchronously
 
