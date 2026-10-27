@@ -767,9 +767,9 @@ quickly, while the multiplier spaces out later attempts so the
 aggregate attempt rate stays low. For example, with a fixed base delay
 of 50 milliseconds and a multiplier of 2, attempts are started at 0,
 50, 150, 350, and 750 milliseconds. A multiplier of 1 keeps the delay
-constant. When a multiplier greater than 1 is used, the base delay MAY
-be below the recommended Minimum Connection Attempt Delay, but the 10
-millisecond hard lower-bound still applies.
+constant. A base delay below the recommended Minimum Connection Attempt
+Delay MAY be used (for example, with a multiplier greater than 1), but
+the 10 millisecond hard lower-bound still applies.
 
 The Connection Attempt Delay is used to set a timer, referred to as
 the "Next Connection Attempt Timer". Whenever this timer fires and
