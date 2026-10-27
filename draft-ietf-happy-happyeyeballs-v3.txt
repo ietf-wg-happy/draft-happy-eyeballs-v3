@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 31 January 2027                                         N. Jaju
+Expires: 30 April 2027                                           N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                            30 July 2026
+                                                         27 October 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 January 2027.
+   This Internet-Draft will expire on 30 April 2027.
 
 Copyright Notice
 
@@ -803,6 +803,22 @@ Table of Contents
    Connection Attempt Delay".  The current recommended value is 2
    seconds.
 
+   An implementation MAY increase the Connection Attempt Delay for each
+   additional connection attempt that is started while earlier attempts
+   are still in progress, multiplying the delay by a fixed factor (the
+   "Connection Attempt Delay Multiplier") for each such attempt.  The
+   multiplier scales whichever base delay the implementation uses: the
+   RTT-derived estimate described above when RTT data is available, or
+   the fixed default otherwise.  A short base delay starts a first
+   fallback quickly, while the multiplier spaces out later attempts so
+   the aggregate attempt rate stays low.  For example, with a fixed base
+   delay of 50 milliseconds and a multiplier of 2, attempts are started
+   at 0, 50, 150, 350, and 750 milliseconds.  A multiplier of 1 keeps
+   the delay constant.  A base delay below the recommended Minimum
+   Connection Attempt Delay MAY be used (for example, with a multiplier
+   greater than 1), but the 10 millisecond hard lower-bound still
+   applies.
+
    The Connection Attempt Delay is used to set a timer, referred to as
    the "Next Connection Attempt Timer".  Whenever this timer fires and a
    connection has not been successfully established, the next connection
@@ -1089,6 +1105,12 @@ Table of Contents
    *  Maximum Connection Attempt Delay (Section 6): The maximum time to
       wait between connection attempts.  Recommended to be 2 seconds.
 
+   *  Connection Attempt Delay Multiplier (Section 6): An optional
+      factor by which the Connection Attempt Delay is multiplied for
+      each additional concurrent connection attempt in progress.
+      Recommended to be 1 (a constant delay); values greater than 1 grow
+      the delay per attempt and allow a shorter base delay.
+
    The delay values described in this section were determined
    empirically by measuring the timing of connections on a very wide set
    of production devices.  They were picked to reduce wait times noticed
@@ -1305,9 +1327,9 @@ Table of Contents
    [I-D.ietf-tls-key-share-prediction]
               Benjamin, D., "TLS Key Share Prediction", Work in
               Progress, Internet-Draft, draft-ietf-tls-key-share-
-              prediction-04, 19 March 2026,
+              prediction-05, 15 October 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-key-
-              share-prediction-04>.
+              share-prediction-05>.
 
    [IPV6]     Deering, S. and R. Hinden, "Internet Protocol, Version 6
               (IPv6) Specification", STD 86, RFC 8200,
@@ -1362,9 +1384,9 @@ Table of Contents
    [V6-MOSTLY]
               Buraglio, N., Caletka, O., and J. Linkova, "IPv6-mostly
               Networks: Deployment and Operations Considerations", Work
-              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-08, 29
-              July 2026, <https://datatracker.ietf.org/doc/html/draft-
-              ietf-v6ops-6mops-08>.
+              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-11, 27
+              October 2026, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-v6ops-6mops-11>.
 
 Acknowledgments
 

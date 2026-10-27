@@ -21,7 +21,7 @@ algorithm for "Happy Eyeballs", a technique for reducing user-visible
 delays on dual-stack hosts. This document updates the algorithm
 in RFC 8305. 
     ' name="description">
-<meta content="xml2rfc 3.34.0" name="generator">
+<meta content="xml2rfc 3.34.1" name="generator">
 <meta content="ipv6" name="keyword">
 <meta content="ipv4" name="keyword">
 <meta content="racing" name="keyword">
@@ -31,19 +31,19 @@ in RFC 8305.
 <meta content="ech" name="keyword">
 <meta content="draft-ietf-happy-happyeyeballs-v3-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.34.0
-    Python 3.14.5
-    ConfigArgParse 1.7.5
+  xml2rfc 3.34.1
+    Python 3.14.8
+    ConfigArgParse 1.8.0
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.10.1
+    platformdirs 4.13.4
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.2
+    wcwidth 0.9.2
 -->
 <link href="draft-ietf-happy-happyeyeballs-v3.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1059,11 +1059,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Happy Eyeballs v3</td>
-<td class="right">July 2026</td>
+<td class="right">October 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Pauly, et al.</td>
-<td class="center">Expires 31 January 2027</td>
+<td class="center">Expires 30 April 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1076,12 +1076,12 @@ svg {
 <dd class="internet-draft">draft-ietf-happy-happyeyeballs-v3-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-07-30" class="published">30 July 2026</time>
+<time datetime="2026-10-27" class="published">27 October 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-01-31">31 January 2027</time></dd>
+<dd class="expires"><time datetime="2027-04-30">30 April 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1152,7 +1152,7 @@ in RFC 8305.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 31 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 30 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2258,14 +2258,28 @@ value is required to avoid congestion collapse in the presence of high
 packet-loss rates. The Connection Attempt Delay <span class="bcp14">SHOULD</span> have an upper
 bound, referred to as the "Maximum Connection Attempt Delay". The
 current recommended value is 2 seconds.<a href="#section-6-5" class="pilcrow">¶</a></p>
-<p id="section-6-6">The Connection Attempt Delay is used to set a timer, referred to as
+<p id="section-6-6">An implementation <span class="bcp14">MAY</span> increase the Connection Attempt Delay for each
+additional connection attempt that is started while earlier attempts
+are still in progress, multiplying the delay by a fixed factor (the
+"Connection Attempt Delay Multiplier") for each such attempt. The
+multiplier scales whichever base delay the implementation uses: the
+RTT-derived estimate described above when RTT data is available, or the
+fixed default otherwise. A short base delay starts a first fallback
+quickly, while the multiplier spaces out later attempts so the
+aggregate attempt rate stays low. For example, with a fixed base delay
+of 50 milliseconds and a multiplier of 2, attempts are started at 0,
+50, 150, 350, and 750 milliseconds. A multiplier of 1 keeps the delay
+constant. A base delay below the recommended Minimum Connection Attempt
+Delay <span class="bcp14">MAY</span> be used (for example, with a multiplier greater than 1), but
+the 10 millisecond hard lower-bound still applies.<a href="#section-6-6" class="pilcrow">¶</a></p>
+<p id="section-6-7">The Connection Attempt Delay is used to set a timer, referred to as
 the "Next Connection Attempt Timer". Whenever this timer fires and
 a connection has not been successfully established, the next
 connection attempt starts, and the timer either is reset to a new
 delay value or, in the case of the end of the list being reached,
 is cancelled. Note that the delay value can be different for each
 connection attempt (depending on the protocol being used and
-the estimated RTT).<a href="#section-6-6" class="pilcrow">¶</a></p>
+the estimated RTT).<a href="#section-6-7" class="pilcrow">¶</a></p>
 <div id="success">
 <section id="section-6.1">
         <h3 id="name-determining-successful-conn">
@@ -2485,7 +2499,7 @@ query to discover the prefix <span>[<a href="#RFC7050" class="cite xref">RFC7050
 in which the DNS resolver synthesizes A answers into AAAA answers.
 However, with the prefix available from router advertisements <span>[<a href="#PREF64" class="cite xref">PREF64</a>]</span>,
 networks might choose to not deploy DNS64, as the latter has a number
-of disadvantages (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-08#section-4.3.4" class="relref">Section 4.3.4</a> of [<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>]</span>).<a href="#section-8.1-4" class="pilcrow">¶</a></p>
+of disadvantages (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-11#section-4.3.4" class="relref">Section 4.3.4</a> of [<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>]</span>).<a href="#section-8.1-4" class="pilcrow">¶</a></p>
 <p id="section-8.1-5">To ensure compatibility with any NAT64 network, whenever the client
 detects a NAT64 prefix, from either of the options reference above,
 clients <span class="bcp14">MUST</span> send A queries in addition to AAAA queries (as
@@ -2569,6 +2583,13 @@ milliseconds. <span class="bcp14">MUST NOT</span> be less than 10 milliseconds.<
         <li class="normal" id="section-9-2.5">
           <p id="section-9-2.5.1">Maximum Connection Attempt Delay (<a href="#connections" class="auto internal xref">Section 6</a>): The maximum time to
 wait between connection attempts. Recommended to be 2 seconds.<a href="#section-9-2.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-9-2.6">
+          <p id="section-9-2.6.1">Connection Attempt Delay Multiplier (<a href="#connections" class="auto internal xref">Section 6</a>): An optional
+factor by which the Connection Attempt Delay is multiplied for each
+additional concurrent connection attempt in progress. Recommended to be
+1 (a constant delay); values greater than 1 grow the delay per attempt
+and allow a shorter base delay.<a href="#section-9-2.6.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-9-3">The delay values described in this section were determined
@@ -2800,7 +2821,7 @@ that response is non-negative.<a href="#section-11-3" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="I-D.ietf-tls-key-share-prediction">[I-D.ietf-tls-key-share-prediction]</dt>
         <dd>
-<span class="refAuthor">Benjamin, D.</span>, <span class="refTitle">"TLS Key Share Prediction"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-key-share-prediction-04</span>, <time datetime="2026-03-19" class="refDate">19 March 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-key-share-prediction-04">https://datatracker.ietf.org/doc/html/draft-ietf-tls-key-share-prediction-04</a>&gt;</span>. </dd>
+<span class="refAuthor">Benjamin, D.</span>, <span class="refTitle">"TLS Key Share Prediction"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-key-share-prediction-05</span>, <time datetime="2026-10-15" class="refDate">15 October 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-key-share-prediction-05">https://datatracker.ietf.org/doc/html/draft-ietf-tls-key-share-prediction-05</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="IPV6">[IPV6]</dt>
         <dd>
@@ -2848,7 +2869,7 @@ that response is non-negative.<a href="#section-11-3" class="pilcrow">¶</a></p>
 <dd class="break"></dd>
 <dt id="V6-MOSTLY">[V6-MOSTLY]</dt>
       <dd>
-<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-08</span>, <time datetime="2026-07-29" class="refDate">29 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-08">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-08</a>&gt;</span>. </dd>
+<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-11</span>, <time datetime="2026-10-27" class="refDate">27 October 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-11">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
