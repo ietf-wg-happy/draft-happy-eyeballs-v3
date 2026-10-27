@@ -1445,19 +1445,18 @@ logic described above):<a href="#section-4.1-4" class="pilcrow">¶</a></p>
         </ol>
 <p id="section-4.1-6">This ordering assumes that the client implementing the Happy
 Eyeballs algorithm is able to specifically influence the queries
-that are sent, or have a guarantee from the DNS stub resolver
+that are sent, or has a guarantee from the DNS stub resolver
 about how the queries are sent. This is not possible in all
 environments and operating systems depending on the APIs available.<a href="#section-4.1-6" class="pilcrow">¶</a></p>
 <p id="section-4.1-7">Note that the DNS stub resolver implementation might itself
 employ the Happy Eyeballs algorithm, particularly when connecting
 to an encrypted DNS server (using <span>[<a href="#DOT" class="cite xref">DOT</a>]</span>, <span>[<a href="#DOH" class="cite xref">DOH</a>]</span>,
-or <span>[<a href="#DOQ" class="cite xref">DOQ</a>]</span>, for example). Additionally, <span>[<a href="#RFC10001" class="cite xref">RFC10001</a>]</span>
-provides guidance for how stub resolvers ought to handle dual-stack
-environments. Following this guidance is beneficial to
-clients implementing Happy Eyeballs, as it ensures that dual-stack
-networks are handled well during DNS resolution, which is a
-pre-requisite for the rest of the Happy Eyeballs algorithm to
-work well.<a href="#section-4.1-7" class="pilcrow">¶</a></p>
+or <span>[<a href="#DOQ" class="cite xref">DOQ</a>]</span>, for example, potentially discovered via <span>[<a href="#RFC9461" class="cite xref">RFC9461</a>]</span>).
+Additionally, <span><a href="https://rfc-editor.org/rfc/rfc10001#section-4.3" class="relref">Section 4.3</a> of [<a href="#RFC10001" class="cite xref">RFC10001</a>]</span> provides guidance for how stub
+resolvers ought to handle dual-stack environments. Following this guidance
+is beneficial to clients implementing Happy Eyeballs, as it ensures that
+dual-stack networks are handled well during DNS resolution, which is a
+prerequisite for the rest of the Happy Eyeballs algorithm to work well.<a href="#section-4.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="handling-dns-answers-asynchronously">
@@ -2471,7 +2470,7 @@ query to discover the prefix <span>[<a href="#RFC7050" class="cite xref">RFC7050
 in which the DNS resolver synthesizes A answers into AAAA answers.
 However, with the prefix available from router advertisements <span>[<a href="#PREF64" class="cite xref">PREF64</a>]</span>,
 networks might choose to not deploy DNS64, as the latter has a number
-of disadvantages (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-10#section-4.3.4" class="relref">Section 4.3.4</a> of [<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>]</span>).<a href="#section-8.1-4" class="pilcrow">¶</a></p>
+of disadvantages (see <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-11#section-4.3.4" class="relref">Section 4.3.4</a> of [<a href="#V6-MOSTLY" class="cite xref">V6-MOSTLY</a>]</span>).<a href="#section-8.1-4" class="pilcrow">¶</a></p>
 <p id="section-8.1-5">To ensure compatibility with any NAT64 network, whenever the client
 detects a NAT64 prefix, from either of the options reference above,
 clients <span class="bcp14">MUST</span> send A queries in addition to AAAA queries (as
@@ -2832,13 +2831,17 @@ that response is non-negative.<a href="#section-11-3" class="pilcrow">¶</a></p>
         <dd>
 <span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">I. Swett, Ed.</span>, <span class="refTitle">"QUIC Loss Detection and Congestion Control"</span>, <span class="seriesInfo">RFC 9002</span>, <span class="seriesInfo">DOI 10.17487/RFC9002</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9002">https://www.rfc-editor.org/rfc/rfc9002</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC9461">[RFC9461]</dt>
+        <dd>
+<span class="refAuthor">Schwartz, B.</span>, <span class="refTitle">"Service Binding Mapping for DNS Servers"</span>, <span class="seriesInfo">RFC 9461</span>, <span class="seriesInfo">DOI 10.17487/RFC9461</span>, <time datetime="2023-11" class="refDate">November 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9461">https://www.rfc-editor.org/rfc/rfc9461</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC10001">[RFC10001]</dt>
         <dd>
 <span class="refAuthor">Momoka</span> and <span class="refAuthor">T. Fiebig</span>, <span class="refTitle">"Operational Guidelines for DNS Transport in Mixed IPv4/IPv6 Environments"</span>, <span class="seriesInfo">BCP 91</span>, <span class="seriesInfo">RFC 10001</span>, <span class="seriesInfo">DOI 10.17487/RFC10001</span>, <time datetime="2026-08" class="refDate">August 2026</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc10001">https://www.rfc-editor.org/rfc/rfc10001</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="V6-MOSTLY">[V6-MOSTLY]</dt>
       <dd>
-<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-10</span>, <time datetime="2026-09-10" class="refDate">10 September 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-10">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-10</a>&gt;</span>. </dd>
+<span class="refAuthor">Buraglio, N.</span>, <span class="refAuthor">Caletka, O.</span>, and <span class="refAuthor">J. Linkova</span>, <span class="refTitle">"IPv6-mostly Networks: Deployment and Operations Considerations"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-v6ops-6mops-11</span>, <time datetime="2026-10-27" class="refDate">27 October 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-11">https://datatracker.ietf.org/doc/html/draft-ietf-v6ops-6mops-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>

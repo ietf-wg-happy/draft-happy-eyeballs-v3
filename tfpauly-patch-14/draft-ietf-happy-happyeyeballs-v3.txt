@@ -232,18 +232,19 @@ Table of Contents
 
    This ordering assumes that the client implementing the Happy Eyeballs
    algorithm is able to specifically influence the queries that are
-   sent, or have a guarantee from the DNS stub resolver about how the
+   sent, or has a guarantee from the DNS stub resolver about how the
    queries are sent.  This is not possible in all environments and
    operating systems depending on the APIs available.
 
    Note that the DNS stub resolver implementation might itself employ
    the Happy Eyeballs algorithm, particularly when connecting to an
-   encrypted DNS server (using [DOT], [DOH], or [DOQ], for example).
-   Additionally, [RFC10001] provides guidance for how stub resolvers
-   ought to handle dual-stack environments.  Following this guidance is
-   beneficial to clients implementing Happy Eyeballs, as it ensures that
-   dual-stack networks are handled well during DNS resolution, which is
-   a pre-requisite for the rest of the Happy Eyeballs algorithm to work
+   encrypted DNS server (using [DOT], [DOH], or [DOQ], for example,
+   potentially discovered via [RFC9461]).  Additionally, Section 4.3 of
+   [RFC10001] provides guidance for how stub resolvers ought to handle
+   dual-stack environments.  Following this guidance is beneficial to
+   clients implementing Happy Eyeballs, as it ensures that dual-stack
+   networks are handled well during DNS resolution, which is a
+   prerequisite for the rest of the Happy Eyeballs algorithm to work
    well.
 
 4.2.  Handling DNS Answers Asynchronously
@@ -1350,6 +1351,10 @@ Table of Contents
               and Congestion Control", RFC 9002, DOI 10.17487/RFC9002,
               May 2021, <https://www.rfc-editor.org/rfc/rfc9002>.
 
+   [RFC9461]  Schwartz, B., "Service Binding Mapping for DNS Servers",
+              RFC 9461, DOI 10.17487/RFC9461, November 2023,
+              <https://www.rfc-editor.org/rfc/rfc9461>.
+
    [RFC10001] Momoka and T. Fiebig, "Operational Guidelines for DNS
               Transport in Mixed IPv4/IPv6 Environments", BCP 91,
               RFC 10001, DOI 10.17487/RFC10001, August 2026,
@@ -1358,9 +1363,9 @@ Table of Contents
    [V6-MOSTLY]
               Buraglio, N., Caletka, O., and J. Linkova, "IPv6-mostly
               Networks: Deployment and Operations Considerations", Work
-              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-10, 10
-              September 2026, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-v6ops-6mops-10>.
+              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-11, 27
+              October 2026, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-v6ops-6mops-11>.
 
 Acknowledgments
 
