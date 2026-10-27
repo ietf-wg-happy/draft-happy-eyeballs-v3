@@ -162,7 +162,6 @@ A records. Additionally, if the client has detected a NAT64 prefix
 for A records (see {{nat64}} for more details on detecting the NAT64 prefix
 and handling answers).
 
-
 In addition to requesting AAAA and A records, depending on which
 application is establishing the connection, clients can request
 either SVCB or HTTPS records {{SVCB}}. For applications using
@@ -177,6 +176,22 @@ logic described above):
 1. SVCB or HTTPS query
 1. AAAA query
 1. A query
+
+This ordering assumes that the client implementing the Happy
+Eyeballs algorithm is able to specifically influence the queries
+that are sent, or has a guarantee from the DNS stub resolver
+about how the queries are sent. This is not possible in all
+environments and operating systems depending on the APIs available.
+
+Note that the DNS stub resolver implementation might itself
+employ the Happy Eyeballs algorithm, particularly when connecting
+to an encrypted DNS server (using {{?DOT=RFC7858}}, {{?DOH=RFC8484}},
+or {{?DOQ=RFC9250}}, for example, potentially discovered via {{?RFC9461}}).
+Additionally, {{Section 4.3 of ?RFC10001}} provides guidance for how stub
+resolvers ought to handle dual-stack environments. Following this guidance
+is beneficial to clients implementing Happy Eyeballs, as it ensures that
+dual-stack networks are handled well during DNS resolution, which is a
+prerequisite for the rest of the Happy Eyeballs algorithm to work well.
 
 ## Handling DNS Answers Asynchronously
 
@@ -478,30 +493,6 @@ updates to the resolved endpoint list asynchronously enables
 the use of expired answers "optimistically" while waiting for non-expired
 answers. This approach is called "optimistic DNS", and is described
 in {{?OPTIMISTIC-DNS=I-D.gakiwate-dnsop-optimistic-dns}}.
-
-## Handling Multiple DNS Server Addresses
-
-If multiple DNS server addresses are configured for the current
-network, the client may have the option of sending its DNS queries
-over IPv4 or IPv6. In keeping with the Happy Eyeballs approach,
-queries SHOULD be sent over IPv6 first (note that this is not
-referring to the sending of AAAA or A queries, but rather the address
-of the DNS server itself and IP version used to transport DNS
-messages). If DNS queries sent to the IPv6 address do not receive
-responses, that address may be marked as penalized and queries can be
-sent to other DNS server addresses.
-
-As native IPv6 deployments become more prevalent and IPv4 addresses
-are exhausted, it is expected that IPv6 connectivity will have
-preferential treatment within networks. If a DNS server is
-configured to be accessible over IPv6, IPv6 should be assumed to be
-the preferred address family.
-
-Client systems SHOULD NOT have an explicit limit to the number of DNS
-servers that can be configured, either manually or by the network.
-If such a limit is required by hardware limitations, the client
-SHOULD use at least one address from each address family from the
-available list.
 
 # Grouping and Sorting Endpoints {#sorting}
 
