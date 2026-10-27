@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-16T01:35:18.837040+00:00",
+  "timestamp": "2026-10-27T04:19:20.677967+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -395,7 +395,7 @@
       "id": "I_kwDOKH7CuM50bRiy",
       "title": "Acknowledgements",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/15",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "DavidSchinazi",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -404,9 +404,17 @@
       ],
       "body": "The Acknowledgements section is currently copy-pasted from HEv2",
       "createdAt": "2023-10-20T01:12:42Z",
-      "updatedAt": "2025-07-19T10:55:01Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-10-27T03:16:04Z",
+      "closedAt": "2026-10-27T03:16:04Z",
+      "comments": [
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Updated in #142 -- we'll do more again I'm sure!",
+          "createdAt": "2026-10-27T03:15:48Z",
+          "updatedAt": "2026-10-27T03:15:48Z"
+        }
+      ]
     },
     {
       "number": 18,
@@ -2177,11 +2185,13 @@
       "state": "OPEN",
       "author": "mxinden",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "mxinden"
+      ],
       "labels": [],
       "body": "Today's [Connection Attempt Delay](https://datatracker.ietf.org/doc/html/draft-ietf-happy-happyeyeballs-v3-04#name-connection-attempts) is constant (default 250 ms). A constant delay is a poor trade: large means slow fallback when the preferred path is a blackhole; small means a sustained burst of attempts under congestion.\n\n## Proposal\n\nAn optional **Connection Attempt Delay Multiplier** that grows the delay for each additional in-flight attempt. A value of 1 is today's constant-delay behavior. Firefox ships the multiplier on Nightly ([bug 2050565](https://bugzilla.mozilla.org/show_bug.cgi?id=2050565)), with an initial delay of 50 ms and a multiplier of 2, so attempts start at 0, 50, 150, 350, 750 ms. Growing the delay keeps the attempt rate low even when paths are broken.\n\n## Firefox telemetry\n\nBelow the relevant Firefox Nightly telemetry (~15k clients), with a connection attempt delay of 50ms and a multiplier of 2. Connections almost never fan out, so the faster second attempt adds negligible load:\n\n- [`winning_attempt_index`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_winning_attempt_index/explore): the winner is attempt **1 in 94.2%** of connections, attempt 2 in 4.6%, index >= 3 in only **1.2%**.\n- [`connection_attempt_count`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_connection_attempt_count/explore) (succeeded): **87.4%** start a single attempt; **98.1%** never start a third.\n- [`cancelled_attempt_count`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_cancelled_attempt_count/explore): **94.1%** of wins cancel zero in-flight attempts.\n\n## Benefit\n\nThe addressable slice is the **~5.8%** of connections where attempt >= 2 wins; for them, cutting the first gap from 250 ms to 50 ms should pull down the P75 to P95 percentile of [`end_to_end_time_succeeded`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_end_to_end_time_succeeded/explore) (currently P50 = 74 ms, P75 = 161 ms, P95 = 603 ms).\n\n## Questions\n\n1. Is an initial delay below the 100 ms recommended minimum acceptable given the back-off?\n2. Normative (with a recommended default) or informational implementation guidance?\n3. Compound on in-flight attempts (as Firefox does) or on total attempts started?",
       "createdAt": "2026-07-10T13:29:52Z",
-      "updatedAt": "2026-08-14T12:46:01Z",
+      "updatedAt": "2026-10-27T03:18:24Z",
       "closedAt": null,
       "comments": [
         {
@@ -2228,12 +2238,14 @@
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/140",
       "state": "OPEN",
       "author": "enygren",
-      "authorAssociation": "NONE",
-      "assignees": [],
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [
+        "tfpauly"
+      ],
       "labels": [],
       "body": "As discussed in IETF 126 in Vienna and in discussions for #132, we should pull out an explicit section covering:\n* PvDs\n* VPNs (including split tunnel)\n* Absence of PvDs and network switches in this context\n* Other similar concepts to PvDs (\"multiple simultaneous networks with different properties\") \n* Multiple independent network interfaces\n\nWe may want to have an abstract name we use that covers these (eg, \"network context\"?).\nWhile PvDs are a concrete instantiation, not all OSes implement them.\n\nFor example, considerations such as:\n\n* Do not use DNS records obtained from one network context in another\n* Absent PvDs, flush the default DNS cache on switching networks\n* Do not use a NAT64 from one network context in another\n* ...\n\nSome of the considerations from #132 could fall into this.\n",
       "createdAt": "2026-07-20T13:49:01Z",
-      "updatedAt": "2026-07-20T13:49:01Z",
+      "updatedAt": "2026-10-27T03:10:44Z",
       "closedAt": null,
       "comments": []
     }
@@ -10702,19 +10714,40 @@
       "labels": [],
       "body": "Describe an optional Connection Attempt Delay Multiplier that grows the delay for each additional concurrent attempt in progress. The multiplier scales the implementation's base delay, whether the RTT-derived estimate or the fixed default. A multiplier of 1 is the existing constant-delay behavior.\r\n\r\nFixes https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/138.",
       "createdAt": "2026-08-14T12:57:22Z",
-      "updatedAt": "2026-08-14T13:00:25Z",
+      "updatedAt": "2026-10-27T03:14:35Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "261574b7f92cdaf3a8bdf3643a65af8020471f2f",
       "headRepository": "mxinden/draft-happy-eyeballs-v3",
       "headRefName": "exponential-connection-attempt-delay",
-      "headRefOid": "7646aad7b4cc13eb358c3939ccc11e823730a0b5",
+      "headRefOid": "e30957165cc68f80ace200669cf548295224d4da",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUXg9oQ",
+          "commit": {
+            "abbreviatedOid": "7646aad"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looks good! Just one nit. ",
+          "createdAt": "2026-10-27T03:12:57Z",
+          "updatedAt": "2026-10-27T03:14:16Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "```suggestion\nmillisecond hard lower-bound still applies.\n```\n",
+              "createdAt": "2026-10-27T03:12:58Z",
+              "updatedAt": "2026-10-27T03:14:17Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
