@@ -87,7 +87,6 @@ Table of Contents
        4.2.2.  Examples
      4.3.  Handling New Answers
      4.4.  Handling Expired Answers
-     4.5.  Handling Multiple DNS Server Addresses
    5.  Grouping and Sorting Endpoints
      5.1.  Grouping By Application Protocols and Security Requirements
        5.1.1.  When to Apply Application Preferences
@@ -230,6 +229,23 @@ Table of Contents
    2.  AAAA query
 
    3.  A query
+
+   This ordering assumes that the client implementing the Happy Eyeballs
+   algorithm is able to specifically influence the queries that are
+   sent, or has a guarantee from the DNS stub resolver about how the
+   queries are sent.  This is not possible in all environments and
+   operating systems depending on the APIs available.
+
+   Note that the DNS stub resolver implementation might itself employ
+   the Happy Eyeballs algorithm, particularly when connecting to an
+   encrypted DNS server (using [DOT], [DOH], or [DOQ], for example,
+   potentially discovered via [RFC9461]).  Additionally, Section 4.3 of
+   [RFC10001] provides guidance for how stub resolvers ought to handle
+   dual-stack environments.  Following this guidance is beneficial to
+   clients implementing Happy Eyeballs, as it ensures that dual-stack
+   networks are handled well during DNS resolution, which is a
+   prerequisite for the rest of the Happy Eyeballs algorithm to work
+   well.
 
 4.2.  Handling DNS Answers Asynchronously
 
@@ -523,30 +539,6 @@ Table of Contents
    of expired answers "optimistically" while waiting for non-expired
    answers.  This approach is called "optimistic DNS", and is described
    in [OPTIMISTIC-DNS].
-
-4.5.  Handling Multiple DNS Server Addresses
-
-   If multiple DNS server addresses are configured for the current
-   network, the client may have the option of sending its DNS queries
-   over IPv4 or IPv6.  In keeping with the Happy Eyeballs approach,
-   queries SHOULD be sent over IPv6 first (note that this is not
-   referring to the sending of AAAA or A queries, but rather the address
-   of the DNS server itself and IP version used to transport DNS
-   messages).  If DNS queries sent to the IPv6 address do not receive
-   responses, that address may be marked as penalized and queries can be
-   sent to other DNS server addresses.
-
-   As native IPv6 deployments become more prevalent and IPv4 addresses
-   are exhausted, it is expected that IPv6 connectivity will have
-   preferential treatment within networks.  If a DNS server is
-   configured to be accessible over IPv6, IPv6 should be assumed to be
-   the preferred address family.
-
-   Client systems SHOULD NOT have an explicit limit to the number of DNS
-   servers that can be configured, either manually or by the network.
-   If such a limit is required by hardware limitations, the client
-   SHOULD use at least one address from each address family from the
-   available list.
 
 5.  Grouping and Sorting Endpoints
 
@@ -1380,6 +1372,15 @@ Table of Contents
    [RFC9002]  Iyengar, J., Ed. and I. Swett, Ed., "QUIC Loss Detection
               and Congestion Control", RFC 9002, DOI 10.17487/RFC9002,
               May 2021, <https://www.rfc-editor.org/rfc/rfc9002>.
+
+   [RFC9461]  Schwartz, B., "Service Binding Mapping for DNS Servers",
+              RFC 9461, DOI 10.17487/RFC9461, November 2023,
+              <https://www.rfc-editor.org/rfc/rfc9461>.
+
+   [RFC10001] Momoka and T. Fiebig, "Operational Guidelines for DNS
+              Transport in Mixed IPv4/IPv6 Environments", BCP 91,
+              RFC 10001, DOI 10.17487/RFC10001, August 2026,
+              <https://www.rfc-editor.org/rfc/rfc10001>.
 
    [V6-MOSTLY]
               Buraglio, N., Caletka, O., and J. Linkova, "IPv6-mostly
