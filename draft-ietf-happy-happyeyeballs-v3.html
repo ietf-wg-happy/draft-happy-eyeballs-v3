@@ -1523,7 +1523,7 @@ with service information (via SVCB/HTTPS records). This accounts
 for the case where the AAAA or SVCB/HTTPS records follow the
 A records by a few milliseconds. This delay is referred to as
 the "Resolution Delay".<a href="#section-4.2-12" class="pilcrow">¶</a></p>
-<p id="section-4.2-13">The <span class="bcp14">RECOMMENDED</span> value for the Resolution Delay is 50 milliseconds.<a href="#section-4.2-13" class="pilcrow">¶</a></p>
+<p id="section-4.2-13">The <span class="bcp14">RECOMMENDED</span> value for the Resolution Delay is 25 milliseconds.<a href="#section-4.2-13" class="pilcrow">¶</a></p>
 <div id="resolving-svcbhttps-aliases-and-targets">
 <section id="section-4.2.1">
           <h4 id="name-resolving-svcb-https-aliase">
@@ -1636,7 +1636,7 @@ answers do arrive after a short delay:<a href="#section-4.2.2-4" class="pilcrow"
                   <text x="124" y="164">(2</text>
                   <text x="180" y="164">addresses)</text>
                   <text x="48" y="196">Set</text>
-                  <text x="84" y="196">50ms</text>
+                  <text x="84" y="196">25ms</text>
                   <text x="128" y="196">timer</text>
                   <text x="112" y="228">(10ms</text>
                   <text x="164" y="228">delay)</text>
@@ -1685,9 +1685,9 @@ answers do arrive after a short delay:<a href="#section-4.2.2-4" class="pilcrow"
                   <text x="124" y="164">(2</text>
                   <text x="180" y="164">addresses)</text>
                   <text x="48" y="196">Set</text>
-                  <text x="84" y="196">50ms</text>
+                  <text x="84" y="196">25ms</text>
                   <text x="128" y="196">timer</text>
-                  <text x="112" y="228">(50ms</text>
+                  <text x="112" y="228">(25ms</text>
                   <text x="164" y="228">delay)</text>
                   <text x="56" y="260">Start</text>
                   <text x="108" y="260">w/IPv4</text>
@@ -1738,7 +1738,7 @@ answers do arrive after a short delay:<a href="#section-4.2.2-4" class="pilcrow"
                   <text x="124" y="164">(2</text>
                   <text x="180" y="164">addresses)</text>
                   <text x="48" y="196">Set</text>
-                  <text x="84" y="196">50ms</text>
+                  <text x="84" y="196">25ms</text>
                   <text x="128" y="196">timer</text>
                   <text x="112" y="228">(10ms</text>
                   <text x="164" y="228">delay)</text>
@@ -1786,9 +1786,9 @@ or never arrive:<a href="#section-4.2.2-10" class="pilcrow">¶</a></p>
                   <text x="124" y="164">(2</text>
                   <text x="180" y="164">addresses)</text>
                   <text x="48" y="196">Set</text>
-                  <text x="84" y="196">50ms</text>
+                  <text x="84" y="196">25ms</text>
                   <text x="128" y="196">timer</text>
-                  <text x="112" y="228">(50ms</text>
+                  <text x="112" y="228">(25ms</text>
                   <text x="164" y="228">delay)</text>
                   <text x="56" y="260">Start</text>
                   <text x="108" y="260">w/IPv6</text>
@@ -1936,7 +1936,7 @@ are slightly delayed:<a href="#section-4.2.2-16" class="pilcrow">¶</a></p>
                   <text x="124" y="132">(2</text>
                   <text x="180" y="132">addresses)</text>
                   <text x="48" y="164">Set</text>
-                  <text x="84" y="164">50ms</text>
+                  <text x="84" y="164">25ms</text>
                   <text x="128" y="164">timer</text>
                   <text x="112" y="196">(10ms</text>
                   <text x="164" y="196">delay)</text>
@@ -2658,7 +2658,7 @@ Happy Eyeballs are as follows:<a href="#section-10-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10-2.1">
           <p id="section-10-2.1.1">Resolution Delay (<a href="#resolution" class="auto internal xref">Section 4</a>): The time to wait for AAAA and/or SVCB/HTTPS
-records after receiving an A record. Recommended to be 50 milliseconds.<a href="#section-10-2.1.1" class="pilcrow">¶</a></p>
+records after receiving an A record. Recommended to be 25 milliseconds.<a href="#section-10-2.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-2.2">
           <p id="section-10-2.2.1">Preferred Address Family Count (<a href="#sorting" class="auto internal xref">Section 5</a>): The number of

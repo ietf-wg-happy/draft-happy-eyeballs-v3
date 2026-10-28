@@ -306,7 +306,7 @@ Table of Contents
    where the AAAA or SVCB/HTTPS records follow the A records by a few
    milliseconds.  This delay is referred to as the "Resolution Delay".
 
-   The RECOMMENDED value for the Resolution Delay is 50 milliseconds.
+   The RECOMMENDED value for the Resolution Delay is 25 milliseconds.
 
 4.2.1.  Resolving SVCB/HTTPS Aliases and Targets
 
@@ -372,7 +372,7 @@ Table of Contents
       |    <--- HTTPS (no hints)   |
       |    <--- A (2 addresses)    |
       |                            |
-      | Set 50ms timer             |
+      | Set 25ms timer             |
       |                            |
       |        (10ms delay)        |
       |                            |
@@ -393,9 +393,9 @@ Table of Contents
       |    <--- HTTPS (no hints)   |
       |    <--- A (2 addresses)    |
       |                            |
-      | Set 50ms timer             |
+      | Set 25ms timer             |
       |                            |
-      |        (50ms delay)        |
+      |        (25ms delay)        |
       |                            |
       | Start w/IPv4               |
       |                            |
@@ -418,7 +418,7 @@ Table of Contents
       |    <--- AAAA (2 addresses) |
       |    <--- A (2 addresses)    |
       |                            |
-      | Set 50ms timer             |
+      | Set 25ms timer             |
       |                            |
       |        (10ms delay)        |
       |                            |
@@ -440,9 +440,9 @@ Table of Contents
       |    <--- AAAA (2 addresses) |
       |    <--- A (2 addresses)    |
       |                            |
-      | Set 50ms timer             |
+      | Set 25ms timer             |
       |                            |
-      |        (50ms delay)        |
+      |        (25ms delay)        |
       |                            |
       | Start w/IPv6 + IPv4        |
       |                            |
@@ -503,7 +503,7 @@ Table of Contents
       |                            |
       |    <--- A (2 addresses)    |
       |                            |
-      | Set 50ms timer             |
+      | Set 25ms timer             |
       |                            |
       |        (10ms delay)        |
       |                            |
@@ -1193,7 +1193,7 @@ Table of Contents
 
    *  Resolution Delay (Section 4): The time to wait for AAAA and/or
       SVCB/HTTPS records after receiving an A record.  Recommended to be
-      50 milliseconds.
+      25 milliseconds.
 
    *  Preferred Address Family Count (Section 5): The number of
       endpoints belonging to the preferred address family (such as IPv6)
