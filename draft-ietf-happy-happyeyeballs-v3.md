@@ -921,13 +921,15 @@ address records are available and any applicable Resolution Delay has
 elapsed:
 
 - For QUIC, the TLS ClientHello is carried in the initial packet of
-the connection, so the client cannot start the QUIC connection attempt
-until the SVCB response arrives.
+the connection. If the client needs to pend starting
+the TLS handshake until SVCB responses have arrived,
+it needs to pend sending any QUIC packets.
 
-- For TLS over TCP, the client MAY speculatively start the TCP
+- When TLS is used over TCP and the client needs to
+pend starting the TLS handshake, the client MAY speculatively start the TCP
 handshake using resolved A or AAAA addresses while holding back the
-TLS ClientHello until the SVCB response arrives. If the SVCB response
-allows using an endpoint for which a speculative TCP handshake was
+TLS ClientHello until SVCB responses arrive. If the SVCB responses
+allow using an endpoint for which a speculative TCP handshake was
 started (for example, when SVCB returns a negative response or a
 ServiceMode record with TargetName "."), the client can proceed with
 the TLS handshake on that TCP connection. Conversely, if an endpoint
