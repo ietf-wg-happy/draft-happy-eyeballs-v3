@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 30 April 2027                                           N. Jaju
+Expires: 1 May 2027                                              N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                         27 October 2026
+                                                         28 October 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 April 2027.
+   This Internet-Draft will expire on 1 May 2027.
 
 Copyright Notice
 
@@ -101,16 +101,17 @@ Table of Contents
      8.1.  Discovering PREF64
      8.2.  Handling Synthesized Answers
      8.3.  Synthesizing IPv6 Addresses During Connection Establishment
-   9.  Summary of Configurable Values
-   10. Limitations
-     10.1.  Path Maximum Transmission Unit Discovery
-     10.2.  Application Layer
-     10.3.  Hiding Operational Issues
-   11. Security Considerations
-   12. IANA Considerations
-   13. References
-     13.1.  Normative References
-     13.2.  Informative References
+   9.  Handling Multiple Networks and Network Changes
+   10. Summary of Configurable Values
+   11. Limitations
+     11.1.  Path Maximum Transmission Unit Discovery
+     11.2.  Application Layer
+     11.3.  Hiding Operational Issues
+   12. Security Considerations
+   13. IANA Considerations
+   14. References
+     14.1.  Normative References
+     14.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -706,14 +707,12 @@ Table of Contents
    Protocol (HTTP) cookies.  This historical data MUST be partitioned
    using the same boundaries used for privacy-sensitive information
    specific to that endpoint, and MUST NOT be used across different
-   Provisioning Domains (PvDs) [PvD].  The data SHOULD be flushed
-   whenever a device changes the PvD to which it is attached.  However,
-   if a client can reliably identify a previously attached PvD, it MAY
-   retain and resume using historical data associated with that PvD upon
-   reconnection.  Clients that use historical data MUST ensure that
-   clients with different historical data will eventually converge
-   toward the same behaviors.  For example, clients can periodically
-   ignore historical data to ensure that fresh addresses are attempted.
+   Provisioning Domains (PvDs) [PvD].  See Section 9 for discussion
+   around handling multiple PvDs.  Implementations that use historical
+   data MUST ensure that clients with different historical data will
+   eventually converge toward the same behaviors.  For example, clients
+   can periodically ignore historical data to ensure that fresh
+   addresses are attempted.
 
    Next, the client SHOULD modify the ordered list to interleave address
    families.  Whichever address family is first in the list should be
@@ -1071,7 +1070,59 @@ Table of Contents
    require synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16,
    and 255.255.255.255/32.
 
-9.  Summary of Configurable Values
+9.  Handling Multiple Networks and Network Changes
+
+   The Happy Eyeballs algorithm as described in this document applies to
+   how resolution, sorting, and connection establishment are performed
+   on a single network configuration.  For the purposes of this
+   document, the definition of a Provisioning Domain (PvD) [PvD] is used
+   to refer to this network configuration.  A PvD is defined as "a
+   consistent set of network configuration information", including the
+   DNS servers and router prefixes assigned by the network connection.
+
+   Multiple PvDs can be in use over time for various reasons: a client
+   device's network configuration or attachments might change (joining
+   or leaving a Wi-Fi network, connecting to a wired Ethernet network,
+   establishing a tunnel to a VPN server), and a client device can be
+   attached to multiple networks at the same time (such as a mobile
+   device having connectivity to both a Wi-Fi network and a cellular
+   network).
+
+   Clients implementing the Happy Eyeballs algorithm MUST partition the
+   information used to guide the algorithm across different PvDs.
+   Specifically, the following properties cannot be used across
+   different PvDs:
+
+   *  DNS answers (even when PvDs share a configured DNS resolver, as
+      answers can depend on the network path)
+
+   *  NAT64 prefixes (see Section 8)
+
+   *  Historical data used to sort endpoints, such as round trip times
+      and previously used addresses (see Section 5.3), or to compute the
+      Connection Attempt Delay (see Section 6)
+
+   Information that is cached per-PvD, such as historical round trip
+   data and DNS answers, SHOULD be flushed whenever a device changes the
+   PvD to which it is attached.  However, if a client can reliably
+   identify a previously attached PvD, it MAY retain and resume using
+   cached data associated with that PvD upon reconnection.
+
+   VPNs (Virtual Private Networks) can pose specific complexities,
+   particularly when they have split-horizon DNS configurations (see
+   [RFC9704] for a definition of split-horizon DNS).  For example, a VPN
+   configuration might require that all queries for names under
+   "example.com" be sent to a VPN-specific DNS server, and address
+   answers from that DNS server might end up being routed either over
+   the VPN tunnel or over a non-VPN route.  The requirement above to
+   partition information across PvDs does not mean that split-horizon
+   VPNs will lead to failures.  Instead, the set of split-horizon DNS
+   servers and routes ought to be considered as one larger PvD.  When a
+   VPN is connected or disconnected (adding or removing a split-horizon
+   configuration), the client ought to consider that to be a PvD change
+   and flush or re-fetch cached state such as DNS answers.
+
+10.  Summary of Configurable Values
 
    The values that may be configured as defaults on a client for use in
    Happy Eyeballs are as follows:
@@ -1114,13 +1165,13 @@ Table of Contents
    as long as they do not violate any of the normative requirements
    (such as minimum delays).
 
-10.  Limitations
+11.  Limitations
 
    Happy Eyeballs will handle initial connection failures at the
    transport layer (such as TCP or QUIC); however, other failures or
    performance issues may still affect the chosen connection.
 
-10.1.  Path Maximum Transmission Unit Discovery
+11.1.  Path Maximum Transmission Unit Discovery
 
    Connections that use TCP only (without TLS or another protocol on
    top) perform connection racing only during the TCP handshake.  Such
@@ -1142,14 +1193,14 @@ Table of Contents
    approach is to use "Packetization Layer Path MTU Discovery"
    [RFC4821].
 
-10.2.  Application Layer
+11.2.  Application Layer
 
    If the DNS returns multiple endpoints for different application
    servers, the application itself may not be operational and functional
    on all of them.  Common examples include Transport Layer Security
    (TLS) and HTTP.
 
-10.3.  Hiding Operational Issues
+11.3.  Hiding Operational Issues
 
    It has been observed in practice that Happy Eyeballs can hide issues
    in networks.  For example, if a misconfiguration causes IPv6 to
@@ -1158,7 +1209,7 @@ Table of Contents
    It is recommended that network operators deploy external means of
    monitoring to ensure functionality of all address families.
 
-11.  Security Considerations
+12.  Security Considerations
 
    Note that applications should not rely upon a stable hostname-to-
    address mapping to ensure any security properties, since DNS results
@@ -1182,13 +1233,13 @@ Table of Contents
    Those clients need to complete a TLS handshake before proceeding if
    that response is non-negative.
 
-12.  IANA Considerations
+13.  IANA Considerations
 
    This document does not require any IANA actions.
 
-13.  References
+14.  References
 
-13.1.  Normative References
+14.1.  Normative References
 
    [ECH]      Rescorla, E., Oku, K., Sullivan, N., and C. A. Wood, "TLS
               Encrypted Client Hello", RFC 9849, DOI 10.17487/RFC9849,
@@ -1278,7 +1329,7 @@ Table of Contents
               RFC 9848, DOI 10.17487/RFC9848, March 2026,
               <https://www.rfc-editor.org/rfc/rfc9848>.
 
-13.2.  Informative References
+14.2.  Informative References
 
    [AltSvc]   Nottingham, M., McManus, P., and J. Reschke, "HTTP
               Alternative Services", RFC 7838, DOI 10.17487/RFC7838,
@@ -1376,6 +1427,11 @@ Table of Contents
    [RFC9461]  Schwartz, B., "Service Binding Mapping for DNS Servers",
               RFC 9461, DOI 10.17487/RFC9461, November 2023,
               <https://www.rfc-editor.org/rfc/rfc9461>.
+
+   [RFC9704]  Reddy.K, T., Wing, D., Smith, K., and B. Schwartz,
+              "Establishing Local DNS Authority in Validated Split-
+              Horizon Environments", RFC 9704, DOI 10.17487/RFC9704,
+              January 2025, <https://www.rfc-editor.org/rfc/rfc9704>.
 
    [RFC10001] Momoka and T. Fiebig, "Operational Guidelines for DNS
               Transport in Mixed IPv4/IPv6 Environments", BCP 91,
