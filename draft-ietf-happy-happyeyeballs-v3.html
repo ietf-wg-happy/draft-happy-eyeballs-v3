@@ -2334,15 +2334,13 @@ to be roughly at the time when a TCP SYN packet would be retransmitted,
 and the TCP handshake completes before the timer fires, the timer should
 be adjusted to allow for the time in which the TLS handshake could complete.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
 <p id="section-6.1-6">While transport layer handshakes generally do not have restrictions on
-attempts to establish a connection, some cryptographic handshakes may
-be dependent on SVCB ServiceMode records and could impose limitations on
-establishing a connection.  For instance, ECH-capable clients may
-become SVCB-reliant clients (<span><a href="https://rfc-editor.org/rfc/rfc9460#section-3" class="relref">Section 3</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>) when SVCB records
-contain the "ech" SvcParamKey <span>[<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span>. If the
-client is either an SVCB-reliant client or a SVCB-optional client that
-might switch to SVCB-reliant connection establishment during the
-process, the client <span class="bcp14">MUST</span> wait for SVCB records before proceeding with the
-cryptographic handshake.<a href="#section-6.1-6" class="pilcrow">¶</a></p>
+attempts to establish a connection, some cryptographic handshakes
+might depend on SVCB ServiceMode records and impose limitations on
+establishing a connection. For instance, ECH-capable clients might
+rely on SVCB records that contain the "ech" SvcParamKey <span>[<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span>
+before starting a TLS handshake. See <a href="#pending" class="auto internal xref">Section 6.3</a> for details on when
+clients need to pend or abandon connection attempts while awaiting
+SVCB records.<a href="#section-6.1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="handling-application-layer-protocol-negotiation-alpn">
@@ -2376,7 +2374,7 @@ that connection attempts are consistent with both the Alt-Svc
 parameters and the SVCB ALPN set, as specified in <span><a href="https://rfc-editor.org/rfc/rfc9460#section-9.3" class="relref">Section 9.3</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>.<a href="#section-6.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="dropping-or-pending-connection-attempts">
+<div id="pending">
 <section id="section-6.3">
         <h3 id="name-dropping-or-pending-connect">
 <a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-dropping-or-pending-connect" class="section-name selfRef">Dropping or Pending Connection Attempts</a>
@@ -2442,6 +2440,40 @@ can be discovered through the TLS handshake itself, instead
 of SVCB, and thus do not require waiting for SVCB responses.<a href="#section-6.3-7.3.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
+<p id="section-6.3-8">Pending the TLS handshake affects transport protocols differently once
+address records are available and any applicable Resolution Delay has
+elapsed:<a href="#section-6.3-8" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.3-9.1">
+            <p id="section-6.3-9.1.1">For QUIC, the TLS ClientHello is carried in the initial packet of
+the connection. If the client needs to pend starting
+the TLS handshake until SVCB responses have arrived,
+it needs to pend sending any QUIC packets.<a href="#section-6.3-9.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-6.3-9.2">
+            <p id="section-6.3-9.2.1">When TLS is used over TCP and the client needs to
+pend starting the TLS handshake, the client <span class="bcp14">MAY</span> speculatively start the TCP
+handshake using resolved A or AAAA addresses while holding back the
+TLS ClientHello until SVCB responses arrive. If the SVCB responses
+allow using an endpoint for which a speculative TCP handshake was
+started (for example, when SVCB returns a negative response or a
+ServiceMode record with TargetName "."), the client can proceed with
+the TLS handshake on that TCP connection. Conversely, if an endpoint
+with an in-progress or completed speculative TCP handshake is not
+selected once the SVCB response arrives (for example, because the
+client selects an alternative TargetName that provides "ech"
+<span>[<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span>), the client <span class="bcp14">SHOULD</span> close that TCP connection without
+sending a TLS ClientHello.<a href="#section-6.3-9.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-6.3-10">Starting a speculative TCP handshake before SVCB resolution completes
+trades privacy for reduced latency: although the TLS ClientHello is
+not exposed, sending TCP SYN packets to the origin's addresses can
+reveal communication with IP addresses that the client would not have
+contacted if an SVCB record directed it to an alternative TargetName
+(such as a shared ECH-enabled frontend). Clients with stricter privacy
+requirements <span class="bcp14">MAY</span> pend the TCP handshake until SVCB responses have been
+received.<a href="#section-6.3-10" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2738,18 +2770,40 @@ DNS results may change between queries. Happy Eyeballs may make it
 more likely that subsequent connections to a single hostname use
 different IP addresses.<a href="#section-12-1" class="pilcrow">¶</a></p>
 <p id="section-12-2">When using HTTP, HTTPS resource records indicate that clients should
-require HTTPS when connecting to an origin (see <span><a href="https://rfc-editor.org/rfc/rfc9460#section-9.5" class="relref">Section 9.5</a> of [<a href="#RFC9460" class="cite xref">RFC9460</a>]</span>), so an active attacker can attempt a downgrade attack by
+require HTTPS when connecting to an origin (see <span><a href="https://rfc-editor.org/rfc/rfc9460#section-9.5" class="relref">Section 9.5</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>), so an active attacker can attempt a downgrade attack by
 interfering with the successful delivery of HTTPS resource records.
 When clients use insecure DNS mechanisms, any on-path attacker can
 simply drop HTTPS resource records, so clients cannot tell the
 difference between an attack and a resolver that fails to respond to
 HTTPS queries.<a href="#section-12-2" class="pilcrow">¶</a></p>
 <p id="section-12-3">However, when using cryptographically protected DNS mechanisms, as
-described in <span><a href="https://rfc-editor.org/rfc/rfc9460#section-3.1" class="relref">Section 3.1</a> of [<a href="#RFC9460" class="cite xref">RFC9460</a>]</span>, both SVCB-reliant and
+described in <span><a href="https://rfc-editor.org/rfc/rfc9460#section-3.1" class="relref">Section 3.1</a> of [<a href="#SVCB" class="cite xref">SVCB</a>]</span>, both SVCB-reliant and
 SVCB-optional clients <span class="bcp14">MUST NOT</span> send any unencrypted data after the TCP
 handshake completes unless they have received a valid HTTPS response.
 Those clients need to complete a TLS handshake before proceeding if
 that response is non-negative.<a href="#section-12-3" class="pilcrow">¶</a></p>
+<p id="section-12-4">Similar downgrade considerations apply to security-related SVCB
+parameters such as "ech" <span>[<a href="#SVCB-ECH" class="cite xref">SVCB-ECH</a>]</span>, which provides ECH
+configurations <span>[<a href="#ECH" class="cite xref">ECH</a>]</span> used to encrypt sensitive fields of the TLS
+ClientHello. Even when DNS queries use an encrypted transport, an
+on-path attacker might attempt to selectively delay or drop packets
+carrying SVCB or HTTPS responses (for example, using packet timing or
+size heuristics) while allowing A and AAAA responses through. If an
+ECH-capable client proceeded with an unencrypted TLS ClientHello after
+the Resolution Delay without waiting for the SVCB or HTTPS response,
+the attacker could force ECH to be omitted. Waiting for SVCB or HTTPS
+responses before starting the TLS handshake when DNS is
+cryptographically protected, and abandoning connection attempts if
+protected resolution fails (see <a href="#pending" class="auto internal xref">Section 6.3</a>), prevents this downgrade
+attack.<a href="#section-12-4" class="pilcrow">¶</a></p>
+<p id="section-12-5">Additionally, as described in <a href="#pending" class="auto internal xref">Section 6.3</a>, speculatively starting a
+TCP handshake using A or AAAA records before SVCB or HTTPS resolution
+completes does not expose the TLS ClientHello, but can still expose
+traffic to origin IP addresses that would not have been contacted if
+an SVCB or HTTPS record directed the client to an alternative
+TargetName (such as a shared ECH-enabled frontend). Clients with
+stricter privacy requirements can avoid this exposure by waiting for
+SVCB or HTTPS responses before starting the TCP handshake.<a href="#section-12-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -2830,10 +2884,6 @@ that response is non-negative.<a href="#section-12-3" class="pilcrow">¶</a></p>
 <dt id="RFC9000">[RFC9000]</dt>
         <dd>
 <span class="refAuthor">Iyengar, J., Ed.</span> and <span class="refAuthor">M. Thomson, Ed.</span>, <span class="refTitle">"QUIC: A UDP-Based Multiplexed and Secure Transport"</span>, <span class="seriesInfo">RFC 9000</span>, <span class="seriesInfo">DOI 10.17487/RFC9000</span>, <time datetime="2021-05" class="refDate">May 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9000">https://www.rfc-editor.org/rfc/rfc9000</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC9460">[RFC9460]</dt>
-        <dd>
-<span class="refAuthor">Schwartz, B.</span>, <span class="refAuthor">Bishop, M.</span>, and <span class="refAuthor">E. Nygren</span>, <span class="refTitle">"Service Binding and Parameter Specification via the DNS (SVCB and HTTPS Resource Records)"</span>, <span class="seriesInfo">RFC 9460</span>, <span class="seriesInfo">DOI 10.17487/RFC9460</span>, <time datetime="2023-11" class="refDate">November 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9460">https://www.rfc-editor.org/rfc/rfc9460</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="SVCB">[SVCB]</dt>
         <dd>
