@@ -706,13 +706,16 @@ populate the DNS cache and can be used for subsequent connections.
 
 Each connection attempt represents an independent transport connection
 with its own connection identifiers and cryptographic handshake state
-(for example, separate TCP connections or separate QUIC connections).
-In particular, when attempting multiple QUIC connections (such as over
+(for example, separate TCP connections or separate QUIC connections),
+so handshake packets cannot be reused between attempts. When TLS is
+used (either over TCP or as part of QUIC), clients MUST NOT reuse key
+shares across connection attempts ({{Section 4.2.8 of ?RFC9846}}).
+Similarly, when attempting multiple QUIC connections (such as over
 IPv6 and IPv4), clients MUST NOT send copies of the same QUIC Initial
-packet across attempts: QUIC prohibits reusing Connection IDs across
-network paths ({{Section 9.5 of QUIC}}), and reusing Connection IDs or
-cryptographic handshake values allows observers to correlate the
-client's addresses. Because attempts are separated by the Connection
+packet or reuse Connection IDs across attempts ({{Section 9.5 of
+QUIC}}). Avoiding reuse of Connection IDs and cryptographic handshake
+values prevents observers from correlating the client's addresses
+across network paths. Because attempts are separated by the Connection
 Attempt Delay, most connections complete on the first attempt without
 incurring the cost of additional handshakes.
 
