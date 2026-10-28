@@ -2557,7 +2557,7 @@ synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/3
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-handling-multiple-networks-" class="section-name selfRef">Handling Multiple Networks and Network Changes</a>
       </h2>
 <p id="section-9-1">The Happy Eyeballs algorithm as described in this document applies to
-how resolution, sorting, and connection establishment is performed on
+how resolution, sorting, and connection establishment are performed on
 a single network configuration. For the purposes of this document, the
 definition of a Provisioning Domain (PvD) <span>[<a href="#PvD" class="cite xref">PvD</a>]</span> is used to
 refer to this network configuration. A PvD is defined as "a consistent
@@ -2576,7 +2576,7 @@ Specifically, the following properties cannot be used across different
 PvDs:<a href="#section-9-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-9-4.1">
-          <p id="section-9-4.1.1">DNS answers, when two different PvDs have separate DNS server configurations<a href="#section-9-4.1.1" class="pilcrow">¶</a></p>
+          <p id="section-9-4.1.1">DNS answers (even when PvDs share a configured DNS resolver, as answers can depend on the network path)<a href="#section-9-4.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-9-4.2">
           <p id="section-9-4.2.1">NAT64 prefixes (see <a href="#nat64" class="auto internal xref">Section 8</a>)<a href="#section-9-4.2.1" class="pilcrow">¶</a></p>
@@ -2585,7 +2585,7 @@ PvDs:<a href="#section-9-3" class="pilcrow">¶</a></p>
           <p id="section-9-4.3.1">Historical data used to sort endpoints, such as round trip times and previously used addresses (see <a href="#endpoint-sorting" class="auto internal xref">Section 5.3</a>), or to compute the Connection Attempt Delay (see <a href="#connections" class="auto internal xref">Section 6</a>)<a href="#section-9-4.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-9-5">Information that is cached per-PvD, such as historical round trip data,
+<p id="section-9-5">Information that is cached per-PvD, such as historical round trip data and DNS answers,
 <span class="bcp14">SHOULD</span> be flushed whenever a device changes the PvD to which it is attached.
 However, if a client can reliably identify a previously attached PvD, it <span class="bcp14">MAY</span>
 retain and resume using cached data associated with that PvD upon reconnection.<a href="#section-9-5" class="pilcrow">¶</a></p>
@@ -2597,9 +2597,10 @@ DNS server, and address answers from that DNS server might end up being
 routed either over the VPN tunnel or over a non-VPN route. The requirement
 above to partition information across PvDs does not mean that split-horizon
 VPNs will lead to failures. Instead, the set of split-horizon DNS servers
-and routes ought to be considered as one larger PvD. If the VPN is disconnected
-and the split-horizon configuration is removed, the client ought to consider
-that to be a PvD change and require that DNS answers be re-fetched, etc.<a href="#section-9-6" class="pilcrow">¶</a></p>
+and routes ought to be considered as one larger PvD. When a VPN is connected
+or disconnected (adding or removing a split-horizon configuration), the client
+ought to consider that to be a PvD change and flush or re-fetch cached state
+such as DNS answers.<a href="#section-9-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="summary-of-configurable-values">
