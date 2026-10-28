@@ -814,13 +814,13 @@ and the TCP handshake completes before the timer fires, the timer should
 be adjusted to allow for the time in which the TLS handshake could complete.
 
 While transport layer handshakes generally do not have restrictions on
-attempts to establish a connection, some cryptographic handshakes may
-depend on SVCB ServiceMode records and impose limitations on
-establishing a connection. For instance, ECH-capable clients may rely
-on SVCB records that contain the "ech" SvcParamKey {{SVCB-ECH}} before
-starting a TLS handshake. See {{pending}} for details on when clients
-need to pend or abandon connection attempts while awaiting SVCB
-records.
+attempts to establish a connection, some cryptographic handshakes
+might depend on SVCB ServiceMode records and impose limitations on
+establishing a connection. For instance, ECH-capable clients might
+rely on SVCB records that contain the "ech" SvcParamKey {{SVCB-ECH}}
+before starting a TLS handshake. See {{pending}} for details on when
+clients need to pend or abandon connection attempts while awaiting
+SVCB records.
 
 ## Handling Application Layer Protocol Negotiation (ALPN)
 
@@ -930,12 +930,12 @@ TLS ClientHello until the SVCB response arrives. If the SVCB response
 allows using an endpoint for which a speculative TCP handshake was
 started (for example, when SVCB returns a negative response or a
 ServiceMode record with TargetName "."), the client can proceed with
-the TLS handshake on that TCP connection. Conversely, if an endpoint with an
-in-progress or completed speculative TCP handshake is not selected
-once the SVCB response arrives (for example, because the client
-selects an alternative TargetName that provides "ech") or if protected
-SVCB resolution fails, the client SHOULD close that TCP connection
-without sending a TLS ClientHello.
+the TLS handshake on that TCP connection. Conversely, if an endpoint
+with an in-progress or completed speculative TCP handshake is not
+selected once the SVCB response arrives (for example, because the
+client selects an alternative TargetName that provides "ech"
+{{SVCB-ECH}}), the client SHOULD close that TCP connection without
+sending a TLS ClientHello.
 
 Starting a speculative TCP handshake before SVCB resolution completes
 trades privacy for reduced latency: although the TLS ClientHello is
