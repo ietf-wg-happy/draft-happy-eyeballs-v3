@@ -1052,7 +1052,7 @@ PvDs:
 
 - DNS answers, when two different PvDs have separate DNS server configurations
 - NAT64 prefixes (see {{nat64}})
-- Historical round trip data used to guide the Connection Attempt Delay (see {{connections}})
+- Historical data used to sort endpoints, such as round trip times and previously used addresses (see {{endpoint-sorting}}), or to compute the Connection Attempt Delay (see {{connections}})
 
 Information that is cached per-PvD, such as historical round trip data,
 SHOULD be flushed whenever a device changes the PvD to which it is attached.
