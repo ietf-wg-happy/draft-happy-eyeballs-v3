@@ -843,15 +843,13 @@ and the TCP handshake completes before the timer fires, the timer should
 be adjusted to allow for the time in which the TLS handshake could complete.
 
 While transport layer handshakes generally do not have restrictions on
-attempts to establish a connection, some cryptographic handshakes may
-be dependent on SVCB ServiceMode records and could impose limitations on
-establishing a connection.  For instance, ECH-capable clients may
-become SVCB-reliant clients ({{Section 3 of SVCB}}) when SVCB records
-contain the "ech" SvcParamKey {{SVCB-ECH}}. If the
-client is either an SVCB-reliant client or a SVCB-optional client that
-might switch to SVCB-reliant connection establishment during the
-process, the client MUST wait for SVCB records before proceeding with the
-cryptographic handshake.
+attempts to establish a connection, some cryptographic handshakes
+might depend on SVCB ServiceMode records and impose limitations on
+establishing a connection. For instance, ECH-capable clients might
+rely on SVCB records that contain the "ech" SvcParamKey {{SVCB-ECH}}
+before starting a TLS handshake. See {{pending}} for details on when
+clients need to pend or abandon connection attempts while awaiting
+SVCB records.
 
 ## Handling Application Layer Protocol Negotiation (ALPN)
 
@@ -883,7 +881,7 @@ that connection attempts are consistent with both the Alt-Svc
 parameters and the SVCB ALPN set, as specified in {{Section 9.3 of
 SVCB}}.
 
-## Dropping or Pending Connection Attempts
+## Dropping or Pending Connection Attempts {#pending}
 
 Some situations related to handling SVCB responses can
 require connection attempts to be dropped, or pended until
@@ -946,6 +944,38 @@ performance (like `tls-supported-groups` {{?I-D.ietf-tls-key-share-prediction}})
 but only aim to save round trips. The other TLS groups
 can be discovered through the TLS handshake itself, instead
 of SVCB, and thus do not require waiting for SVCB responses.
+
+Pending the TLS handshake affects transport protocols differently once
+address records are available and any applicable Resolution Delay has
+elapsed:
+
+- For QUIC, the TLS ClientHello is carried in the initial packet of
+the connection. If the client needs to pend starting
+the TLS handshake until SVCB responses have arrived,
+it needs to pend sending any QUIC packets.
+
+- When TLS is used over TCP and the client needs to
+pend starting the TLS handshake, the client MAY speculatively start the TCP
+handshake using resolved A or AAAA addresses while holding back the
+TLS ClientHello until SVCB responses arrive. If the SVCB responses
+allow using an endpoint for which a speculative TCP handshake was
+started (for example, when SVCB returns a negative response or a
+ServiceMode record with TargetName "."), the client can proceed with
+the TLS handshake on that TCP connection. Conversely, if an endpoint
+with an in-progress or completed speculative TCP handshake is not
+selected once the SVCB response arrives (for example, because the
+client selects an alternative TargetName that provides "ech"
+{{SVCB-ECH}}), the client SHOULD close that TCP connection without
+sending a TLS ClientHello.
+
+Starting a speculative TCP handshake before SVCB resolution completes
+trades privacy for reduced latency: although the TLS ClientHello is
+not exposed, sending TCP SYN packets to the origin's addresses can
+reveal communication with IP addresses that the client would not have
+contacted if an SVCB record directed it to an alternative TargetName
+(such as a shared ECH-enabled frontend). Clients with stricter privacy
+requirements MAY pend the TCP handshake until SVCB responses have been
+received.
 
 # DNS Answer Changes During Happy Eyeballs Connection Setup {#changes}
 
@@ -1192,7 +1222,7 @@ different IP addresses.
 
 When using HTTP, HTTPS resource records indicate that clients should
 require HTTPS when connecting to an origin (see {{Section 9.5 of
-!RFC9460}}), so an active attacker can attempt a downgrade attack by
+SVCB}}), so an active attacker can attempt a downgrade attack by
 interfering with the successful delivery of HTTPS resource records.
 When clients use insecure DNS mechanisms, any on-path attacker can
 simply drop HTTPS resource records, so clients cannot tell the
@@ -1200,11 +1230,35 @@ difference between an attack and a resolver that fails to respond to
 HTTPS queries.
 
 However, when using cryptographically protected DNS mechanisms, as
-described in {{Section 3.1 of !RFC9460}}, both SVCB-reliant and
+described in {{Section 3.1 of SVCB}}, both SVCB-reliant and
 SVCB-optional clients MUST NOT send any unencrypted data after the TCP
 handshake completes unless they have received a valid HTTPS response.
 Those clients need to complete a TLS handshake before proceeding if
 that response is non-negative.
+
+Similar downgrade considerations apply to security-related SVCB
+parameters such as "ech" {{SVCB-ECH}}, which provides ECH
+configurations {{ECH}} used to encrypt sensitive fields of the TLS
+ClientHello. Even when DNS queries use an encrypted transport, an
+on-path attacker might attempt to selectively delay or drop packets
+carrying SVCB or HTTPS responses (for example, using packet timing or
+size heuristics) while allowing A and AAAA responses through. If an
+ECH-capable client proceeded with an unencrypted TLS ClientHello after
+the Resolution Delay without waiting for the SVCB or HTTPS response,
+the attacker could force ECH to be omitted. Waiting for SVCB or HTTPS
+responses before starting the TLS handshake when DNS is
+cryptographically protected, and abandoning connection attempts if
+protected resolution fails (see {{pending}}), prevents this downgrade
+attack.
+
+Additionally, as described in {{pending}}, speculatively starting a
+TCP handshake using A or AAAA records before SVCB or HTTPS resolution
+completes does not expose the TLS ClientHello, but can still expose
+traffic to origin IP addresses that would not have been contacted if
+an SVCB or HTTPS record directed the client to an alternative
+TargetName (such as a shared ECH-enabled frontend). Clients with
+stricter privacy requirements can avoid this exposure by waiting for
+SVCB or HTTPS responses before starting the TCP handshake.
 
 # IANA Considerations
 
