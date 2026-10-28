@@ -704,6 +704,18 @@ client resolver SHOULD still process DNS replies from the network for
 a short period of time (recommended to be 1 second), as they will
 populate the DNS cache and can be used for subsequent connections.
 
+Each connection attempt represents an independent transport connection
+with its own connection identifiers and cryptographic handshake state
+(for example, separate TCP connections or separate QUIC connections).
+In particular, when attempting multiple QUIC connections (such as over
+IPv6 and IPv4), clients MUST NOT send copies of the same QUIC Initial
+packet across attempts: QUIC prohibits reusing Connection IDs across
+network paths ({{Section 9.5 of QUIC}}), and reusing Connection IDs or
+cryptographic handshake values allows observers to correlate the
+client's addresses. Because attempts are separated by the Connection
+Attempt Delay, most connections complete on the first attempt without
+incurring the cost of additional handshakes.
+
 If grouping endpoints by application or security requirements
 ({{application-group}}) produced multiple groups, the application
 SHOULD start with connection attempts to the most preferred option.
