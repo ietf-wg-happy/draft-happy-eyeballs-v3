@@ -2293,6 +2293,21 @@ delay value or, in the case of the end of the list being reached,
 is cancelled. Note that the delay value can be different for each
 connection attempt (depending on the protocol being used and
 the estimated RTT).<a href="#section-6-10" class="pilcrow">¶</a></p>
+<p id="section-6-11">The algorithm in this document describes establishing a single
+connection, and the Connection Attempt Delay bounds the attempt rate
+of a single Happy Eyeballs procedure. However, an application might
+initiate multiple concurrent connection requests to the same host or
+service within a short period (for example, for parallel HTTP/1.1
+requests, or when a speculative preconnect is followed closely by an
+active request). Running uncoordinated Happy Eyeballs procedures in
+parallel can still produce an aggregate burst of connection attempts
+to the same destination. While mechanisms for managing pools of
+multiple connections are out of scope for this document, client
+implementations can mitigate such bursts by coalescing resolution and
+in-flight connection establishment when a single connection can be
+shared (such as with HTTP/2 or HTTP/3), or by coordinating attempt
+pacing across concurrent Happy Eyeballs procedures targeting the same
+host or service when multiple connections are needed.<a href="#section-6-11" class="pilcrow">¶</a></p>
 <div id="success">
 <section id="section-6.1">
         <h3 id="name-determining-successful-conn">
