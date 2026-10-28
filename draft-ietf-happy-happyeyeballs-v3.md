@@ -740,13 +740,30 @@ its handshake (such as sending a second TCP SYN or a second QUIC
 Initial), based on the retransmission timer ({{!RFC6298}},
 {{?RFC9002}}). If the client has historical RTT data gathered from
 other connections to the same host or prefix, it can use this
-information to influence its delay. Note that this algorithm should
-only try to approximate the time of the first handshake packet
-retransmission, and not any further retransmissions that may be
-influenced by exponential timer back off. Clients that support
-session resumption mechanisms (such as TLS session tickets
-{{?RFC8446}} or QUIC 0-RTT {{?RFC9001}}) SHOULD use the same
-Connection Attempt Delay for resumed connections as for new
+information to influence its delay. Transport retransmission timers
+are generally tuned so that most healthy connections complete their
+initial handshake without retransmitting; waiting until roughly the
+first handshake retransmission gives the preferred attempt a fair
+chance to succeed without starting redundant connection attempts in
+the common case, while starting the next attempt promptly once the
+initial packet (or its response) is likely to have been lost.
+
+Note that this algorithm should only try to approximate the time of
+the first handshake packet retransmission, and not any further
+retransmissions that may be influenced by exponential timer back off.
+In practice, the layer implementing Happy Eyeballs often operates
+above the transport layer and might not directly control or know the
+exact timing of transport-layer retransmissions. Even when
+retransmission timing is known or closely estimated, sending a
+handshake retransmission on a previous attempt at the same time as the
+initial packet of a new attempt can create a small burst of packets
+when the network is already experiencing loss. Implementations MAY
+apply a small amount of jitter or pacing to avoid sending both packets
+simultaneously.
+
+Clients that support session resumption mechanisms (such as TLS
+session tickets {{?RFC8446}} or QUIC 0-RTT {{?RFC9001}}) SHOULD use
+the same Connection Attempt Delay for resumed connections as for new
 connections.
 
 The Connection Attempt Delay MUST have a lower bound, especially if it
