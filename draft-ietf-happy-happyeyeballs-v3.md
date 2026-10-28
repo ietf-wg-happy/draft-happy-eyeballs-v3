@@ -249,7 +249,7 @@ for the case where the AAAA or SVCB/HTTPS records follow the
 A records by a few milliseconds. This delay is referred to as
 the "Resolution Delay".
 
-The RECOMMENDED value for the Resolution Delay is 50 milliseconds.
+The RECOMMENDED value for the Resolution Delay is 25 milliseconds.
 
 ### Resolving SVCB/HTTPS Aliases and Targets
 
@@ -313,7 +313,7 @@ answers do arrive after a short delay:
    |    <--- HTTPS (no hints)   |
    |    <--- A (2 addresses)    |
    |                            |
-   | Set 50ms timer             |
+   | Set 25ms timer             |
    |                            |
    |        (10ms delay)        |
    |                            |
@@ -337,9 +337,9 @@ A case in which A answers return significantly before AAAA answers:
    |    <--- HTTPS (no hints)   |
    |    <--- A (2 addresses)    |
    |                            |
-   | Set 50ms timer             |
+   | Set 25ms timer             |
    |                            |
-   |        (50ms delay)        |
+   |        (25ms delay)        |
    |                            |
    | Start w/IPv4               |
    |                            |
@@ -364,7 +364,7 @@ A case in which SVCB/HTTPS answers are slightly delayed:
    |    <--- AAAA (2 addresses) |
    |    <--- A (2 addresses)    |
    |                            |
-   | Set 50ms timer             |
+   | Set 25ms timer             |
    |                            |
    |        (10ms delay)        |
    |                            |
@@ -388,9 +388,9 @@ or never arrive:
    |    <--- AAAA (2 addresses) |
    |    <--- A (2 addresses)    |
    |                            |
-   | Set 50ms timer             |
+   | Set 25ms timer             |
    |                            |
-   |        (50ms delay)        |
+   |        (25ms delay)        |
    |                            |
    | Start w/IPv6 + IPv4        |
    |                            |
@@ -458,7 +458,7 @@ are slightly delayed:
    |                            |
    |    <--- A (2 addresses)    |
    |                            |
-   | Set 50ms timer             |
+   | Set 25ms timer             |
    |                            |
    |        (10ms delay)        |
    |                            |
@@ -1027,7 +1027,7 @@ The values that may be configured as defaults on a client for use in
 Happy Eyeballs are as follows:
 
 - Resolution Delay ({{resolution}}): The time to wait for AAAA and/or SVCB/HTTPS
-records after receiving an A record. Recommended to be 50 milliseconds.
+records after receiving an A record. Recommended to be 25 milliseconds.
 
 - Preferred Address Family Count ({{sorting}}): The number of
 endpoints belonging to the preferred address family (such as IPv6)
