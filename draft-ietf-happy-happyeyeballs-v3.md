@@ -1030,7 +1030,7 @@ synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16, and 255.255.255.255/3
 # Handling Multiple Networks and Network Changes {#multi-networks}
 
 The Happy Eyeballs algorithm as described in this document applies to
-how resolution, sorting, and connection establishment is performed on
+how resolution, sorting, and connection establishment are performed on
 a single network configuration. For the purposes of this document, the
 definition of a Provisioning Domain (PvD) {{PvD}} is used to
 refer to this network configuration. A PvD is defined as "a consistent
@@ -1050,11 +1050,11 @@ the information used to guide the algorithm across different PvDs.
 Specifically, the following properties cannot be used across different
 PvDs:
 
-- DNS answers, when two different PvDs have separate DNS server configurations
+- DNS answers (even when PvDs share a configured DNS resolver, as answers can depend on the network path)
 - NAT64 prefixes (see {{nat64}})
 - Historical data used to sort endpoints, such as round trip times and previously used addresses (see {{endpoint-sorting}}), or to compute the Connection Attempt Delay (see {{connections}})
 
-Information that is cached per-PvD, such as historical round trip data,
+Information that is cached per-PvD, such as historical round trip data and DNS answers,
 SHOULD be flushed whenever a device changes the PvD to which it is attached.
 However, if a client can reliably identify a previously attached PvD, it MAY
 retain and resume using cached data associated with that PvD upon reconnection.
@@ -1067,9 +1067,10 @@ DNS server, and address answers from that DNS server might end up being
 routed either over the VPN tunnel or over a non-VPN route. The requirement
 above to partition information across PvDs does not mean that split-horizon
 VPNs will lead to failures. Instead, the set of split-horizon DNS servers
-and routes ought to be considered as one larger PvD. If the VPN is disconnected
-and the split-horizon configuration is removed, the client ought to consider
-that to be a PvD change and require that DNS answers be re-fetched, etc.
+and routes ought to be considered as one larger PvD. When a VPN is connected
+or disconnected (adding or removing a split-horizon configuration), the client
+ought to consider that to be a PvD change and flush or re-fetch cached state
+such as DNS answers.
 
 # Summary of Configurable Values
 
