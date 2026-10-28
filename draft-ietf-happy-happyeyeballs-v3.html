@@ -2204,20 +2204,33 @@ new endpoints will not be used for this connection. However, the DNS
 client resolver <span class="bcp14">SHOULD</span> still process DNS replies from the network for
 a short period of time (recommended to be 1 second), as they will
 populate the DNS cache and can be used for subsequent connections.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">If grouping endpoints by application or security requirements
+<p id="section-6-2">Each connection attempt represents an independent transport connection
+with its own connection identifiers and cryptographic handshake state
+(for example, separate TCP connections or separate QUIC connections),
+so handshake packets cannot be reused between attempts. When TLS is
+used (either over TCP or as part of QUIC), clients <span class="bcp14">MUST NOT</span> reuse key
+shares across connection attempts (<span><a href="https://rfc-editor.org/rfc/rfc9846#section-4.2.8" class="relref">Section 4.2.8</a> of [<a href="#RFC9846" class="cite xref">RFC9846</a>]</span>).
+Similarly, when attempting multiple QUIC connections (such as over
+IPv6 and IPv4), clients <span class="bcp14">MUST NOT</span> send copies of the same QUIC Initial
+packet or reuse Connection IDs across attempts (<span><a href="https://rfc-editor.org/rfc/rfc9000#section-9.5" class="relref">Section 9.5</a> of [<a href="#QUIC" class="cite xref">QUIC</a>]</span>). Avoiding reuse of Connection IDs and cryptographic handshake
+values prevents observers from correlating the client's addresses
+across network paths. Because attempts are separated by the Connection
+Attempt Delay, most connections complete on the first attempt without
+incurring the cost of additional handshakes.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-3">If grouping endpoints by application or security requirements
 (<a href="#application-group" class="auto internal xref">Section 5.1</a>) produced multiple groups, the application
 <span class="bcp14">SHOULD</span> start with connection attempts to the most preferred option.
 The policy for attempting any endpoints outside of the most preferred
-group is up to the client implementation and out of scope for this document.<a href="#section-6-2" class="pilcrow">¶</a></p>
-<p id="section-6-3">If grouping endpoints by service (<a href="#service-group" class="auto internal xref">Section 5.2</a>) produced multiple
+group is up to the client implementation and out of scope for this document.<a href="#section-6-3" class="pilcrow">¶</a></p>
+<p id="section-6-4">If grouping endpoints by service (<a href="#service-group" class="auto internal xref">Section 5.2</a>) produced multiple
 groups, all of the endpoints of the first group <span class="bcp14">SHOULD</span> be started
 before starting attempts using the next group. Attempts across service groups
 <span class="bcp14">SHOULD</span> be allowed to continue in parallel; in effect, the groups
 are flattened into a single list. The intent of these groups is to
 strictly prioritize the most preferred service. Therefore, if a higher
 priority group has many endpoints, there is a potential for long
-delays before falling back to lower priority groups.<a href="#section-6-3" class="pilcrow">¶</a></p>
-<p id="section-6-4">A simple implementation can have a fixed delay for how long to wait
+delays before falling back to lower priority groups.<a href="#section-6-4" class="pilcrow">¶</a></p>
+<p id="section-6-5">A simple implementation can have a fixed delay for how long to wait
 before starting the next connection attempt. This delay is referred to
 as the "Connection Attempt Delay". One recommended value for a default
 delay is 250 milliseconds. A more nuanced implementation's delay
@@ -2233,8 +2246,8 @@ influenced by exponential timer back off. Clients that support
 session resumption mechanisms (such as TLS session tickets
 <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> or QUIC 0-RTT <span>[<a href="#RFC9001" class="cite xref">RFC9001</a>]</span>) <span class="bcp14">SHOULD</span> use the same
 Connection Attempt Delay for resumed connections as for new
-connections.<a href="#section-6-4" class="pilcrow">¶</a></p>
-<p id="section-6-5">The Connection Attempt Delay <span class="bcp14">MUST</span> have a lower bound, especially if it
+connections.<a href="#section-6-5" class="pilcrow">¶</a></p>
+<p id="section-6-6">The Connection Attempt Delay <span class="bcp14">MUST</span> have a lower bound, especially if it
 is computed using historical data. More specifically, a subsequent
 connection <span class="bcp14">MUST NOT</span> be started within 10 milliseconds of the previous
 attempt. The recommended minimum value is 100 milliseconds, which is
@@ -2242,8 +2255,8 @@ referred to as the "Minimum Connection Attempt Delay". This minimum
 value is required to avoid congestion collapse in the presence of high
 packet-loss rates. The Connection Attempt Delay <span class="bcp14">SHOULD</span> have an upper
 bound, referred to as the "Maximum Connection Attempt Delay". The
-current recommended value is 2 seconds.<a href="#section-6-5" class="pilcrow">¶</a></p>
-<p id="section-6-6">An implementation <span class="bcp14">MAY</span> increase the Connection Attempt Delay for each
+current recommended value is 2 seconds.<a href="#section-6-6" class="pilcrow">¶</a></p>
+<p id="section-6-7">An implementation <span class="bcp14">MAY</span> increase the Connection Attempt Delay for each
 additional connection attempt that is started while earlier attempts
 are still in progress, multiplying the delay by a fixed factor (the
 "Connection Attempt Delay Multiplier") for each such attempt. The
@@ -2256,15 +2269,15 @@ of 50 milliseconds and a multiplier of 2, attempts are started at 0,
 50, 150, 350, and 750 milliseconds. A multiplier of 1 keeps the delay
 constant. A base delay below the recommended Minimum Connection Attempt
 Delay <span class="bcp14">MAY</span> be used (for example, with a multiplier greater than 1), but
-the 10 millisecond hard lower-bound still applies.<a href="#section-6-6" class="pilcrow">¶</a></p>
-<p id="section-6-7">The Connection Attempt Delay is used to set a timer, referred to as
+the 10 millisecond hard lower-bound still applies.<a href="#section-6-7" class="pilcrow">¶</a></p>
+<p id="section-6-8">The Connection Attempt Delay is used to set a timer, referred to as
 the "Next Connection Attempt Timer". Whenever this timer fires and
 a connection has not been successfully established, the next
 connection attempt starts, and the timer either is reset to a new
 delay value or, in the case of the end of the list being reached,
 is cancelled. Note that the delay value can be different for each
 connection attempt (depending on the protocol being used and
-the estimated RTT).<a href="#section-6-7" class="pilcrow">¶</a></p>
+the estimated RTT).<a href="#section-6-8" class="pilcrow">¶</a></p>
 <div id="success">
 <section id="section-6.1">
         <h3 id="name-determining-successful-conn">
@@ -2911,6 +2924,10 @@ that response is non-negative.<a href="#section-12-3" class="pilcrow">¶</a></p>
 <dt id="RFC9704">[RFC9704]</dt>
         <dd>
 <span class="refAuthor">Reddy.K, T.</span>, <span class="refAuthor">Wing, D.</span>, <span class="refAuthor">Smith, K.</span>, and <span class="refAuthor">B. Schwartz</span>, <span class="refTitle">"Establishing Local DNS Authority in Validated Split-Horizon Environments"</span>, <span class="seriesInfo">RFC 9704</span>, <span class="seriesInfo">DOI 10.17487/RFC9704</span>, <time datetime="2025-01" class="refDate">January 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9704">https://www.rfc-editor.org/rfc/rfc9704</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9846">[RFC9846]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="seriesInfo">RFC 9846</span>, <span class="seriesInfo">DOI 10.17487/RFC9846</span>, <time datetime="2026-07" class="refDate">July 2026</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9846">https://www.rfc-editor.org/rfc/rfc9846</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC10001">[RFC10001]</dt>
         <dd>
