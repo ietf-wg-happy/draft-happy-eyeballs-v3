@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 30 April 2027                                           N. Jaju
+Expires: 1 May 2027                                              N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                         27 October 2026
+                                                         28 October 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 April 2027.
+   This Internet-Draft will expire on 1 May 2027.
 
 Copyright Notice
 
@@ -1106,8 +1106,9 @@ Table of Contents
 
    *  NAT64 prefixes (see Section 8)
 
-   *  Historical round trip data used to guide the Connection Attempt
-      Delay (see Section 6)
+   *  Historical data used to sort endpoints, such as round trip times
+      and previously used addresses (see Section 5.3), or to compute the
+      Connection Attempt Delay (see Section 6)
 
    Information that is cached per-PvD, such as historical round trip
    data, SHOULD be flushed whenever a device changes the PvD to which it
