@@ -2239,15 +2239,30 @@ its handshake (such as sending a second TCP SYN or a second QUIC
 Initial), based on the retransmission timer (<span>[<a href="#RFC6298" class="cite xref">RFC6298</a>]</span>,
 <span>[<a href="#RFC9002" class="cite xref">RFC9002</a>]</span>). If the client has historical RTT data gathered from
 other connections to the same host or prefix, it can use this
-information to influence its delay. Note that this algorithm should
-only try to approximate the time of the first handshake packet
-retransmission, and not any further retransmissions that may be
-influenced by exponential timer back off. Clients that support
-session resumption mechanisms (such as TLS session tickets
-<span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> or QUIC 0-RTT <span>[<a href="#RFC9001" class="cite xref">RFC9001</a>]</span>) <span class="bcp14">SHOULD</span> use the same
-Connection Attempt Delay for resumed connections as for new
-connections.<a href="#section-6-5" class="pilcrow">¶</a></p>
-<p id="section-6-6">The Connection Attempt Delay <span class="bcp14">MUST</span> have a lower bound, especially if it
+information to influence its delay. Transport retransmission timers
+are generally tuned so that most healthy connections complete their
+initial handshake without retransmitting; waiting until roughly the
+first handshake retransmission gives the preferred attempt a fair
+chance to succeed without starting redundant connection attempts in
+the common case, while starting the next attempt promptly once the
+initial packet (or its response) is likely to have been lost.<a href="#section-6-5" class="pilcrow">¶</a></p>
+<p id="section-6-6">Note that this algorithm should only try to approximate the time of
+the first handshake packet retransmission, and not any further
+retransmissions that may be influenced by exponential timer back off.
+In practice, the layer implementing Happy Eyeballs often operates
+above the transport layer and might not directly control or know the
+exact timing of transport-layer retransmissions. Even when
+retransmission timing is known or closely estimated, sending a
+handshake retransmission on a previous attempt at the same time as the
+initial packet of a new attempt can create a small burst of packets
+when the network is already experiencing loss. Implementations <span class="bcp14">MAY</span>
+apply a small amount of jitter or pacing to avoid sending both packets
+simultaneously.<a href="#section-6-6" class="pilcrow">¶</a></p>
+<p id="section-6-7">Clients that support session resumption mechanisms (such as TLS
+session tickets <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span> or QUIC 0-RTT <span>[<a href="#RFC9001" class="cite xref">RFC9001</a>]</span>) <span class="bcp14">SHOULD</span> use
+the same Connection Attempt Delay for resumed connections as for new
+connections.<a href="#section-6-7" class="pilcrow">¶</a></p>
+<p id="section-6-8">The Connection Attempt Delay <span class="bcp14">MUST</span> have a lower bound, especially if it
 is computed using historical data. More specifically, a subsequent
 connection <span class="bcp14">MUST NOT</span> be started within 10 milliseconds of the previous
 attempt. The recommended minimum value is 100 milliseconds, which is
@@ -2255,8 +2270,8 @@ referred to as the "Minimum Connection Attempt Delay". This minimum
 value is required to avoid congestion collapse in the presence of high
 packet-loss rates. The Connection Attempt Delay <span class="bcp14">SHOULD</span> have an upper
 bound, referred to as the "Maximum Connection Attempt Delay". The
-current recommended value is 2 seconds.<a href="#section-6-6" class="pilcrow">¶</a></p>
-<p id="section-6-7">An implementation <span class="bcp14">MAY</span> increase the Connection Attempt Delay for each
+current recommended value is 2 seconds.<a href="#section-6-8" class="pilcrow">¶</a></p>
+<p id="section-6-9">An implementation <span class="bcp14">MAY</span> increase the Connection Attempt Delay for each
 additional connection attempt that is started while earlier attempts
 are still in progress, multiplying the delay by a fixed factor (the
 "Connection Attempt Delay Multiplier") for each such attempt. The
@@ -2269,15 +2284,15 @@ of 50 milliseconds and a multiplier of 2, attempts are started at 0,
 50, 150, 350, and 750 milliseconds. A multiplier of 1 keeps the delay
 constant. A base delay below the recommended Minimum Connection Attempt
 Delay <span class="bcp14">MAY</span> be used (for example, with a multiplier greater than 1), but
-the 10 millisecond hard lower-bound still applies.<a href="#section-6-7" class="pilcrow">¶</a></p>
-<p id="section-6-8">The Connection Attempt Delay is used to set a timer, referred to as
+the 10 millisecond hard lower-bound still applies.<a href="#section-6-9" class="pilcrow">¶</a></p>
+<p id="section-6-10">The Connection Attempt Delay is used to set a timer, referred to as
 the "Next Connection Attempt Timer". Whenever this timer fires and
 a connection has not been successfully established, the next
 connection attempt starts, and the timer either is reset to a new
 delay value or, in the case of the end of the list being reached,
 is cancelled. Note that the delay value can be different for each
 connection attempt (depending on the protocol being used and
-the estimated RTT).<a href="#section-6-8" class="pilcrow">¶</a></p>
+the estimated RTT).<a href="#section-6-10" class="pilcrow">¶</a></p>
 <div id="success">
 <section id="section-6.1">
         <h3 id="name-determining-successful-conn">
