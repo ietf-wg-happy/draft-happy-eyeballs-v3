@@ -701,7 +701,7 @@ client resolver SHOULD still process DNS replies from the network for
 a short period of time (recommended to be 1 second), as they will
 populate the DNS cache and can be used for subsequent connections.
 
-Canceling remaining in-flight attempts once a connection succeeds
+Cancelling remaining in-flight attempts once a connection succeeds
 avoids unnecessary load on the network and server. In addition, if an
 earlier, more preferred attempt (such as QUIC or IPv6) did not
 complete before a later fallback attempt (such as TLS over TCP or
@@ -710,7 +710,7 @@ limiting, or other impairments, so switching to it can degrade
 performance. However, client implementations with additional context
 (for example, an HTTP connection manager that prefers HTTP/3 over
 HTTP/2 for subsequent requests) MAY allow an already in-flight, more
-preferred attempt to continue in the background rather than canceling
+preferred attempt to continue in the background rather than cancelling
 it immediately, taking care to evaluate path quality before preferring
 that connection and to close redundant connections when no longer
 needed. Specific mechanisms for managing connection pools or switching
