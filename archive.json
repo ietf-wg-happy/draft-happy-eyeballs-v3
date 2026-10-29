@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-27T04:19:20.677967+00:00",
+  "timestamp": "2026-10-29T04:59:56.535277+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -85,15 +85,17 @@
       "id": "I_kwDOKH7CuM5uzFi6",
       "title": "Retransmissions and next connection attempt timing",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "nidhijaju",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "nidhijaju"
+      ],
       "labels": [],
       "body": "Should the first SYN retransmission and next connection attempt happen at the same time?\r\ni.e. If we attempt to connect to address A, should retransmitting to address A happen at the same time as attempting to connect to address B (the next address in the list)?\r\n\r\nIf we have packet loss in the network, that would probably exacerbate the problem. Maybe we should use packet pacing or some kind of delay between them?",
       "createdAt": "2023-08-21T08:37:04Z",
-      "updatedAt": "2025-07-24T09:02:11Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-28T15:52:14Z",
+      "closedAt": "2026-10-28T15:52:14Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -278,18 +280,19 @@
       "id": "I_kwDOKH7CuM5wORSB",
       "title": "Discuss impact of ECH",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
         "bashi",
-        "tfpauly"
+        "tfpauly",
+        "nidhijaju"
       ],
       "labels": [],
       "body": "ECH use can make the client be SVCB-reliant instead of SVCB-optional. At the very least, the algorithm will be impacted by being SVCB-reliant.",
       "createdAt": "2023-09-05T22:07:35Z",
-      "updatedAt": "2025-10-17T08:57:03Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-28T16:54:06Z",
+      "closedAt": "2026-10-28T16:54:06Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -1739,15 +1742,15 @@
       "id": "I_kwDOKH7CuM7WXLBh",
       "title": "Consider adding guidance for inter-attempt pacing across concurrent HE3 procedures to the same host",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/105",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "KershawChang",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "The Happy Eyeballs v3 (HE3) defines the process for producing one connection, including a connection attempt delay to mitigate bursts and avoid congestion collapse. However, In real-world HTTP stacks, it\u2019s possible to run multiple HE3 procedures to the same host within a short period (e.g., parallel fetches, speculative connects, preconnect + navigation, multiple tabs). While each HE3 run applies its internal connection attempt delay, the draft doesn\u2019t address pacing between separate HE3 runs, so the aggregate can still create a burst of connection attempts.\n\nMaybe we should add guidance to pace HE3 starts per host/connection group (e.g., a minimum inter-attempt interval).",
       "createdAt": "2025-11-06T15:44:53Z",
-      "updatedAt": "2025-11-06T15:44:53Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-28T18:05:53Z",
+      "closedAt": "2026-10-28T18:05:53Z",
       "comments": []
     },
     {
@@ -1902,15 +1905,17 @@
       "id": "I_kwDOKH7CuM7otfmj",
       "title": "QUIC IPv4 and IPv6",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/112",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kixelated",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "nidhijaju"
+      ],
       "labels": [],
       "body": "Hey guys, I'm trying to figure out how to implement happy eyeballs for QUIC.\n\nOne of the differences between QUIC and TCP/TLS is that the first flight has a CPU cost in the form of TLS secret generation. If you create two separate QUIC connections, one for IPv4 and one for IPv6, you will pay this cost twice unless the delay between connections is sufficiently large enough.\n\nAlternatively, if the QUIC client sends a copy of the Initial packet over both IPv4 and IPv6, I believe you can avoid this duplicate work. The packets being transmitted over IPv4 and IPv6 would be the same. The server would finish the handshake using the earliest (or both?) socket family.\n\nDoes this make sense? Is there any guidance on if happy eyeballs should happen at the transport or application level for QUIC?",
       "createdAt": "2026-02-06T00:49:04Z",
-      "updatedAt": "2026-06-24T08:15:31Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-28T15:51:06Z",
+      "closedAt": "2026-10-28T15:51:06Z",
       "comments": [
         {
           "author": "mxinden",
@@ -1996,15 +2001,17 @@
       "id": "I_kwDOKH7CuM7ujZeI",
       "title": "New attempt at retransmission",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/116",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bemasc",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "nidhijaju"
+      ],
       "labels": [],
       "body": "The draft suggests retrying simultaneously with a retransmission timer of a pending attempt, but it doesn't offer any motivation for this.  Is it to minimize radio wakeups by clustering transmissions?  Or perhaps to provide fair RTT racing?",
       "createdAt": "2026-02-27T18:15:43Z",
-      "updatedAt": "2026-03-16T06:52:33Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-28T15:52:15Z",
+      "closedAt": "2026-10-28T15:52:15Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -2034,7 +2041,7 @@
       "id": "I_kwDOKH7CuM7ulmDU",
       "title": "DNS Server Selection repeats/contradicts RFC 3901bis",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/117",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bemasc",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -2045,8 +2052,8 @@
       ],
       "body": "[RFC 3901bis Section 4.3](https://www.ietf.org/archive/id/draft-ietf-dnsop-3901bis-17.html#name-guidelines-for-dns-stub-res) discusses how DNS stub resolvers should behave in dual-stack setups.  This draft can reference that text but should not attempt to instruct stub resolvers on how to behave.",
       "createdAt": "2026-02-27T20:56:12Z",
-      "updatedAt": "2026-06-24T23:47:01Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-27T19:52:58Z",
+      "closedAt": "2026-10-27T19:52:58Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -2182,7 +2189,7 @@
       "id": "I_kwDOKH7CuM8AAAABIWhMsQ",
       "title": "Exponential Connection Attempt Delay (multiplier), allowing a smaller initial delay",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/138",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mxinden",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -2191,8 +2198,8 @@
       "labels": [],
       "body": "Today's [Connection Attempt Delay](https://datatracker.ietf.org/doc/html/draft-ietf-happy-happyeyeballs-v3-04#name-connection-attempts) is constant (default 250 ms). A constant delay is a poor trade: large means slow fallback when the preferred path is a blackhole; small means a sustained burst of attempts under congestion.\n\n## Proposal\n\nAn optional **Connection Attempt Delay Multiplier** that grows the delay for each additional in-flight attempt. A value of 1 is today's constant-delay behavior. Firefox ships the multiplier on Nightly ([bug 2050565](https://bugzilla.mozilla.org/show_bug.cgi?id=2050565)), with an initial delay of 50 ms and a multiplier of 2, so attempts start at 0, 50, 150, 350, 750 ms. Growing the delay keeps the attempt rate low even when paths are broken.\n\n## Firefox telemetry\n\nBelow the relevant Firefox Nightly telemetry (~15k clients), with a connection attempt delay of 50ms and a multiplier of 2. Connections almost never fan out, so the faster second attempt adds negligible load:\n\n- [`winning_attempt_index`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_winning_attempt_index/explore): the winner is attempt **1 in 94.2%** of connections, attempt 2 in 4.6%, index >= 3 in only **1.2%**.\n- [`connection_attempt_count`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_connection_attempt_count/explore) (succeeded): **87.4%** start a single attempt; **98.1%** never start a third.\n- [`cancelled_attempt_count`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_cancelled_attempt_count/explore): **94.1%** of wins cancel zero in-flight attempts.\n\n## Benefit\n\nThe addressable slice is the **~5.8%** of connections where attempt >= 2 wins; for them, cutting the first gap from 250 ms to 50 ms should pull down the P75 to P95 percentile of [`end_to_end_time_succeeded`](https://glam.telemetry.mozilla.org/fog/probe/netwerk_happy_eyeballs_end_to_end_time_succeeded/explore) (currently P50 = 74 ms, P75 = 161 ms, P95 = 603 ms).\n\n## Questions\n\n1. Is an initial delay below the 100 ms recommended minimum acceptable given the back-off?\n2. Normative (with a recommended default) or informational implementation guidance?\n3. Compound on in-flight attempts (as Firefox does) or on total attempts started?",
       "createdAt": "2026-07-10T13:29:52Z",
-      "updatedAt": "2026-10-27T03:18:24Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-27T18:23:40Z",
+      "closedAt": "2026-10-27T18:23:40Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -2236,7 +2243,7 @@
       "id": "I_kwDOKH7CuM8AAAABJdOIFA",
       "title": "Top-level section on PvDs, VPNs, network connections, and other network contexts",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/140",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "enygren",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -2245,8 +2252,8 @@
       "labels": [],
       "body": "As discussed in IETF 126 in Vienna and in discussions for #132, we should pull out an explicit section covering:\n* PvDs\n* VPNs (including split tunnel)\n* Absence of PvDs and network switches in this context\n* Other similar concepts to PvDs (\"multiple simultaneous networks with different properties\") \n* Multiple independent network interfaces\n\nWe may want to have an abstract name we use that covers these (eg, \"network context\"?).\nWhile PvDs are a concrete instantiation, not all OSes implement them.\n\nFor example, considerations such as:\n\n* Do not use DNS records obtained from one network context in another\n* Absent PvDs, flush the default DNS cache on switching networks\n* Do not use a NAT64 from one network context in another\n* ...\n\nSome of the considerations from #132 could fall into this.\n",
       "createdAt": "2026-07-20T13:49:01Z",
-      "updatedAt": "2026-10-27T03:10:44Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-28T15:50:06Z",
+      "closedAt": "2026-10-28T15:50:06Z",
       "comments": []
     }
   ],
@@ -9664,7 +9671,7 @@
       "id": "PR_kwDOKH7CuM7qZWRZ",
       "title": "Clarify DNS server address handling, add references",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/133",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "tfpauly",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -9673,17 +9680,19 @@
       "labels": [],
       "body": "Closes #117\r\n\r\nThis change adds references and explains the interaction with destination address selection for resolver selection, but maintains the RFC 8305 language around:\r\n\r\n- Preferring IPv6\r\n- Preferring having a diversity of address families\r\n- Being able to penalize a non-responsive resolver and fail over to another\r\n\r\nThese aspects are not covered by other documents at this time.",
       "createdAt": "2026-06-25T04:14:41Z",
-      "updatedAt": "2026-07-21T14:35:07Z",
+      "updatedAt": "2026-10-27T19:52:57Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
-      "baseRefOid": "d1131922e277ab2ca540a358281d9d42ecfec883",
+      "baseRefOid": "261574b7f92cdaf3a8bdf3643a65af8020471f2f",
       "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "headRefName": "tfpauly-patch-14",
-      "headRefOid": "deb00579c2f70fbce8287e7db8b0b44170566562",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "f31879ac14d51ed331e09d1b734df7ba64f724ad",
+      "closedAt": "2026-10-27T19:52:56Z",
+      "mergedAt": "2026-10-27T19:52:56Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "c5ca07eb492cc216e43dfd65eac3bde68a7afa74"
+      },
       "comments": [
         {
           "author": "bemasc",
@@ -9698,6 +9707,13 @@
           "body": "I would like to support the previous comment.\r\nAs an application doing happy eyeballs, Firefox is getting the IP addresses from `getaddrinfo` and HTTPS record from [platform APIs](https://valentin.gosu.se/blog/2025/02/getaddrinfo-sucks-everything-else-is-much-worse), or via DoH.\r\nA lot of the time Firefox does not control how it retrieves the DNS records - I expect this will be the case for a lot of applications.\r\nWhile HE3 could be informed by whether the RR were retrieved via a secure transport, I think the other bits should be out of scope for the draft.",
           "createdAt": "2026-07-21T14:35:07Z",
           "updatedAt": "2026-07-21T14:35:07Z"
+        },
+        {
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I've changed the approach here to remove the guidance to stub resolvers and just mention how they can themselves use happy eyeballs, and point to RFC 10001. Please take a look @bemasc @valenting @nidhijaju @DavidSchinazi ",
+          "createdAt": "2026-10-27T16:24:35Z",
+          "updatedAt": "2026-10-27T16:24:35Z"
         }
       ],
       "reviews": [
@@ -9811,6 +9827,45 @@
               "updatedAt": "2026-07-10T18:08:49Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUgXGpQ",
+          "commit": {
+            "abbreviatedOid": "d591b4a"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Lgtm, left a couple of small wording/reference nits inline.",
+          "createdAt": "2026-10-27T16:53:31Z",
+          "updatedAt": "2026-10-27T16:55:56Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\nthat are sent, or has a guarantee from the DNS stub resolver\n```",
+              "createdAt": "2026-10-27T16:53:31Z",
+              "updatedAt": "2026-10-27T16:55:56Z"
+            },
+            {
+              "originalPosition": 27,
+              "body": "```suggestion\nor {{?DOQ=RFC9250}}, for example, potentially discovered via {{?RFC9461}}).\nAdditionally, {{Section 4.3 of ?RFC10001}} provides guidance for how stub\nresolvers ought to handle dual-stack environments. Following this guidance\nis beneficial to clients implementing Happy Eyeballs, as it ensures that\ndual-stack networks are handled well during DNS resolution, which is a\nprerequisite for the rest of the Happy Eyeballs algorithm to work well.\n```",
+              "createdAt": "2026-10-27T16:55:10Z",
+              "updatedAt": "2026-10-27T16:55:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUhTy-g",
+          "commit": {
+            "abbreviatedOid": "d591b4a"
+          },
+          "author": "mxinden",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-27T18:07:55Z",
+          "updatedAt": "2026-10-27T18:07:55Z",
+          "comments": []
         }
       ]
     },
@@ -10707,24 +10762,26 @@
       "id": "PR_kwDOKH7CuM7_GlLg",
       "title": "Add exponential connection attempt delay multiplier",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/143",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "mxinden",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Describe an optional Connection Attempt Delay Multiplier that grows the delay for each additional concurrent attempt in progress. The multiplier scales the implementation's base delay, whether the RTT-derived estimate or the fixed default. A multiplier of 1 is the existing constant-delay behavior.\r\n\r\nFixes https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/138.",
       "createdAt": "2026-08-14T12:57:22Z",
-      "updatedAt": "2026-10-27T03:14:35Z",
+      "updatedAt": "2026-10-27T18:23:38Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "261574b7f92cdaf3a8bdf3643a65af8020471f2f",
       "headRepository": "mxinden/draft-happy-eyeballs-v3",
       "headRefName": "exponential-connection-attempt-delay",
-      "headRefOid": "e30957165cc68f80ace200669cf548295224d4da",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "144d1f4e54106cc29f489b41016deb4b242f9eab",
+      "closedAt": "2026-10-27T18:23:38Z",
+      "mergedAt": "2026-10-27T18:23:38Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "12271d252e4b4c54e2dd712d45fba33e9be4bd54"
+      },
       "comments": [],
       "reviews": [
         {
@@ -10744,6 +10801,523 @@
               "body": "```suggestion\nmillisecond hard lower-bound still applies.\n```\n",
               "createdAt": "2026-10-27T03:12:58Z",
               "updatedAt": "2026-10-27T03:14:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUgNA1Q",
+          "commit": {
+            "abbreviatedOid": "e309571"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Lgtm, with one small suggestion on upper/lower bound wording. Thanks!",
+          "createdAt": "2026-10-27T16:42:48Z",
+          "updatedAt": "2026-10-27T16:43:42Z",
+          "comments": [
+            {
+              "originalPosition": 17,
+              "body": "```suggestion\nconstant. A base delay below the recommended Minimum Connection Attempt\nDelay MAY be used (for example, with a multiplier greater than 1), but\nthe 10 millisecond hard lower-bound still applies.\n```",
+              "createdAt": "2026-10-27T16:42:49Z",
+              "updatedAt": "2026-10-27T16:43:43Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 144,
+      "id": "PR_kwDOKH7CuM8AAAABLGtx5Q",
+      "title": "Break out explicit section on multiple networks/PvDs",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/144",
+      "state": "MERGED",
+      "author": "tfpauly",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #140\n\nCC @enygren \n\nThe title refers to a network generically, but the technical text does use PvD here. PvD is an conceptual term, and isn't concretely limited to one particular mechanism (such as explicit PvDs via RAs) so I think this is the best term we have at this point.",
+      "createdAt": "2026-10-27T19:54:29Z",
+      "updatedAt": "2026-10-29T00:52:33Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "c5ca07eb492cc216e43dfd65eac3bde68a7afa74",
+      "headRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "headRefName": "tfp/multi-pvd",
+      "headRefOid": "0b8bfa576d6284e86c97551958aa43e051171b84",
+      "closedAt": "2026-10-28T15:50:05Z",
+      "mergedAt": "2026-10-28T15:50:05Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "e4dadc731c81e70053632a457306ad333d981717"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUomo9Q",
+          "commit": {
+            "abbreviatedOid": "db3838c"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-28T08:24:27Z",
+          "updatedAt": "2026-10-28T08:24:28Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "(Feel free to disregard) Issue #140 asked about the case where the OS doesn't implement PvDs. RFC 7556 Section 2.2 says that if explicit PvD information is absent, each interface is treated as its own implicit PvD. Would it be helpful to mention it here?",
+              "createdAt": "2026-10-28T08:24:28Z",
+              "updatedAt": "2026-10-28T08:24:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUomtIA",
+          "commit": {
+            "abbreviatedOid": "db3838c"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-28T08:24:34Z",
+          "updatedAt": "2026-10-28T08:24:34Z",
+          "comments": [
+            {
+              "originalPosition": 106,
+              "body": "Editorial: The previous sentence uses MUST, then this sentence uses \"cannot\" Should we also use MUST in this sentence?",
+              "createdAt": "2026-10-28T08:24:34Z",
+              "updatedAt": "2026-10-28T08:24:34Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUomvkQ",
+          "commit": {
+            "abbreviatedOid": "db3838c"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-28T08:24:37Z",
+          "updatedAt": "2026-10-28T08:24:37Z",
+          "comments": [
+            {
+              "originalPosition": 111,
+              "body": "The text this replaces in {{endpoint-sorting}} covers two kinds of historical\ndata used for sorting: RTTs per route and which addresses were used in the\npast. This bullet only mentions RTT data and points at the Connection Attempt\nDelay. Could it cover both uses?\n\n```suggestion\n- Historical data used to sort endpoints, such as round trip times and previously used addresses (see {{endpoint-sorting}}), or to compute the Connection Attempt Delay (see {{connections}})\n```",
+              "createdAt": "2026-10-28T08:24:37Z",
+              "updatedAt": "2026-10-28T08:24:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUomxZg",
+          "commit": {
+            "abbreviatedOid": "db3838c"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-28T08:24:39Z",
+          "updatedAt": "2026-10-28T08:24:40Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "Should DNS answers be flushed too?",
+              "createdAt": "2026-10-28T08:24:40Z",
+              "updatedAt": "2026-10-28T08:24:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUrt2Ng",
+          "commit": {
+            "abbreviatedOid": "db3838c"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-28T13:02:49Z",
+          "updatedAt": "2026-10-28T13:02:51Z",
+          "comments": [
+            {
+              "originalPosition": 94,
+              "body": "As I mentioned in my PR description:\n\n> PvD is a conceptual term, and isn't concretely limited to one particular mechanism (such as explicit PvDs via RAs) so I think this is the best term we have at this point.\n\nSo, the \"implementing\" on the OS would only apply to the RA mechanism, which is not required or referenced here. PvD is not a concrete mechanism. ",
+              "createdAt": "2026-10-28T13:02:50Z",
+              "updatedAt": "2026-10-28T13:02:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUruyMw",
+          "commit": {
+            "abbreviatedOid": "db3838c"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-28T13:04:03Z",
+          "updatedAt": "2026-10-28T13:04:03Z",
+          "comments": [
+            {
+              "originalPosition": 106,
+              "body": "I was explicitly trying to reduce redundant MUSTs. The first one is the normative case and this sentence is about presenting examples that follow it. ",
+              "createdAt": "2026-10-28T13:04:03Z",
+              "updatedAt": "2026-10-28T13:04:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUqNZTg",
+          "commit": {
+            "abbreviatedOid": "daaf2da"
+          },
+          "author": "nidhijaju",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-28T10:47:35Z",
+          "updatedAt": "2026-10-28T14:11:41Z",
+          "comments": [
+            {
+              "originalPosition": 89,
+              "body": "```suggestion\nhow resolution, sorting, and connection establishment are performed on\n```",
+              "createdAt": "2026-10-28T10:47:35Z",
+              "updatedAt": "2026-10-28T14:11:41Z"
+            },
+            {
+              "originalPosition": 109,
+              "body": "Even if two PvDs share the same DNS server configuration (for example, an application- or user-configured DoH resolver used across both Wi-Fi and cellular), queries over different networks exit from different client subnets and can return different geo-steered or ISP-local CDN endpoints (in Chromium we flush/partition HostCache across network changes even when DoH config is unchanged).\n\n```suggestion\n- DNS answers (even when PvDs share a configured DNS resolver, as answers can depend on the network path)\n```",
+              "createdAt": "2026-10-28T11:00:23Z",
+              "updatedAt": "2026-10-28T14:11:41Z"
+            },
+            {
+              "originalPosition": 128,
+              "body": "```suggestion\nand routes ought to be considered as one larger PvD. When a VPN is connected\nor disconnected (adding or removing a split-horizon configuration), the client\nought to consider that to be a PvD change and flush or re-fetch cached state\nsuch as DNS answers.\n```",
+              "createdAt": "2026-10-28T11:00:26Z",
+              "updatedAt": "2026-10-28T14:11:41Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUuJeZA",
+          "commit": {
+            "abbreviatedOid": "db3838c"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-28T15:48:04Z",
+          "updatedAt": "2026-10-28T15:48:04Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "Sure!\r\n```suggestion\r\nInformation that is cached per-PvD, such as historical round trip data and DNS answers,\r\n```",
+              "createdAt": "2026-10-28T15:48:04Z",
+              "updatedAt": "2026-10-28T15:48:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUz59nw",
+          "commit": {
+            "abbreviatedOid": "0b8bfa5"
+          },
+          "author": "bashi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-29T00:52:32Z",
+          "updatedAt": "2026-10-29T00:52:32Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 145,
+      "id": "PR_kwDOKH7CuM8AAAABLQLNdQ",
+      "title": "Clarify rationale and timing for handshake-retransmission-based Connection Attempt Delay",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/145",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #1\nCloses #116",
+      "createdAt": "2026-10-28T12:02:06Z",
+      "updatedAt": "2026-10-28T15:52:13Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "c5ca07eb492cc216e43dfd65eac3bde68a7afa74",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "retransmission-timing",
+      "headRefOid": "b73ec098ae6b584af1332c0e387cab559863fafb",
+      "closedAt": "2026-10-28T15:52:13Z",
+      "mergedAt": "2026-10-28T15:52:13Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "7f8e11505a62d86071f006efcdfe56216cebfed7"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUuNNPQ",
+          "commit": {
+            "abbreviatedOid": "b73ec09"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-28T15:52:05Z",
+          "updatedAt": "2026-10-28T15:52:05Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 146,
+      "id": "PR_kwDOKH7CuM8AAAABLSR9KQ",
+      "title": "Clarify that QUIC connection attempts are independent connections",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/146",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Update Section 6 (Connection Attempts) to clarify that each Happy Eyeballs connection attempt is an independent transport connection with its own connection identifiers and cryptographic handshake state, and that clients MUST NOT send copies of the same QUIC Initial packet across attempts (RFC 9000, Section 9.5).\n\nCloses #112",
+      "createdAt": "2026-10-28T14:36:57Z",
+      "updatedAt": "2026-10-28T15:51:04Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "c5ca07eb492cc216e43dfd65eac3bde68a7afa74",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "quic-attempts",
+      "headRefOid": "5892f067c8ad8ef91030e0deb1efb2e824f7d1de",
+      "closedAt": "2026-10-28T15:51:04Z",
+      "mergedAt": "2026-10-28T15:51:04Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "bfaa7a07fe57243d8d4b9b6938bca19931bf1ffa"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUuMHPA",
+          "commit": {
+            "abbreviatedOid": "5892f06"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-28T15:50:56Z",
+          "updatedAt": "2026-10-28T15:50:56Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 147,
+      "id": "PR_kwDOKH7CuM8AAAABLSzp7w",
+      "title": "Clarify ECH handshake pending behavior and security considerations",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/147",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Aligns Section 6.1 with Section 6.3 on when clients need to wait for SVCB records.\n- Clarifies how pending the TLS handshake affects QUIC vs. speculative TCP handshakes (and the IP-exposure privacy trade-off).\n- Adds ECH downgrade and privacy notes to Security Considerations.\n\nCloses #6",
+      "createdAt": "2026-10-28T15:13:07Z",
+      "updatedAt": "2026-10-28T16:54:05Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "c5ca07eb492cc216e43dfd65eac3bde68a7afa74",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "ech-considerations",
+      "headRefOid": "e7fe9ea145e8f5daae2c5a13e7596b486d4a77b3",
+      "closedAt": "2026-10-28T16:54:05Z",
+      "mergedAt": "2026-10-28T16:54:04Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "5f2987e23758f0f0584716faf5c1c1b201dd80ed"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUuTVIA",
+          "commit": {
+            "abbreviatedOid": "da223d8"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-10-28T15:58:40Z",
+          "updatedAt": "2026-10-28T16:01:15Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "I feel like this is in tension with the text above that says that the handshake MUST be pended if (encrypted DNS is used && an SVCB parameter can change the client behavior). This statement of \"the client cannot start the QUIC connection attempt until the SVCB response arrives\" doesn't incorporate that nuance from above, so can be read more prohibitively.\n\nHow about:\n\n\n```suggestion\n- For QUIC, the TLS ClientHello is carried in the initial packet of\nthe connection. If the client needs to pend starting\nthe TLS handshake until SVCB responses have arrived,\nit needs to pend sending any QUIC packets.\n```",
+              "createdAt": "2026-10-28T15:58:41Z",
+              "updatedAt": "2026-10-28T16:01:15Z"
+            },
+            {
+              "originalPosition": 55,
+              "body": "```suggestion\n- When TLS is used over TCP and the client needs to\npend starting the TLS handshake, the client MAY speculatively start the TCP\nhandshake using resolved A or AAAA addresses while holding back the\nTLS ClientHello until SVCB responses arrive. If the SVCB responses\nallow using an endpoint for which a speculative TCP handshake was\nstarted (for example, when SVCB returns a negative response or a\nServiceMode record with TargetName \".\"), the client can proceed with\nthe TLS handshake on that TCP connection. Conversely, if an endpoint\nwith an in-progress or completed speculative TCP handshake is not\nselected once the SVCB response arrives (for example, because the\nclient selects an alternative TargetName that provides \"ech\"\n{{SVCB-ECH}}), the client SHOULD close that TCP connection without\nsending a TLS ClientHello.\n```",
+              "createdAt": "2026-10-28T16:00:58Z",
+              "updatedAt": "2026-10-28T16:01:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUvDFhQ",
+          "commit": {
+            "abbreviatedOid": "e7fe9ea"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-28T16:53:57Z",
+          "updatedAt": "2026-10-28T16:53:57Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 148,
+      "id": "PR_kwDOKH7CuM8AAAABLTlv4Q",
+      "title": "Lower recommended Resolution Delay from 50ms to 25ms",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/148",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Following the IETF 126 discussion on reducing default timer values, this PR lowers the recommended default `Resolution Delay` from 50ms to 25ms and updates the Section 4.2.2 example diagrams accordingly.\n\nThis aligns with Firefox's 25ms default, Apple's A/AAAA resolution-time delta measurements (P90 = 17ms, P95 = 34ms), and Chrome client telemetry showing a similar distribution with diminishing returns beyond 25ms.",
+      "createdAt": "2026-10-28T16:08:11Z",
+      "updatedAt": "2026-10-28T16:54:28Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "7f8e11505a62d86071f006efcdfe56216cebfed7",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "resolution-delay",
+      "headRefOid": "ab382f5cd461cbe2c880457d27f48f20ab423a5e",
+      "closedAt": "2026-10-28T16:54:27Z",
+      "mergedAt": "2026-10-28T16:54:27Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "2eb2fde4118a43ba74cddda314bf196e6dca6e13"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUvDZYA",
+          "commit": {
+            "abbreviatedOid": "ab382f5"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-28T16:54:20Z",
+          "updatedAt": "2026-10-28T16:54:20Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 149,
+      "id": "PR_kwDOKH7CuM8AAAABLUnhJQ",
+      "title": "Add note on pacing across concurrent Happy Eyeballs procedures",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/149",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #105",
+      "createdAt": "2026-10-28T17:24:59Z",
+      "updatedAt": "2026-10-28T18:05:52Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "2eb2fde4118a43ba74cddda314bf196e6dca6e13",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "concurrent-pacing",
+      "headRefOid": "a4ead8b3f865f63ef97aac2a793dc719b5e35a52",
+      "closedAt": "2026-10-28T18:05:52Z",
+      "mergedAt": "2026-10-28T18:05:52Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "6a90414bcd6770e22709f2e051fdce7fc72fc7e4"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUv9BPQ",
+          "commit": {
+            "abbreviatedOid": "a4ead8b"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-28T18:05:45Z",
+          "updatedAt": "2026-10-28T18:05:45Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 150,
+      "id": "PR_kwDOKH7CuM8AAAABLU2vFg",
+      "title": "Clarify rationale and exceptions for canceling remaining connection attempts",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/150",
+      "state": "OPEN",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #89",
+      "createdAt": "2026-10-28T17:43:11Z",
+      "updatedAt": "2026-10-28T18:07:42Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "2eb2fde4118a43ba74cddda314bf196e6dca6e13",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "connection-escalation",
+      "headRefOid": "1a328e47df069bed299ce466c08c69e1999db0b9",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABUv9zPA",
+          "commit": {
+            "abbreviatedOid": "1a328e4"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "This seems like a reasonable approach to the text, to me!",
+          "createdAt": "2026-10-28T18:06:46Z",
+          "updatedAt": "2026-10-28T18:07:41Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Absolute nit and thing people disagree on:\n\nElsewhere in the doc we use\n\n```suggestion\nCancelling remaining in-flight attempts once a connection succeeds\n```",
+              "createdAt": "2026-10-28T18:06:46Z",
+              "updatedAt": "2026-10-28T18:07:41Z"
             }
           ]
         }
