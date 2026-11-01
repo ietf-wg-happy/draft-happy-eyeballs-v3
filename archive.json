@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-29T04:59:56.535277+00:00",
+  "timestamp": "2026-11-01T05:10:02.617573+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -11288,13 +11288,13 @@
       "labels": [],
       "body": "Closes #89",
       "createdAt": "2026-10-28T17:43:11Z",
-      "updatedAt": "2026-10-28T18:07:42Z",
+      "updatedAt": "2026-10-29T10:16:49Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
-      "baseRefOid": "2eb2fde4118a43ba74cddda314bf196e6dca6e13",
+      "baseRefOid": "6a90414bcd6770e22709f2e051fdce7fc72fc7e4",
       "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
       "headRefName": "connection-escalation",
-      "headRefOid": "1a328e47df069bed299ce466c08c69e1999db0b9",
+      "headRefOid": "6d5275cecac7cf78f4d5a908eee37c4209cc802a",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
