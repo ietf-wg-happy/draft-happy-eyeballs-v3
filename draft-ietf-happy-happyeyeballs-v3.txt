@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 1 May 2027                                              N. Jaju
+Expires: 6 May 2027                                              N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                         28 October 2026
+                                                         2 November 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 May 2027.
+   This Internet-Draft will expire on 6 May 2027.
 
 Copyright Notice
 
@@ -749,6 +749,22 @@ Table of Contents
    DNS client resolver SHOULD still process DNS replies from the network
    for a short period of time (recommended to be 1 second), as they will
    populate the DNS cache and can be used for subsequent connections.
+
+   Cancelling remaining in-flight attempts once a connection succeeds
+   avoids unnecessary load on the network and server.  In addition, if
+   an earlier, more preferred attempt (such as QUIC or IPv6) did not
+   complete before a later fallback attempt (such as TLS over TCP or
+   IPv4) succeeded, that path might be experiencing packet loss, rate
+   limiting, or other impairments, so switching to it can degrade
+   performance.  However, client implementations with additional context
+   (for example, an HTTP connection manager that prefers HTTP/3 over
+   HTTP/2 for subsequent requests) MAY allow an already in-flight, more
+   preferred attempt to continue in the background rather than
+   cancelling it immediately, taking care to evaluate path quality
+   before preferring that connection and to close redundant connections
+   when no longer needed.  Specific mechanisms for managing connection
+   pools or switching between established connections are out of scope
+   for this document.
 
    Each connection attempt represents an independent transport
    connection with its own connection identifiers and cryptographic
@@ -1481,9 +1497,9 @@ Table of Contents
    [OPTIMISTIC-DNS]
               Akiwate, G., Flack, P., and S. Cheshire, "Optimistic DNS",
               Work in Progress, Internet-Draft, draft-gakiwate-dnsop-
-              optimistic-dns-00, 3 June 2026,
+              optimistic-dns-01, 1 November 2026,
               <https://datatracker.ietf.org/doc/html/draft-gakiwate-
-              dnsop-optimistic-dns-00>.
+              dnsop-optimistic-dns-01>.
 
    [PvD]      Anipko, D., Ed., "Multiple Provisioning Domain
               Architecture", RFC 7556, DOI 10.17487/RFC7556, June 2015,
@@ -1544,9 +1560,9 @@ Table of Contents
    [V6-MOSTLY]
               Buraglio, N., Caletka, O., and J. Linkova, "IPv6-mostly
               Networks: Deployment and Operations Considerations", Work
-              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-11, 27
+              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-12, 29
               October 2026, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-v6ops-6mops-11>.
+              draft-ietf-v6ops-6mops-12>.
 
 Acknowledgments
 
