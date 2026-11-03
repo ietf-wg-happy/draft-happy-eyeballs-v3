@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-11-01T05:10:02.617573+00:00",
+  "timestamp": "2026-11-03T05:54:46.888931+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -1533,17 +1533,17 @@
       "id": "I_kwDOKH7CuM7CQUqP",
       "title": "Connection Escalator mode",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/89",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bemasc",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [
         "discuss"
       ],
       "body": "Currently, HEv3 is defined as a procedure that produces a single connection as its output.  This does not model the actual behavior of optimized HTTP clients, which continue to race QUIC and TCP even after TCP \"wins\" and the first HTTP request is sent, so that the QUIC connection can be used for the next HTTP request.\n\nI would like to see a mode of HE that is a \"connection escalator\": its output is an asynchronous finite sequence of connections, each more preferred than the last.\n\nThe charter requires that HEv3 \"ends with a single established connection to a server\".  Like the current specification, this is true of a connection escalator: less preferred connections are closed in favor of more-preferred connections as they become available.",
       "createdAt": "2025-07-24T08:48:54Z",
-      "updatedAt": "2026-02-25T23:21:56Z",
-      "closedAt": null,
+      "updatedAt": "2026-11-02T16:35:10Z",
+      "closedAt": "2026-11-02T16:35:10Z",
       "comments": [
         {
           "author": "tfpauly",
@@ -1554,7 +1554,7 @@
         },
         {
           "author": "bemasc",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I understand the situation you're highlighting.  However, preferring QUIC in this case performs better on average in our data.",
           "createdAt": "2025-10-23T14:55:30Z",
           "updatedAt": "2025-10-23T14:55:30Z"
@@ -11281,24 +11281,26 @@
       "id": "PR_kwDOKH7CuM8AAAABLU2vFg",
       "title": "Clarify rationale and exceptions for canceling remaining connection attempts",
       "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/150",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "nidhijaju",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #89",
       "createdAt": "2026-10-28T17:43:11Z",
-      "updatedAt": "2026-10-29T10:16:49Z",
+      "updatedAt": "2026-11-02T16:35:09Z",
       "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
       "baseRefName": "main",
       "baseRefOid": "6a90414bcd6770e22709f2e051fdce7fc72fc7e4",
       "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
       "headRefName": "connection-escalation",
       "headRefOid": "6d5275cecac7cf78f4d5a908eee37c4209cc802a",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-11-02T16:35:09Z",
+      "mergedAt": "2026-11-02T16:35:09Z",
+      "mergedBy": "tfpauly",
+      "mergeCommit": {
+        "oid": "cf4e9c7b1e59fb4569b6929b6afe307237a09324"
+      },
       "comments": [],
       "reviews": [
         {
