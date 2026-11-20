@@ -819,7 +819,7 @@ the estimated RTT).
 If the most recently started connection attempt fails with an explicit
 error before the Next Connection Attempt Timer fires (for example, a
 local routing error such as an unreachable network, an ICMP error, or
-a TCP RST), the client MAY start the next connection attempt
+a TCP RST), the client SHOULD start the next connection attempt
 immediately without waiting for the timer or the 10-millisecond lower
 bound, and reset (or cancel, if the end of the list is reached) the
 Next Connection Attempt Timer. When an earlier attempt fails while a
