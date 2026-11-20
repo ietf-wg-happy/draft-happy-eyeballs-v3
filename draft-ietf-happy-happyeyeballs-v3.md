@@ -782,9 +782,10 @@ the same Connection Attempt Delay for resumed connections as for new
 connections.
 
 The Connection Attempt Delay MUST have a lower bound, especially if it
-is computed using historical data. More specifically, a subsequent
-connection MUST NOT be started within 10 milliseconds of the previous
-attempt. The recommended minimum value is 100 milliseconds, which is
+is computed using historical data. More specifically, while a previous
+attempt is still in progress, a subsequent connection MUST NOT be
+started within 10 milliseconds of that attempt. The recommended minimum
+value is 100 milliseconds, which is
 referred to as the "Minimum Connection Attempt Delay". This minimum
 value is required to avoid congestion collapse in the presence of high
 packet-loss rates. The Connection Attempt Delay SHOULD have an upper
@@ -814,6 +815,16 @@ delay value or, in the case of the end of the list being reached,
 is cancelled. Note that the delay value can be different for each
 connection attempt (depending on the protocol being used and
 the estimated RTT).
+
+If the most recently started connection attempt fails with an explicit
+error before the Next Connection Attempt Timer fires (for example, a
+local routing error such as an unreachable network, an ICMP error, or
+a TCP RST), the client SHOULD start the next connection attempt
+immediately without waiting for the timer or the 10-millisecond lower
+bound, and reset (or cancel, if the end of the list is reached) the
+Next Connection Attempt Timer. When an earlier attempt fails while a
+more recent attempt is still in progress, the timer continues running
+normally.
 
 The algorithm in this document describes establishing a single
 connection, and the Connection Attempt Delay bounds the attempt rate
@@ -1175,8 +1186,9 @@ connection attempts in the absence of RTT data. Recommended to be
 250 milliseconds.
 
 - Minimum Connection Attempt Delay ({{connections}}): The minimum time to
-wait between connection attempts. Recommended to be 100
-milliseconds. MUST NOT be less than 10 milliseconds.
+wait between concurrent connection attempts. Recommended to be 100
+milliseconds. MUST NOT be less than 10 milliseconds when a previous
+attempt is still in progress.
 
 - Maximum Connection Attempt Delay ({{connections}}): The maximum time to
 wait between connection attempts. Recommended to be 2 seconds.
