@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-11-03T05:54:46.888931+00:00",
+  "timestamp": "2026-11-22T05:50:56.373327+00:00",
   "repo": "ietf-wg-happy/draft-happy-eyeballs-v3",
   "labels": [
     {
@@ -2254,6 +2254,24 @@
       "createdAt": "2026-07-20T13:49:01Z",
       "updatedAt": "2026-10-28T15:50:06Z",
       "closedAt": "2026-10-28T15:50:06Z",
+      "comments": []
+    },
+    {
+      "number": 151,
+      "id": "I_kwDOKH7CuM8AAAABg6BegQ",
+      "title": "Clarify Connection Attempt Delay (and 10ms MUST NOT) when a previous attempt fails",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/151",
+      "state": "CLOSED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "nidhijaju"
+      ],
+      "labels": [],
+      "body": "### Problem\n\nSection 6 defines the Next Connection Attempt Timer and carries over RFC 8305's lower bound:\n\n> Whenever this timer fires and a connection has not been successfully established, the next connection attempt starts...\n>\n> More specifically, a subsequent connection MUST NOT be started within 10 milliseconds of the previous attempt.\n\nThis leaves two things unclear when a connection attempt **explicitly fails** before the timer fires (e.g., local `ENETUNREACH`/`EHOSTUNREACH`, or immediate `ECONNREFUSED`/RST/ICMP error):\n\n1. Whether the client must wait for the Next Connection Attempt Timer or may immediately start the next attempt.\n2. Whether the 10 ms `MUST NOT` forbids starting the next attempt immediately after a synchronous/local failure (where no packet even left the host).\n\n### Rationale\n\nThe 10 ms lower bound exists to avoid congestion collapse from bursts of **concurrent** connection attempts under high packet loss. When a previous attempt has already failed, it will not retransmit\u2014advancing to the next candidate is sequential fallback, not added concurrency. Waiting 10 ms (or the full Connection Attempt Delay) after an immediate failure adds pure latency with no congestion benefit, and existing implementations cancel the timer and advance immediately on failure.\n\n### Proposal\n\n1. Explicitly state that if the most recently started connection attempt fails with an explicit error before the Next Connection Attempt Timer fires, the client `MAY` immediately start the next attempt and reset the timer.\n2. Scope the 10 ms `MUST NOT` to starting a **concurrent** attempt while a previous attempt is still in progress (or explicitly exempt immediate/local failures).",
+      "createdAt": "2026-11-20T02:15:13Z",
+      "updatedAt": "2026-11-20T22:17:26Z",
+      "closedAt": "2026-11-20T22:17:26Z",
       "comments": []
     }
   ],
@@ -11320,6 +11338,55 @@
               "body": "Absolute nit and thing people disagree on:\n\nElsewhere in the doc we use\n\n```suggestion\nCancelling remaining in-flight attempts once a connection succeeds\n```",
               "createdAt": "2026-10-28T18:06:46Z",
               "updatedAt": "2026-10-28T18:07:41Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 152,
+      "id": "PR_kwDOKH7CuM8AAAABQkLgeg",
+      "title": "Allow advancing immediately when previous connection attempt fails",
+      "url": "https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/pull/152",
+      "state": "MERGED",
+      "author": "nidhijaju",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes https://github.com/ietf-wg-happy/draft-happy-eyeballs-v3/issues/151.",
+      "createdAt": "2026-11-20T02:30:05Z",
+      "updatedAt": "2026-11-20T22:17:27Z",
+      "baseRepository": "ietf-wg-happy/draft-happy-eyeballs-v3",
+      "baseRefName": "main",
+      "baseRefOid": "cf4e9c7b1e59fb4569b6929b6afe307237a09324",
+      "headRepository": "nidhijaju/draft-happy-eyeballs-v3",
+      "headRefName": "attempt-failure-delay",
+      "headRefOid": "d3e8c05b5f9dab1b9053d33a90cf3b241c6ba281",
+      "closedAt": "2026-11-20T22:17:24Z",
+      "mergedAt": "2026-11-20T22:17:24Z",
+      "mergedBy": "nidhijaju",
+      "mergeCommit": {
+        "oid": "86fdee0ba1bcc9a6943cf31068f29b23144bb8e2"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKH7CuM8AAAABZNlCFA",
+          "commit": {
+            "abbreviatedOid": "7c3573f"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-11-20T03:08:12Z",
+          "updatedAt": "2026-11-20T03:08:27Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "```suggestion\na TCP RST), the client SHOULD start the next connection attempt\n```",
+              "createdAt": "2026-11-20T03:08:12Z",
+              "updatedAt": "2026-11-20T03:08:27Z"
             }
           ]
         }
