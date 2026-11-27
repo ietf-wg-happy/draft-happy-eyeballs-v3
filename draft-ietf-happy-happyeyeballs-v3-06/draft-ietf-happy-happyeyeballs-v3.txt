@@ -5,10 +5,10 @@
 HAPPY Working Group                                             T. Pauly
 Internet-Draft                                                 Apple Inc
 Intended status: Standards Track                             D. Schinazi
-Expires: 30 April 2027                                           N. Jaju
+Expires: 31 May 2027                                             N. Jaju
                                                             K. Ishibashi
                                                               Google LLC
-                                                         27 October 2026
+                                                        27 November 2026
 
 
     Happy Eyeballs Version 3: Better Connectivity Using Concurrency
@@ -59,7 +59,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 April 2027.
+   This Internet-Draft will expire on 31 May 2027.
 
 Copyright Notice
 
@@ -101,16 +101,17 @@ Table of Contents
      8.1.  Discovering PREF64
      8.2.  Handling Synthesized Answers
      8.3.  Synthesizing IPv6 Addresses During Connection Establishment
-   9.  Summary of Configurable Values
-   10. Limitations
-     10.1.  Path Maximum Transmission Unit Discovery
-     10.2.  Application Layer
-     10.3.  Hiding Operational Issues
-   11. Security Considerations
-   12. IANA Considerations
-   13. References
-     13.1.  Normative References
-     13.2.  Informative References
+   9.  Handling Multiple Networks and Network Changes
+   10. Summary of Configurable Values
+   11. Limitations
+     11.1.  Path Maximum Transmission Unit Discovery
+     11.2.  Application Layer
+     11.3.  Hiding Operational Issues
+   12. Security Considerations
+   13. IANA Considerations
+   14. References
+     14.1.  Normative References
+     14.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -305,7 +306,7 @@ Table of Contents
    where the AAAA or SVCB/HTTPS records follow the A records by a few
    milliseconds.  This delay is referred to as the "Resolution Delay".
 
-   The RECOMMENDED value for the Resolution Delay is 50 milliseconds.
+   The RECOMMENDED value for the Resolution Delay is 25 milliseconds.
 
 4.2.1.  Resolving SVCB/HTTPS Aliases and Targets
 
@@ -371,7 +372,7 @@ Table of Contents
       |    <--- HTTPS (no hints)   |
       |    <--- A (2 addresses)    |
       |                            |
-      | Set 50ms timer             |
+      | Set 25ms timer             |
       |                            |
       |        (10ms delay)        |
       |                            |
@@ -392,9 +393,9 @@ Table of Contents
       |    <--- HTTPS (no hints)   |
       |    <--- A (2 addresses)    |
       |                            |
-      | Set 50ms timer             |
+      | Set 25ms timer             |
       |                            |
-      |        (50ms delay)        |
+      |        (25ms delay)        |
       |                            |
       | Start w/IPv4               |
       |                            |
@@ -417,7 +418,7 @@ Table of Contents
       |    <--- AAAA (2 addresses) |
       |    <--- A (2 addresses)    |
       |                            |
-      | Set 50ms timer             |
+      | Set 25ms timer             |
       |                            |
       |        (10ms delay)        |
       |                            |
@@ -439,9 +440,9 @@ Table of Contents
       |    <--- AAAA (2 addresses) |
       |    <--- A (2 addresses)    |
       |                            |
-      | Set 50ms timer             |
+      | Set 25ms timer             |
       |                            |
-      |        (50ms delay)        |
+      |        (25ms delay)        |
       |                            |
       | Start w/IPv6 + IPv4        |
       |                            |
@@ -502,7 +503,7 @@ Table of Contents
       |                            |
       |    <--- A (2 addresses)    |
       |                            |
-      | Set 50ms timer             |
+      | Set 25ms timer             |
       |                            |
       |        (10ms delay)        |
       |                            |
@@ -706,14 +707,12 @@ Table of Contents
    Protocol (HTTP) cookies.  This historical data MUST be partitioned
    using the same boundaries used for privacy-sensitive information
    specific to that endpoint, and MUST NOT be used across different
-   Provisioning Domains (PvDs) [PvD].  The data SHOULD be flushed
-   whenever a device changes the PvD to which it is attached.  However,
-   if a client can reliably identify a previously attached PvD, it MAY
-   retain and resume using historical data associated with that PvD upon
-   reconnection.  Clients that use historical data MUST ensure that
-   clients with different historical data will eventually converge
-   toward the same behaviors.  For example, clients can periodically
-   ignore historical data to ensure that fresh addresses are attempted.
+   Provisioning Domains (PvDs) [PvD].  See Section 9 for discussion
+   around handling multiple PvDs.  Implementations that use historical
+   data MUST ensure that clients with different historical data will
+   eventually converge toward the same behaviors.  For example, clients
+   can periodically ignore historical data to ensure that fresh
+   addresses are attempted.
 
    Next, the client SHOULD modify the ordered list to interleave address
    families.  Whichever address family is first in the list should be
@@ -751,6 +750,38 @@ Table of Contents
    for a short period of time (recommended to be 1 second), as they will
    populate the DNS cache and can be used for subsequent connections.
 
+   Cancelling remaining in-flight attempts once a connection succeeds
+   avoids unnecessary load on the network and server.  In addition, if
+   an earlier, more preferred attempt (such as QUIC or IPv6) did not
+   complete before a later fallback attempt (such as TLS over TCP or
+   IPv4) succeeded, that path might be experiencing packet loss, rate
+   limiting, or other impairments, so switching to it can degrade
+   performance.  However, client implementations with additional context
+   (for example, an HTTP connection manager that prefers HTTP/3 over
+   HTTP/2 for subsequent requests) MAY allow an already in-flight, more
+   preferred attempt to continue in the background rather than
+   cancelling it immediately, taking care to evaluate path quality
+   before preferring that connection and to close redundant connections
+   when no longer needed.  Specific mechanisms for managing connection
+   pools or switching between established connections are out of scope
+   for this document.
+
+   Each connection attempt represents an independent transport
+   connection with its own connection identifiers and cryptographic
+   handshake state (for example, separate TCP connections or separate
+   QUIC connections), so handshake packets cannot be reused between
+   attempts.  When TLS is used (either over TCP or as part of QUIC),
+   clients MUST NOT reuse key shares across connection attempts
+   (Section 4.2.8 of [RFC9846]).  Similarly, when attempting multiple
+   QUIC connections (such as over IPv6 and IPv4), clients MUST NOT send
+   copies of the same QUIC Initial packet or reuse Connection IDs across
+   attempts (Section 9.5 of [QUIC]).  Avoiding reuse of Connection IDs
+   and cryptographic handshake values prevents observers from
+   correlating the client's addresses across network paths.  Because
+   attempts are separated by the Connection Attempt Delay, most
+   connections complete on the first attempt without incurring the cost
+   of additional handshakes.
+
    If grouping endpoints by application or security requirements
    (Section 5.1) produced multiple groups, the application SHOULD start
    with connection attempts to the most preferred option.  The policy
@@ -776,24 +807,58 @@ Table of Contents
    QUIC Initial), based on the retransmission timer ([RFC6298],
    [RFC9002]).  If the client has historical RTT data gathered from
    other connections to the same host or prefix, it can use this
-   information to influence its delay.  Note that this algorithm should
-   only try to approximate the time of the first handshake packet
-   retransmission, and not any further retransmissions that may be
-   influenced by exponential timer back off.  Clients that support
-   session resumption mechanisms (such as TLS session tickets [RFC8446]
-   or QUIC 0-RTT [RFC9001]) SHOULD use the same Connection Attempt Delay
-   for resumed connections as for new connections.
+   information to influence its delay.  Transport retransmission timers
+   are generally tuned so that most healthy connections complete their
+   initial handshake without retransmitting; waiting until roughly the
+   first handshake retransmission gives the preferred attempt a fair
+   chance to succeed without starting redundant connection attempts in
+   the common case, while starting the next attempt promptly once the
+   initial packet (or its response) is likely to have been lost.
+
+   Note that this algorithm should only try to approximate the time of
+   the first handshake packet retransmission, and not any further
+   retransmissions that may be influenced by exponential timer back off.
+   In practice, the layer implementing Happy Eyeballs often operates
+   above the transport layer and might not directly control or know the
+   exact timing of transport-layer retransmissions.  Even when
+   retransmission timing is known or closely estimated, sending a
+   handshake retransmission on a previous attempt at the same time as
+   the initial packet of a new attempt can create a small burst of
+   packets when the network is already experiencing loss.
+   Implementations MAY apply a small amount of jitter or pacing to avoid
+   sending both packets simultaneously.
+
+   Clients that support session resumption mechanisms (such as TLS
+   session tickets [RFC8446] or QUIC 0-RTT [RFC9001]) SHOULD use the
+   same Connection Attempt Delay for resumed connections as for new
+   connections.
 
    The Connection Attempt Delay MUST have a lower bound, especially if
-   it is computed using historical data.  More specifically, a
-   subsequent connection MUST NOT be started within 10 milliseconds of
-   the previous attempt.  The recommended minimum value is 100
-   milliseconds, which is referred to as the "Minimum Connection Attempt
-   Delay".  This minimum value is required to avoid congestion collapse
-   in the presence of high packet-loss rates.  The Connection Attempt
-   Delay SHOULD have an upper bound, referred to as the "Maximum
-   Connection Attempt Delay".  The current recommended value is 2
-   seconds.
+   it is computed using historical data.  More specifically, while a
+   previous attempt is still in progress, a subsequent connection MUST
+   NOT be started within 10 milliseconds of that attempt.  The
+   recommended minimum value is 100 milliseconds, which is referred to
+   as the "Minimum Connection Attempt Delay".  This minimum value is
+   required to avoid congestion collapse in the presence of high packet-
+   loss rates.  The Connection Attempt Delay SHOULD have an upper bound,
+   referred to as the "Maximum Connection Attempt Delay".  The current
+   recommended value is 2 seconds.
+
+   An implementation MAY increase the Connection Attempt Delay for each
+   additional connection attempt that is started while earlier attempts
+   are still in progress, multiplying the delay by a fixed factor (the
+   "Connection Attempt Delay Multiplier") for each such attempt.  The
+   multiplier scales whichever base delay the implementation uses: the
+   RTT-derived estimate described above when RTT data is available, or
+   the fixed default otherwise.  A short base delay starts a first
+   fallback quickly, while the multiplier spaces out later attempts so
+   the aggregate attempt rate stays low.  For example, with a fixed base
+   delay of 50 milliseconds and a multiplier of 2, attempts are started
+   at 0, 50, 150, 350, and 750 milliseconds.  A multiplier of 1 keeps
+   the delay constant.  A base delay below the recommended Minimum
+   Connection Attempt Delay MAY be used (for example, with a multiplier
+   greater than 1), but the 10 millisecond hard lower-bound still
+   applies.
 
    The Connection Attempt Delay is used to set a timer, referred to as
    the "Next Connection Attempt Timer".  Whenever this timer fires and a
@@ -802,6 +867,32 @@ Table of Contents
    or, in the case of the end of the list being reached, is cancelled.
    Note that the delay value can be different for each connection
    attempt (depending on the protocol being used and the estimated RTT).
+
+   If the most recently started connection attempt fails with an
+   explicit error before the Next Connection Attempt Timer fires (for
+   example, a local routing error such as an unreachable network, an
+   ICMP error, or a TCP RST), the client SHOULD start the next
+   connection attempt immediately without waiting for the timer or the
+   10-millisecond lower bound, and reset (or cancel, if the end of the
+   list is reached) the Next Connection Attempt Timer.  When an earlier
+   attempt fails while a more recent attempt is still in progress, the
+   timer continues running normally.
+
+   The algorithm in this document describes establishing a single
+   connection, and the Connection Attempt Delay bounds the attempt rate
+   of a single Happy Eyeballs procedure.  However, an application might
+   initiate multiple concurrent connection requests to the same host or
+   service within a short period (for example, for parallel HTTP/1.1
+   requests, or when a speculative preconnect is followed closely by an
+   active request).  Running uncoordinated Happy Eyeballs procedures in
+   parallel can still produce an aggregate burst of connection attempts
+   to the same destination.  While mechanisms for managing pools of
+   multiple connections are out of scope for this document, client
+   implementations can mitigate such bursts by coalescing resolution and
+   in-flight connection establishment when a single connection can be
+   shared (such as with HTTP/2 or HTTP/3), or by coordinating attempt
+   pacing across concurrent Happy Eyeballs procedures targeting the same
+   host or service when multiple connections are needed.
 
 6.1.  Determining successful connection establishment
 
@@ -849,14 +940,12 @@ Table of Contents
 
    While transport layer handshakes generally do not have restrictions
    on attempts to establish a connection, some cryptographic handshakes
-   may be dependent on SVCB ServiceMode records and could impose
-   limitations on establishing a connection.  For instance, ECH-capable
-   clients may become SVCB-reliant clients (Section 3 of [SVCB]) when
-   SVCB records contain the "ech" SvcParamKey [SVCB-ECH].  If the client
-   is either an SVCB-reliant client or a SVCB-optional client that might
-   switch to SVCB-reliant connection establishment during the process,
-   the client MUST wait for SVCB records before proceeding with the
-   cryptographic handshake.
+   might depend on SVCB ServiceMode records and impose limitations on
+   establishing a connection.  For instance, ECH-capable clients might
+   rely on SVCB records that contain the "ech" SvcParamKey [SVCB-ECH]
+   before starting a TLS handshake.  See Section 6.3 for details on when
+   clients need to pend or abandon connection attempts while awaiting
+   SVCB records.
 
 6.2.  Handling Application Layer Protocol Negotiation (ALPN)
 
@@ -945,6 +1034,38 @@ Table of Contents
        but only aim to save round trips.  The other TLS groups can be
        discovered through the TLS handshake itself, instead of SVCB, and
        thus do not require waiting for SVCB responses.
+
+   Pending the TLS handshake affects transport protocols differently
+   once address records are available and any applicable Resolution
+   Delay has elapsed:
+
+   *  For QUIC, the TLS ClientHello is carried in the initial packet of
+      the connection.  If the client needs to pend starting the TLS
+      handshake until SVCB responses have arrived, it needs to pend
+      sending any QUIC packets.
+
+   *  When TLS is used over TCP and the client needs to pend starting
+      the TLS handshake, the client MAY speculatively start the TCP
+      handshake using resolved A or AAAA addresses while holding back
+      the TLS ClientHello until SVCB responses arrive.  If the SVCB
+      responses allow using an endpoint for which a speculative TCP
+      handshake was started (for example, when SVCB returns a negative
+      response or a ServiceMode record with TargetName "."), the client
+      can proceed with the TLS handshake on that TCP connection.
+      Conversely, if an endpoint with an in-progress or completed
+      speculative TCP handshake is not selected once the SVCB response
+      arrives (for example, because the client selects an alternative
+      TargetName that provides "ech" [SVCB-ECH]), the client SHOULD
+      close that TCP connection without sending a TLS ClientHello.
+
+   Starting a speculative TCP handshake before SVCB resolution completes
+   trades privacy for reduced latency: although the TLS ClientHello is
+   not exposed, sending TCP SYN packets to the origin's addresses can
+   reveal communication with IP addresses that the client would not have
+   contacted if an SVCB record directed it to an alternative TargetName
+   (such as a shared ECH-enabled frontend).  Clients with stricter
+   privacy requirements MAY pend the TCP handshake until SVCB responses
+   have been received.
 
 7.  DNS Answer Changes During Happy Eyeballs Connection Setup
 
@@ -1055,14 +1176,66 @@ Table of Contents
    require synthesis, such as 0.0.0.0/8, 127.0.0.0/8, 169.254.0.0/16,
    and 255.255.255.255/32.
 
-9.  Summary of Configurable Values
+9.  Handling Multiple Networks and Network Changes
+
+   The Happy Eyeballs algorithm as described in this document applies to
+   how resolution, sorting, and connection establishment are performed
+   on a single network configuration.  For the purposes of this
+   document, the definition of a Provisioning Domain (PvD) [PvD] is used
+   to refer to this network configuration.  A PvD is defined as "a
+   consistent set of network configuration information", including the
+   DNS servers and router prefixes assigned by the network connection.
+
+   Multiple PvDs can be in use over time for various reasons: a client
+   device's network configuration or attachments might change (joining
+   or leaving a Wi-Fi network, connecting to a wired Ethernet network,
+   establishing a tunnel to a VPN server), and a client device can be
+   attached to multiple networks at the same time (such as a mobile
+   device having connectivity to both a Wi-Fi network and a cellular
+   network).
+
+   Clients implementing the Happy Eyeballs algorithm MUST partition the
+   information used to guide the algorithm across different PvDs.
+   Specifically, the following properties cannot be used across
+   different PvDs:
+
+   *  DNS answers (even when PvDs share a configured DNS resolver, as
+      answers can depend on the network path)
+
+   *  NAT64 prefixes (see Section 8)
+
+   *  Historical data used to sort endpoints, such as round trip times
+      and previously used addresses (see Section 5.3), or to compute the
+      Connection Attempt Delay (see Section 6)
+
+   Information that is cached per-PvD, such as historical round trip
+   data and DNS answers, SHOULD be flushed whenever a device changes the
+   PvD to which it is attached.  However, if a client can reliably
+   identify a previously attached PvD, it MAY retain and resume using
+   cached data associated with that PvD upon reconnection.
+
+   VPNs (Virtual Private Networks) can pose specific complexities,
+   particularly when they have split-horizon DNS configurations (see
+   [RFC9704] for a definition of split-horizon DNS).  For example, a VPN
+   configuration might require that all queries for names under
+   "example.com" be sent to a VPN-specific DNS server, and address
+   answers from that DNS server might end up being routed either over
+   the VPN tunnel or over a non-VPN route.  The requirement above to
+   partition information across PvDs does not mean that split-horizon
+   VPNs will lead to failures.  Instead, the set of split-horizon DNS
+   servers and routes ought to be considered as one larger PvD.  When a
+   VPN is connected or disconnected (adding or removing a split-horizon
+   configuration), the client ought to consider that to be a PvD change
+   and flush or re-fetch cached state such as DNS answers.
+
+10.  Summary of Configurable Values
 
    The values that may be configured as defaults on a client for use in
    Happy Eyeballs are as follows:
 
    *  Resolution Delay (Section 4): The time to wait for AAAA and/or
       SVCB/HTTPS records after receiving an A record.  Recommended to be
-      50 milliseconds.
+      25 milliseconds.
 
    *  Preferred Address Family Count (Section 5): The number of
       endpoints belonging to the preferred address family (such as IPv6)
@@ -1075,11 +1248,18 @@ Table of Contents
       250 milliseconds.
 
    *  Minimum Connection Attempt Delay (Section 6): The minimum time to
-      wait between connection attempts.  Recommended to be 100
-      milliseconds.  MUST NOT be less than 10 milliseconds.
+      wait between concurrent connection attempts.  Recommended to be
+      100 milliseconds.  MUST NOT be less than 10 milliseconds when a
+      previous attempt is still in progress.
 
    *  Maximum Connection Attempt Delay (Section 6): The maximum time to
       wait between connection attempts.  Recommended to be 2 seconds.
+
+   *  Connection Attempt Delay Multiplier (Section 6): An optional
+      factor by which the Connection Attempt Delay is multiplied for
+      each additional concurrent connection attempt in progress.
+      Recommended to be 1 (a constant delay); values greater than 1 grow
+      the delay per attempt and allow a shorter base delay.
 
    The delay values described in this section were determined
    empirically by measuring the timing of connections on a very wide set
@@ -1092,13 +1272,13 @@ Table of Contents
    as long as they do not violate any of the normative requirements
    (such as minimum delays).
 
-10.  Limitations
+11.  Limitations
 
    Happy Eyeballs will handle initial connection failures at the
    transport layer (such as TCP or QUIC); however, other failures or
    performance issues may still affect the chosen connection.
 
-10.1.  Path Maximum Transmission Unit Discovery
+11.1.  Path Maximum Transmission Unit Discovery
 
    Connections that use TCP only (without TLS or another protocol on
    top) perform connection racing only during the TCP handshake.  Such
@@ -1120,14 +1300,14 @@ Table of Contents
    approach is to use "Packetization Layer Path MTU Discovery"
    [RFC4821].
 
-10.2.  Application Layer
+11.2.  Application Layer
 
    If the DNS returns multiple endpoints for different application
    servers, the application itself may not be operational and functional
    on all of them.  Common examples include Transport Layer Security
    (TLS) and HTTP.
 
-10.3.  Hiding Operational Issues
+11.3.  Hiding Operational Issues
 
    It has been observed in practice that Happy Eyeballs can hide issues
    in networks.  For example, if a misconfiguration causes IPv6 to
@@ -1136,7 +1316,7 @@ Table of Contents
    It is recommended that network operators deploy external means of
    monitoring to ensure functionality of all address families.
 
-11.  Security Considerations
+12.  Security Considerations
 
    Note that applications should not rely upon a stable hostname-to-
    address mapping to ensure any security properties, since DNS results
@@ -1146,7 +1326,7 @@ Table of Contents
 
    When using HTTP, HTTPS resource records indicate that clients should
    require HTTPS when connecting to an origin (see Section 9.5 of
-   [RFC9460]), so an active attacker can attempt a downgrade attack by
+   [SVCB]), so an active attacker can attempt a downgrade attack by
    interfering with the successful delivery of HTTPS resource records.
    When clients use insecure DNS mechanisms, any on-path attacker can
    simply drop HTTPS resource records, so clients cannot tell the
@@ -1154,19 +1334,43 @@ Table of Contents
    HTTPS queries.
 
    However, when using cryptographically protected DNS mechanisms, as
-   described in Section 3.1 of [RFC9460], both SVCB-reliant and SVCB-
+   described in Section 3.1 of [SVCB], both SVCB-reliant and SVCB-
    optional clients MUST NOT send any unencrypted data after the TCP
    handshake completes unless they have received a valid HTTPS response.
    Those clients need to complete a TLS handshake before proceeding if
    that response is non-negative.
 
-12.  IANA Considerations
+   Similar downgrade considerations apply to security-related SVCB
+   parameters such as "ech" [SVCB-ECH], which provides ECH
+   configurations [ECH] used to encrypt sensitive fields of the TLS
+   ClientHello.  Even when DNS queries use an encrypted transport, an
+   on-path attacker might attempt to selectively delay or drop packets
+   carrying SVCB or HTTPS responses (for example, using packet timing or
+   size heuristics) while allowing A and AAAA responses through.  If an
+   ECH-capable client proceeded with an unencrypted TLS ClientHello
+   after the Resolution Delay without waiting for the SVCB or HTTPS
+   response, the attacker could force ECH to be omitted.  Waiting for
+   SVCB or HTTPS responses before starting the TLS handshake when DNS is
+   cryptographically protected, and abandoning connection attempts if
+   protected resolution fails (see Section 6.3), prevents this downgrade
+   attack.
+
+   Additionally, as described in Section 6.3, speculatively starting a
+   TCP handshake using A or AAAA records before SVCB or HTTPS resolution
+   completes does not expose the TLS ClientHello, but can still expose
+   traffic to origin IP addresses that would not have been contacted if
+   an SVCB or HTTPS record directed the client to an alternative
+   TargetName (such as a shared ECH-enabled frontend).  Clients with
+   stricter privacy requirements can avoid this exposure by waiting for
+   SVCB or HTTPS responses before starting the TCP handshake.
+
+13.  IANA Considerations
 
    This document does not require any IANA actions.
 
-13.  References
+14.  References
 
-13.1.  Normative References
+14.1.  Normative References
 
    [ECH]      Rescorla, E., Oku, K., Sullivan, N., and C. A. Wood, "TLS
               Encrypted Client Hello", RFC 9849, DOI 10.17487/RFC9849,
@@ -1241,11 +1445,6 @@ Table of Contents
               DOI 10.17487/RFC9000, May 2021,
               <https://www.rfc-editor.org/rfc/rfc9000>.
 
-   [RFC9460]  Schwartz, B., Bishop, M., and E. Nygren, "Service Binding
-              and Parameter Specification via the DNS (SVCB and HTTPS
-              Resource Records)", RFC 9460, DOI 10.17487/RFC9460,
-              November 2023, <https://www.rfc-editor.org/rfc/rfc9460>.
-
    [SVCB]     Schwartz, B., Bishop, M., and E. Nygren, "Service Binding
               and Parameter Specification via the DNS (SVCB and HTTPS
               Resource Records)", RFC 9460, DOI 10.17487/RFC9460,
@@ -1256,7 +1455,7 @@ Table of Contents
               RFC 9848, DOI 10.17487/RFC9848, March 2026,
               <https://www.rfc-editor.org/rfc/rfc9848>.
 
-13.2.  Informative References
+14.2.  Informative References
 
    [AltSvc]   Nottingham, M., McManus, P., and J. Reschke, "HTTP
               Alternative Services", RFC 7838, DOI 10.17487/RFC7838,
@@ -1309,9 +1508,9 @@ Table of Contents
    [OPTIMISTIC-DNS]
               Akiwate, G., Flack, P., and S. Cheshire, "Optimistic DNS",
               Work in Progress, Internet-Draft, draft-gakiwate-dnsop-
-              optimistic-dns-00, 3 June 2026,
+              optimistic-dns-01, 1 November 2026,
               <https://datatracker.ietf.org/doc/html/draft-gakiwate-
-              dnsop-optimistic-dns-00>.
+              dnsop-optimistic-dns-01>.
 
    [PvD]      Anipko, D., Ed., "Multiple Provisioning Domain
               Architecture", RFC 7556, DOI 10.17487/RFC7556, June 2015,
@@ -1355,6 +1554,15 @@ Table of Contents
               RFC 9461, DOI 10.17487/RFC9461, November 2023,
               <https://www.rfc-editor.org/rfc/rfc9461>.
 
+   [RFC9704]  Reddy.K, T., Wing, D., Smith, K., and B. Schwartz,
+              "Establishing Local DNS Authority in Validated Split-
+              Horizon Environments", RFC 9704, DOI 10.17487/RFC9704,
+              January 2025, <https://www.rfc-editor.org/rfc/rfc9704>.
+
+   [RFC9846]  Rescorla, E., "The Transport Layer Security (TLS) Protocol
+              Version 1.3", RFC 9846, DOI 10.17487/RFC9846, July 2026,
+              <https://www.rfc-editor.org/rfc/rfc9846>.
+
    [RFC10001] Momoka and T. Fiebig, "Operational Guidelines for DNS
               Transport in Mixed IPv4/IPv6 Environments", BCP 91,
               RFC 10001, DOI 10.17487/RFC10001, August 2026,
@@ -1363,9 +1571,9 @@ Table of Contents
    [V6-MOSTLY]
               Buraglio, N., Caletka, O., and J. Linkova, "IPv6-mostly
               Networks: Deployment and Operations Considerations", Work
-              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-11, 27
-              October 2026, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-v6ops-6mops-11>.
+              in Progress, Internet-Draft, draft-ietf-v6ops-6mops-13, 25
+              November 2026, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-v6ops-6mops-13>.
 
 Acknowledgments
 
